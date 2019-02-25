@@ -59,15 +59,14 @@ public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProc
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment,
-			SpringApplication application) {
+									   SpringApplication application) {
 		increaseInvocationCount();
 		if (CloudPlatform.CLOUD_FOUNDRY.isActive(environment)) {
 			CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
 			CfJdbcService cfJdbcService;
 			try {
 				cfJdbcService = cfJdbcEnv.findJdbcService();
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				if (invocationCount == 1) {
 					DEFERRED_LOG.debug(
 							"Skipping execution of CfDataSourceEnvironmentPostProcessor. "
@@ -89,8 +88,7 @@ public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProc
 					propertySources.addAfter(
 							CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME,
 							new MapPropertySource("cfenvjdbc", properties));
-				}
-				else {
+				} else {
 					propertySources
 							.addFirst(new MapPropertySource("cfenvjdbc", properties));
 				}
@@ -100,8 +98,7 @@ public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProc
 									+ cfJdbcService.getName() + "]");
 				}
 			}
-		}
-		else {
+		} else {
 			DEFERRED_LOG.debug(
 					"Not setting spring.datasource.url, not in Cloud Foundry Environment");
 		}

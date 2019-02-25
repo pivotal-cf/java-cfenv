@@ -15,6 +15,7 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
+import java.util.List;
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfCredentials;
@@ -30,13 +31,13 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
 	private static final String PIVOTAL_SSO_LABEL = "p-identity";
 
 	@Override
-	public CfService findService(CfEnv cfEnv) {
-		return cfEnv.findServiceByLabel(PIVOTAL_SSO_LABEL);
+	public List<CfService> findServices(CfEnv cfEnv) {
+		return cfEnv.findServicesByLabel(PIVOTAL_SSO_LABEL);
 	}
 
 	@Override
 	public String getPropertySourceName() {
-		return "cfEnvSingleSignOn";
+		return "cfSingleSignOnProcessor";
 	}
 
 	@Override
@@ -58,5 +59,10 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
 				authDomain + "/check_token");
 		properties.put("security.oauth2.resource.jwk.key-set-uri",
 				authDomain + "/token_keys");
+	}
+
+	@Override
+	public String getPropertyPrefixes() {
+		return "security.oauth2.client, security.oauth2.resource";
 	}
 }

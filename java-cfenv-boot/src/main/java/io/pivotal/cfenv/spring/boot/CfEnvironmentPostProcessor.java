@@ -41,6 +41,12 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.stereotype.Component;
 
 /**
+ * An EnvironmentPostProcessor that iterates over {@see CfEnvProcessor} implementations to contribute
+ * Spring Boot properties for bound Cloud Foundry Services.
+ *
+ * Implementation of {@see CfEnvProcessor }should be registered using the
+ * {@code resources/META-INF/spring.factories} property file.
+ *
  * @author Mark Pollack
  */
 @Component
@@ -67,47 +73,54 @@ public class CfEnvironmentPostProcessor implements
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment,
-			SpringApplication application) {
+									   SpringApplication application) {
 
 		increaseInvocationCount();
 		if (CloudPlatform.CLOUD_FOUNDRY.isActive(environment)) {
 			CfEnv cfEnv = CfEnvSingleton.getCfEnvInstance();
 
 			for (CfEnvProcessor processor : this.cfEnvProcessors) {
-				CfService cfService = processor.findService(cfEnv);
-
-				if (cfService == null) {
+				List<CfService> cfServices = null;
+				try {
+					cfServices = processor.findServices(cfEnv);
+				} catch (Exception e) {
 					if (invocationCount == 1) {
-						DEFERRED_LOG.debug(
-								"Skipping execution of " + processor.getClass().getName());
+						DEFERRED_LOG.debug("Skipping execution of " + processor.getClass().getName());
 					}
-					continue;
+					return;
 				}
 
-				Map<String, Object> properties = new LinkedHashMap<>();
-
-				processor.process(cfService.getCredentials(), properties);
-
-				MutablePropertySources propertySources = environment.getPropertySources();
-				if (propertySources.contains(
-						CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME)) {
-					propertySources.addAfter(
-							CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME,
-							new MapPropertySource(processor.getPropertySourceName(), properties));
-				}
-				else {
-					propertySources.addFirst(
-							new MapPropertySource(processor.getPropertySourceName(), properties));
+				CfService cfService = null;
+				if (cfServices.size() == 1) {
+					cfService = cfServices.stream().findFirst().get();
+				} else {
+					throwExceptionIfMultipleMatches(cfServices);
 				}
 
-				if (invocationCount == 1) {
-					DEFERRED_LOG.info(
-							"Setting properties from bound service ["
-									+ cfService.getName() + "] using " + processor.getClass().getName());
+				if (cfService != null) {
+					Map<String, Object> properties = new LinkedHashMap<>();
+
+					processor.process(cfService.getCredentials(), properties);
+
+					MutablePropertySources propertySources = environment.getPropertySources();
+					if (propertySources.contains(
+							CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME)) {
+						propertySources.addAfter(
+								CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME,
+								new MapPropertySource(processor.getPropertySourceName(), properties));
+					} else {
+						propertySources.addFirst(
+								new MapPropertySource(processor.getPropertySourceName(), properties));
+					}
+
+					if (invocationCount == 1) {
+						DEFERRED_LOG.info(
+								"Setting " + processor.getPropertyPrefixes() + " properties from bound service ["
+										+ cfService.getName() + "] using " + processor.getClass().getName());
+					}
 				}
 			}
-		}
-		else {
+		} else {
 			if (invocationCount == 1) {
 				DEFERRED_LOG.debug(
 						"Not setting properties, Cloud Foundry Environment no detected");
@@ -127,7 +140,7 @@ public class CfEnvironmentPostProcessor implements
 		}
 	}
 
-	private void loadCfEnvProcessors() {
+	protected void loadCfEnvProcessors() {
 		cfEnvProcessors = SpringFactoriesLoader.loadFactories(CfEnvProcessor.class,
 				getClass().getClassLoader());
 		AnnotationAwareOrderComparator.sort(cfEnvProcessors);
@@ -137,9 +150,19 @@ public class CfEnvironmentPostProcessor implements
 	 * EnvironmentPostProcessors can end up getting called twice due to spring-cloud-commons
 	 * functionality
 	 */
-	private void increaseInvocationCount() {
+	protected void increaseInvocationCount() {
 		synchronized (this) {
 			invocationCount++;
+		}
+	}
+
+	protected void throwExceptionIfMultipleMatches(List<CfService> services) {
+		if (services.size() > 1) {
+			String[] names = services.stream().map(CfService::getName)
+					.toArray(String[]::new);
+			throw new IllegalArgumentException(
+					"No unique redis service found. Found redis service names ["
+							+ String.join(", ", names) + "]");
 		}
 	}
 }
