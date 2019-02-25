@@ -359,6 +359,15 @@ public class CfEnvTests {
 		}).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(
 				"No unique service matching by tag [mysql] was found.  Matching service names are [mysql, mysql2]");
 
+		List<CfService> servicesByName = cfEnv.findServicesByName("mysql.*");
+		assertThat(servicesByName.size()).isEqualTo(2);
+
+		List<CfService> servicesByLabel = cfEnv.findServicesByLabel("p-mysql");
+		assertThat(servicesByLabel.size()).isEqualTo(2);
+
+		List<CfService> servicesByTag = cfEnv.findServicesByTag("relational");
+		assertThat(servicesByTag.size()).isEqualTo(2);
+
 	}
 
 	private void mockVcapEnvVars(String vcapServicesFilename,
