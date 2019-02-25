@@ -2,10 +2,10 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>java-cfenv-pivotal-scs</artifactId>
+    <artifactId>java-cfenv-boot-pivotal-sso</artifactId>
     <packaging>jar</packaging>
-    <name>Java CF Env Pivotal Spring Cloud Services</name>
-    <description>Java CF Env Pivotal Spring Cloud Services</description>
+    <name>Java CF Env Pivotal Single Sign On</name>
+    <description>Java CF Env Pivotal Single Sign On</description>
     <parent>
         <groupId>io.pivotal.cfenv</groupId>
         <artifactId>java-cfenv-parent</artifactId>

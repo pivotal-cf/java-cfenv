@@ -55,8 +55,8 @@
         <module>java-cfenv-test-support</module>
         <module>java-cfenv-jdbc</module>
         <module>java-cfenv-boot</module>
-	    <module>java-cfenv-pivotal-scs</module>
-        <module>java-cfenv-pivotal-sso</module>
+	    <module>java-cfenv-boot-pivotal-scs</module>
+        <module>java-cfenv-boot-pivotal-sso</module>
         <!--
       <module>java-cfenv-docs</module>  -->
     </modules>

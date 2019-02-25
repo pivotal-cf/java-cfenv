@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cfenv.sso;
+package io.pivotal.cfenv.boot.scs;
 
 import java.util.List;
 import java.util.Map;
@@ -27,43 +27,41 @@ import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
  * @author Mark Pollack
  * @author Scott Frederick
  */
-public class CfSingleSignOnProcessor implements CfEnvProcessor {
+public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
+	private static final String CONFIG_SERVER_SERVICE_TAG_NAME = "configuration";
 
-	private static final String PIVOTAL_SSO_LABEL = "p-identity";
+	private static final String SPRING_CLOUD_CONFIG_URI = "spring.cloud.config.uri";
+	private static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID = "spring.cloud.config.client.oauth2.clientId";
+	private static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_SECRET = "spring.cloud.config.client.oauth2.clientSecret";
+	private static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI = "spring.cloud.config.client.oauth2.accessTokenUri";
 
 	@Override
 	public List<CfService> findServices(CfEnv cfEnv) {
-		return cfEnv.findServicesByLabel(PIVOTAL_SSO_LABEL);
+		return cfEnv.findServicesByTag(CONFIG_SERVER_SERVICE_TAG_NAME);
 	}
 
 	@Override
 	public String getPropertySourceName() {
-		return "cfSingleSignOnProcessor";
+		return "cfSpringCloudConfigClientProcessor";
 	}
 
 	@Override
 	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
+		String uri = cfCredentials.getUri();
 		String clientId = cfCredentials.getString("client_id");
 		String clientSecret = cfCredentials.getString("client_secret");
-		String authDomain = cfCredentials.getString("auth_domain");
+		String accessTokenUri = cfCredentials.getString("access_token_uri");
 
-		properties.put("security.oauth2.client.clientId", clientId);
-		properties.put("security.oauth2.client.clientSecret", clientSecret);
-		properties.put("security.oauth2.client.accessTokenUri",
-				authDomain + "/oauth/token");
-		properties.put("security.oauth2.client.userAuthorizationUri",
-				authDomain + "/oauth/authorize");
-		properties.put("ssoServiceUrl", authDomain);
-		properties.put("security.oauth2.resource.userInfoUri",
-				authDomain + "/userinfo");
-		properties.put("security.oauth2.resource.tokenInfoUri",
-				authDomain + "/check_token");
-		properties.put("security.oauth2.resource.jwk.key-set-uri",
-				authDomain + "/token_keys");
+		properties.put(SPRING_CLOUD_CONFIG_URI, uri);
+		properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID, clientId);
+		properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_SECRET,
+				clientSecret);
+		properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI,
+				accessTokenUri);
 	}
 
 	@Override
 	public String getPropertyPrefixes() {
-		return "security.oauth2.client, security.oauth2.resource";
+		return "spring.cloud.config";
 	}
 }
