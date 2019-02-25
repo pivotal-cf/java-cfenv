@@ -8,5 +8,4 @@ org.springframework.context.ApplicationListener=\
   io.pivotal.cfenv.spring.boot.CfEnvironmentPostProcessor
 
 io.pivotal.cfenv.spring.boot.CfEnvProcessor=\
-  io.pivotal.cfenv.spring.boot.CfSingleSignOnProcessor,\
-  io.pivotal.cfenv.spring.boot.CfSpringCloudConfigClientProcessor
+  io.pivotal.cfenv.sso.CfSingleSignOnProcessor

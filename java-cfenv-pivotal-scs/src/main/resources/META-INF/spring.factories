@@ -1,0 +1,2 @@
+io.pivotal.cfenv.spring.boot.CfEnvProcessor=\
+  io.pivotal.cfenv.scs.CfSpringCloudConfigClientProcessor

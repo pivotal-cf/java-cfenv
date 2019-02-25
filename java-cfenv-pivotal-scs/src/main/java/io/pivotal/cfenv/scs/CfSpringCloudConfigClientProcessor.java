@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cfenv.spring.boot;
+package io.pivotal.cfenv.scs;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +21,7 @@ import java.util.Map;
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfService;
+import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
 
 /**
  * @author Mark Pollack
