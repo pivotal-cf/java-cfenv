@@ -54,6 +54,8 @@
         <module>java-cfenv</module>
         <module>java-cfenv-jdbc</module>
         <module>java-cfenv-boot</module>
+        <!--<module>java-cfenv-redis</module>-->
+        <module>java-cfenv-test-support</module>
         <!--
       <module>java-cfenv-docs</module>  -->
     </modules>
