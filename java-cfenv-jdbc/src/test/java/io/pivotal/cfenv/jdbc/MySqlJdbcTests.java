@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * @author Mark Pollack
+ * @author David Turanski
  */
 public class MySqlJdbcTests extends AbstractJdbcTests {
 
@@ -219,37 +220,37 @@ public class MySqlJdbcTests extends AbstractJdbcTests {
 
 	private String getMysqlServicePayload(String serviceName, String hostname, int port,
 			String user, String password, String name) {
-		return getRelationalPayload("test-mysql-info.json", serviceName, hostname, port,
+		return getTemplatedPayload("test-mysql-info.json", serviceName, hostname, port,
 				user, password, name);
 	}
 
 	private String getMysqlServicePayloadWithLabelNoTags(String serviceName,
 			String hostname, int port, String user, String password, String name) {
-		return getRelationalPayload("test-mysql-info-with-label-no-tags.json",
+		return getTemplatedPayload("test-mysql-info-with-label-no-tags.json",
 				serviceName, hostname, port, user, password, name);
 	}
 
 	private String getMysqlServicePayloadNoLabelNoTags(String serviceName,
 			String hostname, int port, String user, String password, String name) {
-		return getRelationalPayload("test-mysql-info-no-label-no-tags.json", serviceName,
+		return getTemplatedPayload("test-mysql-info-no-label-no-tags.json", serviceName,
 				hostname, port, user, password, name);
 	}
 
 	private String getMysqlServicePayloadWithLabelNoUri(String serviceName,
 			String hostname, int port, String user, String password, String name) {
-		return getRelationalPayload("test-mysql-info-with-label-no-uri.json", serviceName,
+		return getTemplatedPayload("test-mysql-info-with-label-no-uri.json", serviceName,
 				hostname, port, user, password, name);
 	}
 
 	private String getMysqlServicePayloadWithJdbcUrl(String serviceName, String hostname,
 			int port, String user, String password, String name) {
-		return getRelationalPayload("test-mysql-info-jdbc-url.json", serviceName,
+		return getTemplatedPayload("test-mysql-info-jdbc-url.json", serviceName,
 				hostname, port, user, password, name);
 	}
 
 	private String getMysqlServicePayloadWithJdbcUrlOnly(String serviceName,
 			String hostname, int port, String user, String password, String name) {
-		return getRelationalPayload("test-mysql-info-jdbc-url-only.json", serviceName,
+		return getTemplatedPayload("test-mysql-info-jdbc-url-only.json", serviceName,
 				hostname, port, user, password, name);
 	}
 

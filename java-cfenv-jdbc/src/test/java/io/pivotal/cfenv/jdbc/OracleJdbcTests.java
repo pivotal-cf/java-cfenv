@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * @author Mark Pollack
+ * @author David Turanski
  */
 public class OracleJdbcTests extends AbstractJdbcTests {
 
@@ -92,7 +93,7 @@ public class OracleJdbcTests extends AbstractJdbcTests {
 
 	protected String getOracleServicePayloadWithJdbcurl(String serviceName, String hostname, int port,
 														String user, String password, String name, String scheme) {
-		String payload = getRelationalPayload("test-oracle-info-jdbc-url.json", serviceName,
+		String payload = getTemplatedPayload("test-oracle-info-jdbc-url.json", serviceName,
 				hostname, port, user, password, name);
 		return payload.replace("$scheme", scheme);
 	}

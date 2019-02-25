@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Mark Pollack
+ * @author David Turanski
  */
 public class SqlServerJdbcTests extends AbstractJdbcTests {
 

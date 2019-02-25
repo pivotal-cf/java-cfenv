@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * @author Mark Pollack
+ * @author David Turanski
  */
 public class PostgresqlJdbcTests extends AbstractJdbcTests {
 
@@ -32,7 +33,6 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 	public void postgresqlServiceCreation() {
 		String name1 = "database-1";
 		String name2 = "database-2";
-
 
 		mockVcapServices(getServicesPayload(
 				getPostgresqlServicePayload("postgresql-1", hostname, port, username, password, name1),
@@ -52,7 +52,6 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage(
 				"No unique database service matching by name [postgresql.*] was found.  Matching service names are [postgresql-1, postgresql-2]");
 	}
-
 
 	@Test
 	public void postgresqlWithSpecialCharsServiceCreation() {
@@ -85,7 +84,6 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 				getPostgresqlServicePayloadNoLabelNoTags("postgresql-1", hostname, port, username, password, name1),
 				getPostgresqlServicePayloadNoLabelNoTags("postgresql-2", hostname, port, username, password, name2)));
 
-
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
 		assertJdbcUrlAndUriInfo(name1, name2, cfJdbcEnv);
 	}
@@ -103,7 +101,6 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 		expectedJdbcUrl = getExpectedJdbcUrl(PostgresqlJdbcUrlCreator.POSTGRESQL_SCHEME, name2);
 		assertThat(expectedJdbcUrl).isEqualTo(jdbcUrl);
 
-
 		uriInfo = cfJdbcEnv.findJdbcServiceByName("postgresql-2").getCredentials().getUriInfo();
 		assertUriInfo(uriInfo, PostgresqlJdbcUrlCreator.POSTGRESQL_SCHEME, name2, username,
 				password);
@@ -116,13 +113,11 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 		String name2 = "database-2";
 		mockVcapServices(getServicesPayload(
 				getPostgresqlServicePayloadWithJdbcUrl("postgresql-1", hostname, port, username, password, name1),
-				getPostgresqlServicePayloadWithJdbcUrl("postgresql-2", hostname, port, username, password, name2)
-		));
+				getPostgresqlServicePayloadWithJdbcUrl("postgresql-2", hostname, port, username, password, name2)));
 
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
 		assertJdbcUrlAndUriInfo(name1, name2, cfJdbcEnv);
 	}
-
 
 	private void assertJdbcServiceValues(String name1, String name2) {
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
@@ -158,26 +153,25 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 	}
 
 	private String getPostgresqlServicePayload(String serviceName,
-											   String hostname, int port,
-											   String user, String password, String name) {
-		return getRelationalPayload("test-postgresql-info.json", serviceName,
+			String hostname, int port,
+			String user, String password, String name) {
+		return getTemplatedPayload("test-postgresql-info.json", serviceName,
 				hostname, port, user, password, name);
 	}
 
 	private String getPostgresqlServicePayloadNoLabelNoTags(String serviceName,
-															String hostname, int port,
-															String user, String password, String name) {
-		return getRelationalPayload("test-postgresql-info-no-label-no-tags.json", serviceName,
+			String hostname, int port,
+			String user, String password, String name) {
+		return getTemplatedPayload("test-postgresql-info-no-label-no-tags.json", serviceName,
 				hostname, port, user, password, name);
 	}
 
 	private String getPostgresqlServicePayloadWithJdbcUrl(String serviceName,
-														  String hostname, int port,
-														  String user, String password, String name) {
-		return getRelationalPayload("test-postgresql-info-jdbc-url.json", serviceName,
+			String hostname, int port,
+			String user, String password, String name) {
+		return getTemplatedPayload("test-postgresql-info-jdbc-url.json", serviceName,
 				hostname, port, user, password, name);
 	}
-
 
 	@Override
 	protected String getExpectedJdbcUrl(String databaseType, String name) {

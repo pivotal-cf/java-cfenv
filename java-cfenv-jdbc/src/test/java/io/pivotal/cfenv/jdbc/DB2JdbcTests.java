@@ -19,13 +19,13 @@ import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.UriInfo;
 import org.junit.Test;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 /**
  * @author Mark Pollack
+ * @author David Turanski
  */
 public class DB2JdbcTests extends AbstractJdbcTests {
 
@@ -110,7 +110,7 @@ public class DB2JdbcTests extends AbstractJdbcTests {
 
 	protected String getDB2ServicePayloadWithJdbcurl(String serviceName, String hostname, int port,
 													 String user, String password, String name, String scheme) {
-		String payload = getRelationalPayload("test-db2-info-jdbc-url.json", serviceName,
+		String payload = getTemplatedPayload("test-db2-info-jdbc-url.json", serviceName,
 				hostname, port, user, password, name);
 		return payload.replace("$scheme", scheme);
 	}
