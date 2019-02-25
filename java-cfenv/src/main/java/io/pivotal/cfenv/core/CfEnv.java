@@ -126,7 +126,7 @@ public class CfEnv {
 		}
 	}
 
-	public CfService findServiceByLabel(String... spec) {
+	public List<CfService> findServicesByLabel(String... spec) {
 		List<CfService> cfServices = new ArrayList<>();
 		for (CfService cfService : this.cfServices) {
 			if (spec != null) {
@@ -140,6 +140,11 @@ public class CfEnv {
 				}
 			}
 		}
+		return cfServices;
+	}
+
+	public CfService findServiceByLabel(String... spec) {
+		List<CfService> cfServices = findServicesByLabel(spec);
 		if (cfServices.size() == 1) {
 			return cfServices.stream().findFirst().get();
 		}
@@ -150,6 +155,17 @@ public class CfEnv {
 	}
 
 	public CfService findServiceByTag(String... spec) {
+		List<CfService> cfServices = findServicesByTag(spec);
+		if (cfServices.size() == 1) {
+			return cfServices.stream().findFirst().get();
+		}
+		String message = (spec == null) ? "null" : String.join(", ", spec);
+		throwExceptionIfMultipleMatches(cfServices, message, "tag");
+		throw new IllegalArgumentException(
+				"No service with tag [" + message + "] was found.");
+	}
+
+	public List<CfService> findServicesByTag(String... spec) {
 		List<CfService> cfServices = new ArrayList<>();
 		for (CfService cfService : this.cfServices) {
 			if (spec != null) {
@@ -165,13 +181,7 @@ public class CfEnv {
 				}
 			}
 		}
-		if (cfServices.size() == 1) {
-			return cfServices.stream().findFirst().get();
-		}
-		String message = (spec == null) ? "null" : String.join(", ", spec);
-		throwExceptionIfMultipleMatches(cfServices, message, "tag");
-		throw new IllegalArgumentException(
-				"No service with tag [" + message + "] was found.");
+		return cfServices;
 	}
 
 	public CfCredentials findCredentialsByName(String... spec) {
