@@ -34,15 +34,11 @@
             <version>1.0.0.BUILD-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>io.pivotal.cfenv</groupId>
+            <artifactId>java-cfenv-test-support</artifactId>
+            <version>1.0.0.BUILD-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jmockit</groupId>
-            <artifactId>jmockit</artifactId>
-            <version>${jmockit.version}</version>
-            <scope>test</scope>
-        </dependency>
+
     </dependencies>
 </project>

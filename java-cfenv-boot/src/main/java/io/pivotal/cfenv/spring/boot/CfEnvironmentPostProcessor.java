@@ -40,8 +40,8 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.stereotype.Component;
 
 /**
- * An EnvironmentPostProcessor that iterates over {@see CfEnvProcessor} implementations to contribute
- * Spring Boot properties for bound Cloud Foundry Services.
+ * An EnvironmentPostProcessor that iterates over {@see CfEnvProcessor} implementations to
+ * contribute Spring Boot properties for bound Cloud Foundry Services.
  *
  * Implementation of {@see CfEnvProcessor }should be registered using the
  * {@code resources/META-INF/spring.factories} property file.
@@ -76,22 +76,24 @@ public class CfEnvironmentPostProcessor implements
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment,
-									   SpringApplication application) {
+			SpringApplication application) {
 
 		increaseInvocationCount();
-		if (invocationCount == 1) {
-			cfEnvProcessors = SpringFactoriesLoader.loadFactories(CfEnvProcessor.class,
-					getClass().getClassLoader());
-			AnnotationAwareOrderComparator.sort(cfEnvProcessors);
-		}
+
 		if (CloudPlatform.CLOUD_FOUNDRY.isActive(environment)) {
+			if (invocationCount == 1) {
+				cfEnvProcessors = SpringFactoriesLoader.loadFactories(CfEnvProcessor.class,
+						getClass().getClassLoader());
+				AnnotationAwareOrderComparator.sort(cfEnvProcessors);
+			}
 			CfEnv cfEnv = CfEnvSingleton.getCfEnvInstance();
 
 			for (CfEnvProcessor processor : this.cfEnvProcessors) {
 				List<CfService> cfServices = null;
 				try {
 					cfServices = processor.findServices(cfEnv);
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					if (invocationCount == 1) {
 						DEFERRED_LOG.debug("Skipping execution of " + processor.getClass().getName());
 					}
@@ -101,7 +103,8 @@ public class CfEnvironmentPostProcessor implements
 				CfService cfService = null;
 				if (cfServices.size() == 1) {
 					cfService = cfServices.stream().findFirst().get();
-				} else {
+				}
+				else {
 					throwExceptionIfMultipleMatches(processor.getServiceName(), cfServices);
 				}
 
@@ -116,7 +119,8 @@ public class CfEnvironmentPostProcessor implements
 						propertySources.addAfter(
 								CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME,
 								new MapPropertySource(processor.getPropertySourceName(), properties));
-					} else {
+					}
+					else {
 						propertySources.addFirst(
 								new MapPropertySource(processor.getPropertySourceName(), properties));
 					}
@@ -128,7 +132,8 @@ public class CfEnvironmentPostProcessor implements
 					}
 				}
 			}
-		} else {
+		}
+		else {
 			if (invocationCount == 1) {
 				DEFERRED_LOG.debug(
 						"Not setting properties, Cloud Foundry Environment no detected");

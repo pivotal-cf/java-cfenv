@@ -25,7 +25,6 @@ import java.util.Scanner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.pivotal.cfenv.core.UriInfo;
-import mockit.MockUp;
 import org.junit.Before;
 import org.mockito.MockitoAnnotations;
 
@@ -110,17 +109,7 @@ public abstract class AbstractCfEnvTests {
 	}
 
 	protected void mockVcapServices(String serviceJson) {
-		Map<String, String> env = System.getenv();
-		new MockUp<System>() {
-			@mockit.Mock
-			public String getenv(String name) {
-				if (name.equalsIgnoreCase("VCAP_SERVICES")) {
-					return serviceJson;
-				}
-				return env.get(name);
-			}
-		};
-
+		CfEnvTestUtils.mockVcapServicesFromString(serviceJson);
 	}
 
 	@Before
