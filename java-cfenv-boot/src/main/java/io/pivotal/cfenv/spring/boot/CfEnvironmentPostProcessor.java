@@ -15,11 +15,13 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfEnv;
+import io.pivotal.cfenv.core.CfEnvSingleton;
 import io.pivotal.cfenv.core.CfService;
 
 import org.springframework.boot.SpringApplication;

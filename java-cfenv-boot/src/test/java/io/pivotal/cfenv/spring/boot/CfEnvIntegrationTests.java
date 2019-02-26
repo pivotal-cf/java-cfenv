@@ -13,26 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.pivotal.cfenv.spring.boot;
 
 import io.pivotal.cfenv.core.CfEnv;
+import io.pivotal.cfenv.core.CfEnvSingleton;
+import io.pivotal.cfenv.test.CfEnvTestUtils;
+import org.junit.Test;
+
+import org.springframework.core.io.ClassPathResource;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Mark Pollack
- */
-public final class CfEnvSingleton {
+ * @author David Turanski
+ **/
 
-	private static CfEnv INSTANCE;
+public class CfEnvIntegrationTests {
 
-	private CfEnvSingleton() {
-
-	}
-
-	public synchronized static CfEnv getCfEnvInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new CfEnv();
-		}
-		return INSTANCE;
+	@Test
+	public void cfEnvConfiguredByBootApplication() {
+		CfEnvTestUtils testUtils = new CfEnvTestUtils();
+		testUtils.mockVcapServicesFromResource(new ClassPathResource("vcap-services.json"));
+		assertThat(System.getenv(CfEnv.VCAP_SERVICES)).isNotEmpty();
+		CfEnv cfEnv = CfEnvSingleton.getCfEnvInstance();
+		assertThat(cfEnv.findServicesByLabel("p-redis", "p-mysql")).hasSize(2);
 	}
 
 }

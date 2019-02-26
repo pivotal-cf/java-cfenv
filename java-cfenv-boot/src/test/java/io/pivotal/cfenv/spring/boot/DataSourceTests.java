@@ -15,24 +15,24 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
+
 import java.io.File;
 import java.nio.file.Files;
-import java.util.Map;
 
-import mockit.Mock;
-import mockit.MockUp;
+import io.pivotal.cfenv.test.AbstractCfEnvTests;
 import org.junit.Test;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.util.ResourceUtils;
 
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Mark Pollack
  */
-public class DataSourceTests {
+public class DataSourceTests extends AbstractCfEnvTests {
 
 	private static final String mysqlJdbcUrl = "jdbc:mysql://10.0.4.35:3306/cf_2e23d10a_8738_8c3c_66cf_13e44422698c?user=mysql_username&password=mysql_password";
 
@@ -49,16 +49,8 @@ public class DataSourceTests {
 		// To setup values used by CfEnv
 		File file = ResourceUtils.getFile("classpath:vcap-services.json");
 		String fileContents = new String(Files.readAllBytes(file.toPath()));
-		Map<String, String> env = System.getenv();
-		new MockUp<System>() {
-			@Mock
-			public String getenv(String name) {
-				if (name.equalsIgnoreCase("VCAP_SERVICES")) {
-					return fileContents;
-				}
-				return env.get(name);
-			}
-		};
+		mockVcapServices(fileContents);
+
 
 		environmentPostProcessor.postProcessEnvironment(this.context.getEnvironment(),
 				null);
@@ -66,11 +58,10 @@ public class DataSourceTests {
 				.isEqualTo(mysqlJdbcUrl);
 		assertThat(
 				this.context.getEnvironment().getProperty("spring.datasource.username"))
-						.isEqualTo("mysql_username");
+				.isEqualTo("mysql_username");
 		assertThat(
 				this.context.getEnvironment().getProperty("spring.datasource.password"))
-						.isEqualTo("mysql_password");
-
+				.isEqualTo("mysql_password");
 	}
 
 }

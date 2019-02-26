@@ -17,6 +17,7 @@ package io.pivotal.cfenv.test;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +25,10 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.pivotal.cfenv.core.CfEnvSingleton;
 import io.pivotal.cfenv.core.UriInfo;
 import mockit.MockUp;
+import org.junit.After;
 import org.junit.Before;
 import org.mockito.MockitoAnnotations;
 
@@ -109,24 +112,22 @@ public abstract class AbstractCfEnvTests {
 		return "\"" + str + "\"";
 	}
 
-	protected void mockVcapServices(String serviceJson) {
-		Map<String, String> env = System.getenv();
-		new MockUp<System>() {
-			@mockit.Mock
-			public String getenv(String name) {
-				if (name.equalsIgnoreCase("VCAP_SERVICES")) {
-					return serviceJson;
-				}
-				return env.get(name);
-			}
-		};
-
+	protected MockUp<?> mockVcapServices(String serviceJson) {
+		return CfEnvTestUtils.mockVcapServicesFromString(serviceJson);
 	}
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 	}
+
+	@After
+	public void after() throws Exception {
+		Field field = CfEnvSingleton.class.getDeclaredField("INSTANCE");
+		field.setAccessible(true);
+		field.set(null,null);
+	}
+
 
 	protected String getTemplatedPayload(String templateFile, String serviceName,
 			String hostname, int port, String user, String password, String name) {
