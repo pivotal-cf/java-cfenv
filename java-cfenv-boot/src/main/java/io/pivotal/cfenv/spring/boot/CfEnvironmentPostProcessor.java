@@ -62,9 +62,7 @@ public class CfEnvironmentPostProcessor implements
 	private List<CfEnvProcessor> cfEnvProcessors;
 
 	public CfEnvironmentPostProcessor() {
-		cfEnvProcessors = SpringFactoriesLoader.loadFactories(CfEnvProcessor.class,
-				getClass().getClassLoader());
-		AnnotationAwareOrderComparator.sort(cfEnvProcessors);
+
 	}
 
 	@Override
@@ -81,6 +79,11 @@ public class CfEnvironmentPostProcessor implements
 									   SpringApplication application) {
 
 		increaseInvocationCount();
+		if (invocationCount == 1) {
+			cfEnvProcessors = SpringFactoriesLoader.loadFactories(CfEnvProcessor.class,
+					getClass().getClassLoader());
+			AnnotationAwareOrderComparator.sort(cfEnvProcessors);
+		}
 		if (CloudPlatform.CLOUD_FOUNDRY.isActive(environment)) {
 			CfEnv cfEnv = CfEnvSingleton.getCfEnvInstance();
 
