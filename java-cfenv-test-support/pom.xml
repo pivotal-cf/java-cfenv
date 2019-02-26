@@ -26,6 +26,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>java-cfenv-test-support</artifactId>
+	<packaging>jar</packaging>
+	<name>Java CF Env Test Support</name>
+	<description>Java CF Env Test Support Library</description>
 
 	<dependencies>
 		<dependency>
