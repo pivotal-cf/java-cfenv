@@ -79,12 +79,10 @@ public class CfEnvironmentPostProcessor implements
 									   SpringApplication application) {
 
 		increaseInvocationCount();
-		if (invocationCount == 1) {
+		if (CloudPlatform.CLOUD_FOUNDRY.isActive(environment)) {
 			cfEnvProcessors = SpringFactoriesLoader.loadFactories(CfEnvProcessor.class,
 					getClass().getClassLoader());
 			AnnotationAwareOrderComparator.sort(cfEnvProcessors);
-		}
-		if (CloudPlatform.CLOUD_FOUNDRY.isActive(environment)) {
 			CfEnv cfEnv = CfEnvSingleton.getCfEnvInstance();
 
 			for (CfEnvProcessor processor : this.cfEnvProcessors) {
