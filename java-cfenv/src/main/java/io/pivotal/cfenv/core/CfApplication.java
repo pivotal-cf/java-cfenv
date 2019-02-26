@@ -33,6 +33,14 @@ public class CfApplication {
 		return this.applicationData;
 	}
 
+	public String getSpaceId() {
+		return getString("space_id");
+	}
+
+	public String getSpaceName() {
+		return getString("space_name");
+	}
+
 	public String getInstanceId() {
 		return getString("instance_id");
 	}
@@ -49,8 +57,19 @@ public class CfApplication {
 		return getInt("port");
 	}
 
+	public String getCfApi() {
+		return getString("cf_api");
+	}
+
+	public String getApplicationId() {
+		return getString("application_id");
+	}
 	public String getApplicationVersion() {
-		return getString("application_version");
+		String version = getString("application_version");
+		if (version != null) {
+			return version;
+		}
+		return getString("version");
 	}
 
 	public String getApplicationName() {

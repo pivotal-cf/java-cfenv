@@ -36,10 +36,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class CfEnvTests {
 
 	@Test
-	public void b() {
+	public void testCfApplicationValues() {
 		mockVcapEnvVars();
 		CfEnv cfEnv = new CfEnv();
 		CfApplication cfApplication = cfEnv.getApp();
+		assertThat(cfApplication.getApplicationId())
+				.isEqualTo("fa05c1a9-0fc1-4fbd-bae1-139850dec7a3");
 		assertThat(cfApplication.getInstanceId())
 				.isEqualTo("fe98dc76ba549876543210abcd1234");
 		assertThat(cfApplication.getInstanceIndex()).isEqualTo(0);
@@ -53,6 +55,9 @@ public class CfEnvTests {
 				.isEqualTo("ab12cd34-5678-abcd-0123-abcdef987654");
 		assertThat(cfApplication.getName()).isEqualTo("my-app");
 		assertThat(cfApplication.getUris()).contains("my-app.example.com");
+		assertThat(cfApplication.getCfApi()).isEqualTo("https://api.example.com");
+		assertThat(cfApplication.getSpaceId()).isEqualTo("06450c72-4669-4dc6-8096-45f9777db68a");
+		assertThat(cfApplication.getSpaceName()).isEqualTo("my-space");
 
 	}
 
@@ -108,6 +113,7 @@ public class CfEnvTests {
 		credentialMap = cfCredentials.getMap();
 		assertThat(credentialMap).containsEntry("host", "10.0.4.30");
 		assertThat(cfCredentials.getHost()).isEqualTo("10.0.4.30");
+		assertThat(cfService.getName()).isEqualTo("redis-binding");
 
 	}
 
@@ -150,12 +156,12 @@ public class CfEnvTests {
 		mockVcapEnvVars();
 		CfEnv cfEnv = new CfEnv();
 
-		CfService cfService = cfEnv.findServiceByName("redis");
+		CfService cfService = cfEnv.findServiceByTag("redis");
 		assertThat(cfService.getLabel()).isEqualTo("p-redis");
 		assertThat(cfService.getPlan()).isEqualTo("shared-vm");
-		assertThat(cfService.getName()).isEqualTo("redis");
+		assertThat(cfService.getName()).isEqualTo("redis-binding");
 
-		cfService = cfEnv.findServiceByName("blah", "redis");
+		cfService = cfEnv.findServiceByTag("blah", "redis");
 		assertThat(cfService.getLabel()).isEqualTo("p-redis");
 
 		cfService = cfEnv.findServiceByName(".*sql");
@@ -186,15 +192,15 @@ public class CfEnvTests {
 		CfService cfService = cfEnv.findServiceByLabel("p-redis");
 		assertThat(cfService.getLabel()).isEqualTo("p-redis");
 		assertThat(cfService.getPlan()).isEqualTo("shared-vm");
-		assertThat(cfService.getName()).isEqualTo("redis");
+		assertThat(cfService.getName()).isEqualTo("redis-binding");
 
 		cfService = cfEnv.findServiceByLabel("blah", "p-redis");
 		assertThat(cfService.getLabel()).isEqualTo("p-redis");
-		assertThat(cfService.getName()).isEqualTo("redis");
+		assertThat(cfService.getName()).isEqualTo("redis-binding");
 
 		cfService = cfEnv.findServiceByLabel(".*redis");
 		assertThat(cfService.getLabel()).isEqualTo("p-redis");
-		assertThat(cfService.getName()).isEqualTo("redis");
+		assertThat(cfService.getName()).isEqualTo("redis-binding");
 
 		assertThatThrownBy(() -> {
 			cfEnv.findServiceByLabel("blah");
@@ -221,7 +227,7 @@ public class CfEnvTests {
 		CfService cfService = cfEnv.findServiceByTag("redis");
 		assertThat(cfService.getLabel()).isEqualTo("p-redis");
 		assertThat(cfService.getPlan()).isEqualTo("shared-vm");
-		assertThat(cfService.getName()).isEqualTo("redis");
+		assertThat(cfService.getName()).isEqualTo("redis-binding");
 
 		cfService = cfEnv.findServiceByTag("blah", "redis");
 		assertThat(cfService.getLabel()).isEqualTo("p-redis");

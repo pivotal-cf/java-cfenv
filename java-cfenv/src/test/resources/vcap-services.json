@@ -34,7 +34,7 @@
       "label": "p-redis",
       "provider": null,
       "plan": "shared-vm",
-      "name": "redis",
+      "binding_name": "redis-binding",
       "tags": [
         "pivotal",
         "redis"

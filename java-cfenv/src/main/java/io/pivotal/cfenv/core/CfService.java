@@ -74,7 +74,14 @@ public class CfService {
 	}
 
 	public String getName() {
-		return this.getString("name");
+		String name = this.getString("name");
+		if (name == null) {
+			name = this.getString("binding_name");
+		}
+		if (name == null) {
+			name = this.getString("instance_name");
+		}
+		return name;
 	}
 
 	public String getString(String... keys) {

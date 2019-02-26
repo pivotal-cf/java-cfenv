@@ -1,4 +1,5 @@
 {
+  "application_id": "fa05c1a9-0fc1-4fbd-bae1-139850dec7a3",
   "instance_id": "fe98dc76ba549876543210abcd1234",
   "instance_index": 0,
   "host": "0.0.0.0",
@@ -12,6 +13,7 @@
     "disk": 1024,
     "fds": 16384
   },
+  "cf_api": "https://api.example.com",
   "application_version": "ab12cd34-5678-abcd-0123-abcdef987654",
   "application_name": "styx-james",
   "application_uris": [
@@ -19,6 +21,8 @@
   ],
   "version": "ab12cd34-5678-abcd-0123-abcdef987654",
   "name": "my-app",
+  "space_id": "06450c72-4669-4dc6-8096-45f9777db68a",
+  "space_name": "my-space",
   "uris": [
     "my-app.example.com"
   ],
