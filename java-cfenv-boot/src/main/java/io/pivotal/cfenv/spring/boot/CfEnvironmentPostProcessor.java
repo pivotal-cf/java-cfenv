@@ -25,7 +25,6 @@ import io.pivotal.cfenv.core.CfService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.cloud.CloudPlatform;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
-import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.boot.logging.DeferredLog;
@@ -62,6 +61,12 @@ public class CfEnvironmentPostProcessor implements
 
 	private List<CfEnvProcessor> cfEnvProcessors;
 
+	public CfEnvironmentPostProcessor() {
+		cfEnvProcessors = SpringFactoriesLoader.loadFactories(CfEnvProcessor.class,
+				getClass().getClassLoader());
+		AnnotationAwareOrderComparator.sort(cfEnvProcessors);
+	}
+
 	@Override
 	public int getOrder() {
 		return this.order;
@@ -94,7 +99,7 @@ public class CfEnvironmentPostProcessor implements
 				if (cfServices.size() == 1) {
 					cfService = cfServices.stream().findFirst().get();
 				} else {
-					throwExceptionIfMultipleMatches(cfServices);
+					throwExceptionIfMultipleMatches(processor.getServiceName(), cfServices);
 				}
 
 				if (cfService != null) {
@@ -130,20 +135,10 @@ public class CfEnvironmentPostProcessor implements
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		if (event instanceof ApplicationEnvironmentPreparedEvent) {
-			loadCfEnvProcessors();
-		}
-
 		if (event instanceof ApplicationPreparedEvent) {
 			DEFERRED_LOG
 					.switchTo(CfEnvironmentPostProcessor.class);
 		}
-	}
-
-	protected void loadCfEnvProcessors() {
-		cfEnvProcessors = SpringFactoriesLoader.loadFactories(CfEnvProcessor.class,
-				getClass().getClassLoader());
-		AnnotationAwareOrderComparator.sort(cfEnvProcessors);
 	}
 
 	/**
@@ -156,12 +151,12 @@ public class CfEnvironmentPostProcessor implements
 		}
 	}
 
-	protected void throwExceptionIfMultipleMatches(List<CfService> services) {
+	protected void throwExceptionIfMultipleMatches(String serviceName, List<CfService> services) {
 		if (services.size() > 1) {
 			String[] names = services.stream().map(CfService::getName)
 					.toArray(String[]::new);
 			throw new IllegalArgumentException(
-					"No unique redis service found. Found redis service names ["
+					"No unique " + serviceName + " service found. Found service names ["
 							+ String.join(", ", names) + "]");
 		}
 	}

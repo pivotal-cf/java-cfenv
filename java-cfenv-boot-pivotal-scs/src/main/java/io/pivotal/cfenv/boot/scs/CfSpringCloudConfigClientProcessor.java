@@ -64,4 +64,9 @@ public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
 	public String getPropertyPrefixes() {
 		return "spring.cloud.config";
 	}
+
+	@Override
+	public String getServiceName() {
+		return "Spring Cloud Config";
+	}
 }

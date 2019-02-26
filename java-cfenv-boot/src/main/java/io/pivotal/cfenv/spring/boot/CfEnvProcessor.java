@@ -36,9 +36,9 @@ import io.pivotal.cfenv.core.CfService;
 public interface CfEnvProcessor {
 
 	/**
-	 * Find the services that match a certain criteria
+	 * Find the services that match a certain criteria.
 	 * @param cfEnv The Cloud Foundry environment object
-	 * @return list of services matching your custom critiera.
+	 * @return list of services matching your custom critiera
 	 */
 	List<CfService> findServices(CfEnv cfEnv);
 
@@ -46,7 +46,7 @@ public interface CfEnvProcessor {
 	 * Given the credentials of the single matching service, set the property values that will be used to
 	 * create the {@see MapPropertySource}.
 	 * @param cfCredentials Credentials of the single matching service
-	 * @param properties map to set Spring Boot properties.
+	 * @param properties map to set Spring Boot properties
 	 */
 	void process(CfCredentials cfCredentials, Map<String, Object> properties);
 
@@ -59,8 +59,14 @@ public interface CfEnvProcessor {
 
 	/**
 	 * A string containing the values of property prefixes that will be set in the {@code process} method.  Used
-	 * for logging purposes
-	 * @return property prefix values set in the {@code process} method.
+	 * for logging purposes.
+	 * @return property prefix values set in the {@code process} method
 	 */
 	String getPropertyPrefixes();
+
+	/**
+	 * A name that describes the service being processed, eg. 'Redis', 'MongoDB'.  Used for logging purposes.
+	 * @return name that describes the service being processed
+	 */
+	String getServiceName();
 }

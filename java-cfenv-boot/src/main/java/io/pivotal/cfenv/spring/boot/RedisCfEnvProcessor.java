@@ -26,6 +26,8 @@ import io.pivotal.cfenv.core.UriInfo;
 
 
 /**
+ * Retrieve redis properties from {@see CfCredentials} and set {@literal spring.redis} Boot properties.
+ *
  * @author Mark Pollack
  */
 public class RedisCfEnvProcessor implements CfEnvProcessor {
@@ -76,5 +78,10 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 	@Override
 	public String getPropertyPrefixes() {
 		return "spring.redis";
+	}
+
+	@Override
+	public String getServiceName() {
+		return "Redis";
 	}
 }

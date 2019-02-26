@@ -66,4 +66,9 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
 	public String getPropertyPrefixes() {
 		return "security.oauth2.client, security.oauth2.resource";
 	}
+
+	@Override
+	public String getServiceName() {
+		return "Single Sign On";
+	}
 }
