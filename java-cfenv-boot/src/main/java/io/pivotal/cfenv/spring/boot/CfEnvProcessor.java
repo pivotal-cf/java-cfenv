@@ -50,23 +50,11 @@ public interface CfEnvProcessor {
 	 */
 	void process(CfCredentials cfCredentials, Map<String, Object> properties);
 
-
 	/**
-	 * The name of the {@see PropertySource} to be used when adding to the list of {@see MapPropertySource}s.
-	 * @return name of the property source
+	 * Properties describing a CfEnvProcessor, mainly used for better logging messages in {@see CfEnvProcessor}.
+	 * @return processor properties
 	 */
-	String getPropertySourceName();
+	CfEnvProcessorProperties getProperties();
 
-	/**
-	 * A string containing the values of property prefixes that will be set in the {@code process} method.  Used
-	 * for logging purposes.
-	 * @return property prefix values set in the {@code process} method
-	 */
-	String getPropertyPrefixes();
 
-	/**
-	 * A name that describes the service being processed, eg. 'Redis', 'MongoDB'.  Used for logging purposes.
-	 * @return name that describes the service being processed
-	 */
-	String getServiceName();
 }

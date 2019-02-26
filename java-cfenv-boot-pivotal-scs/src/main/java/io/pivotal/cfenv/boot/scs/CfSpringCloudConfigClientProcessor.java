@@ -22,6 +22,7 @@ import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
+import io.pivotal.cfenv.spring.boot.CfEnvProcessorProperties;
 
 /**
  * @author Mark Pollack
@@ -40,10 +41,6 @@ public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
 		return cfEnv.findServicesByTag(CONFIG_SERVER_SERVICE_TAG_NAME);
 	}
 
-	@Override
-	public String getPropertySourceName() {
-		return "cfSpringCloudConfigClientProcessor";
-	}
 
 	@Override
 	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
@@ -61,12 +58,10 @@ public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
 	}
 
 	@Override
-	public String getPropertyPrefixes() {
-		return "spring.cloud.config";
+	public CfEnvProcessorProperties getProperties() {
+		return CfEnvProcessorProperties.builder()
+				.propertyPrefixes("spring.cloud.config")
+				.serviceName("Spring Cloud Config").build();
 	}
 
-	@Override
-	public String getServiceName() {
-		return "Spring Cloud Config";
-	}
 }

@@ -102,7 +102,7 @@ public class CfEnvironmentPostProcessor implements
 				if (cfServices.size() == 1) {
 					cfService = cfServices.stream().findFirst().get();
 				} else {
-					throwExceptionIfMultipleMatches(processor.getServiceName(), cfServices);
+					throwExceptionIfMultipleMatches(processor.getProperties().getServiceName(), cfServices);
 				}
 
 				if (cfService != null) {
@@ -111,19 +111,21 @@ public class CfEnvironmentPostProcessor implements
 					processor.process(cfService.getCredentials(), properties);
 
 					MutablePropertySources propertySources = environment.getPropertySources();
+
 					if (propertySources.contains(
 							CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME)) {
 						propertySources.addAfter(
 								CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME,
-								new MapPropertySource(processor.getPropertySourceName(), properties));
+								new MapPropertySource(processor.getClass().getSimpleName(), properties));
 					} else {
 						propertySources.addFirst(
-								new MapPropertySource(processor.getPropertySourceName(), properties));
+								new MapPropertySource(processor.getClass().getSimpleName(), properties));
 					}
 
 					if (invocationCount == 1) {
 						DEFERRED_LOG.info(
-								"Setting " + processor.getPropertyPrefixes() + " properties from bound service ["
+								"Setting " + processor.getProperties().getPropertyPrefixes() +
+										" properties from bound service ["
 										+ cfService.getName() + "] using " + processor.getClass().getName());
 					}
 				}

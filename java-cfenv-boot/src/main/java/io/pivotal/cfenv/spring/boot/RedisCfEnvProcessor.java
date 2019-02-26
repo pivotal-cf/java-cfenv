@@ -71,17 +71,8 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 	}
 
 	@Override
-	public String getPropertySourceName() {
-		return "cfRedisCfEnvProcessor";
+	public CfEnvProcessorProperties getProperties() {
+		return CfEnvProcessorProperties.builder().propertyPrefixes("spring.redis").serviceName("Redis").build();
 	}
 
-	@Override
-	public String getPropertyPrefixes() {
-		return "spring.redis";
-	}
-
-	@Override
-	public String getServiceName() {
-		return "Redis";
-	}
 }

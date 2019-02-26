@@ -22,6 +22,7 @@ import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
+import io.pivotal.cfenv.spring.boot.CfEnvProcessorProperties;
 
 /**
  * @author Mark Pollack
@@ -36,10 +37,6 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
 		return cfEnv.findServicesByLabel(PIVOTAL_SSO_LABEL);
 	}
 
-	@Override
-	public String getPropertySourceName() {
-		return "cfSingleSignOnProcessor";
-	}
 
 	@Override
 	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
@@ -63,12 +60,9 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
 	}
 
 	@Override
-	public String getPropertyPrefixes() {
-		return "security.oauth2.client, security.oauth2.resource";
-	}
-
-	@Override
-	public String getServiceName() {
-		return "Single Sign On";
+	public CfEnvProcessorProperties getProperties() {
+		return CfEnvProcessorProperties.builder()
+				.propertyPrefixes("security.oauth2.client, security.oauth2.resource")
+				.serviceName("Single Sign On").build();
 	}
 }
