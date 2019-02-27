@@ -7,6 +7,31 @@ The class `CfEnv` is the entry point to the API for accessing Cloud Foundry envi
 In a Spring application, you can use the https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions-bean-references[Spring Expression Language] to invoke methods on bean of type `CfEnv` to set properties.
 CFEnv's Boot support sets https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[common application properties] so that Java objects such as the `DataSource` or the `RabbitConnectionFactory` are created using Spring Boot autoconfiguration.
 
+The https://spring.io/blog/2019/02/15/introducing-java-cfenv-a-new-library-for-accessing-cloud-foundry-services[1.0 M1 blog] provides some additional background information.
+
+== Dependency Info
+
+[source,xml]
+----
+<dependency>
+  <groupId>io.pivotal.cfenv</groupId>
+  <artifactId>java-cfenv-boot</artifactId>
+  <version>1.0.0.M1</version>
+</dependency>
+----
+
+Also and also add the repository definition until we reach GA and artifacts are hosted in Maven Central.
+
+[source,xml]
+----
+<repository>
+   <id>spring-milestones</id>
+   <name>Spring Milestones</name>
+   <url>http://repo.spring.io/libs-milestone-local</url>
+</repository>
+----
+
+
 == Introduction
 The entry point is the class `CfEnv` which parses Cloud Foundry environment variables such as `VCAP_SERVICES`.
 The information in `VCAP_SERVICES` is a JSON string that contains credential information to access bound services, such as a database.
@@ -64,7 +89,6 @@ The keys in the JSON are not always identical across services, for example in th
 Most relational database services do not expose a key named `jdbcUrl` so the URL needs to be created by extracting individual fields and building up the URL string.  Since this is such a common case, the CfEnv library provides support to retrieve the URL string for several databases.
 
 To get access to a specific service's credentials, the keys `tag`, `name`, or `label` and be specified as a criteria for selecting one of the services in the array.
-
 
 == Basic usage
 Using the JSON from the previous section, here are some simple API calls to extract credential information.
@@ -168,7 +192,19 @@ The module `java-cfenv-boot` provides several `EnvironmentPostProcessor` impleme
 For example, the `CfDataSourceEnvironmentPostProcessor` sets the Boot property `spring.datasource.url`.
 Just add a dependency on `java-cfenv-boot`.
 
-=== Pushing you application to Cloud Foundry
+The list of supported services are:
+
+* Databases - DB2, MySQL, Oracle, Postgresl, SqlServer
+* RabbitMQ
+* Cassandara
+* MongnoDB
+* Redis
+
+There are two other modules that contain support for Pivotal's Spring Cloud Service and Single Sign on tiles.
+The `java-cfenv-boot-pivotal-scs` module provides support for Config Server and `java-cfenv-boot-pivotal-sso` module provides support for single sign on.
+
+
+=== Pushing your application to Cloud Foundry
 
 You must disable the java buildpack's auto-reconfiguration so that you always delegate to Boot to create beans.
 
@@ -184,7 +220,50 @@ Since the auto-reconfiguration also set the cloud profile, you will have to do t
 cf set-env <APP> SPRING_PROFILES_ACTIVE cloud
 ----
 
+== Supporting other Services
 
+The interface https://github.com/pivotal-cf/java-cfenv/blob/master/java-cfenv-boot/src/main/java/io/pivotal/cfenv/spring/boot/CfEnvProcessor.java[`CfEnvProcesor`] simplifies what you need to write in most cases.
+The environment post processor, https://github.com/pivotal-cf/java-cfenv/blob/master/java-cfenv-boot/src/main/java/io/pivotal/cfenv/spring/boot/CfEnvironmentPostProcessor.java[`CfEnvPostProcessor`] delegates to all CfEnvProcessors that are discovered using Spring's `SpringFactoriesLoader`.
+Here is the implementation for MongoDB
+
+[source,java]
+----
+public class MongoCfEnvProcessor implements CfEnvProcessor {
+
+  private static String mongoScheme = "mongodb";
+
+  @Override
+  public boolean accept(CfService service) {  <1>
+    return service.existsByTagIgnoreCase("mongodb") ||
+	        service.existsByLabelStartsWith("mongolab") ||
+			service.existsByUriSchemeStartsWith(mongoScheme) ||
+			service.existsByCredentialsContainsUriField(mongoScheme);
+  }
+
+  @Override
+  public void process(CfCredentials cfCredentials, Map<String, Object> properties) { <2>
+     properties.put("spring.data.mongodb.uri", cfCredentials.getUri(mongoScheme));
+  }
+
+  @Override
+  public CfEnvProcessorProperties getProperties() { <3>
+    return CfEnvProcessorProperties.builder()
+	        .propertyPrefixes("spring.data.mongodb")
+			.serviceName("MongoDB")
+			.build();
+  }
+}
+----
+<1> In the `accept` method is where you put determine how to identify your service type.  The `CfService` class has several methods to help make this as easy as possible.
+<2> Copy over necessary values from the `CfCredentails` object to Spring Boot auto-configuration keys.
+<3> Create a `CfEnvProcessorProperties` instance so that logging which is done in `CfEnvPostProcessor` reflects your specific service.
+
+Remember to add an entry in `spring.factories` so that your processor can be discovered.
+
+[source]
+----
+io.pivotal.cfenv.spring.boot.CfEnvProcessor=com.example.MyCoolServiceCfEnvProcessor
+----
 === Building
 
 Clone the repo and type
