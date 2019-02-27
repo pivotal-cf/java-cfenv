@@ -15,40 +15,29 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfCredentials;
-import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.core.UriInfo;
 
 
 /**
- * Retrieve redis properties from {@see CfCredentials} and set {@literal spring.redis} Boot properties.
+ * Retrieve Redis properties from {@see CfCredentials} and set {@literal spring.redis} Boot properties.
  *
  * @author Mark Pollack
+ * @author Scott Frederick
  */
 public class RedisCfEnvProcessor implements CfEnvProcessor {
 
-	private static String[] redisSchemes = new String[]{"redis", "rediss"};
+	private static String[] redisSchemes = {"redis", "rediss"};
 
 	@Override
-	public List<CfService> findServices(CfEnv cfEnv) {
-		List<CfService> cfServices = cfEnv.findAllServices();
-		List<CfService> cfRedisServices = new ArrayList<>();
-
-		for (CfService service : cfServices) {
-			if (service.existsByTagIgnoreCase("redis") ||
-					service.existsByLabelStartsWith("rediscloud") ||
-					service.existsByUriSchemeStartsWith(redisSchemes) ||
-					service.existsByCredentialsContainsUriField(redisSchemes)) {
-				cfRedisServices.add(service);
-			}
-		}
-
-		return cfRedisServices;
+	public boolean accept(CfService service) {
+		return service.existsByTagIgnoreCase("redis") ||
+				service.existsByLabelStartsWith("rediscloud") ||
+				service.existsByUriSchemeStartsWith(redisSchemes) ||
+				service.existsByCredentialsContainsUriField(redisSchemes);
 	}
 
 	@Override
@@ -72,7 +61,10 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 
 	@Override
 	public CfEnvProcessorProperties getProperties() {
-		return CfEnvProcessorProperties.builder().propertyPrefixes("spring.redis").serviceName("Redis").build();
+		return CfEnvProcessorProperties.builder()
+				.propertyPrefixes("spring.redis")
+				.serviceName("Redis")
+				.build();
 	}
 
 }

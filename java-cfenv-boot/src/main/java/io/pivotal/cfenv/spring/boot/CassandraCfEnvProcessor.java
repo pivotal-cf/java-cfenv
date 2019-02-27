@@ -16,15 +16,12 @@
 package io.pivotal.cfenv.spring.boot;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfCredentials;
-import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfService;
 
 import org.springframework.util.StringUtils;
-
 
 /**
  * @author Mark Pollack
@@ -32,19 +29,11 @@ import org.springframework.util.StringUtils;
 public class CassandraCfEnvProcessor implements CfEnvProcessor {
 
 	@Override
-	public List<CfService> findServices(CfEnv cfEnv) {
-		List<CfService> cfServices = cfEnv.findAllServices();
-		List<CfService> cfCassandraServices = new ArrayList<>();
-
-		for (CfService service : cfServices) {
-			if (service.existsByTagIgnoreCase("cassandra") &&
-					cassandraCredentialsPresent(service.getCredentials().getMap())) {
-				cfCassandraServices.add(service);
-			}
-		}
-
-		return cfCassandraServices;
+	public boolean accept(CfService service) {
+		return service.existsByTagIgnoreCase("cassandra") &&
+				cassandraCredentialsPresent(service.getCredentials().getMap());
 	}
+
 	@Override
 	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
 		properties.put("spring.data.cassandra.username", cfCredentials.getUsername());

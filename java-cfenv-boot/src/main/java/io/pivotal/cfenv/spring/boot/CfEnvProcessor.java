@@ -16,11 +16,9 @@
 package io.pivotal.cfenv.spring.boot;
 
 
-import java.util.List;
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfCredentials;
-import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfService;
 
 
@@ -36,15 +34,17 @@ import io.pivotal.cfenv.core.CfService;
 public interface CfEnvProcessor {
 
 	/**
-	 * Find the services that match a certain criteria.
-	 * @param cfEnv The Cloud Foundry environment object
-	 * @return list of services matching your custom critiera
+	 * Determine if a service is supported by this processor.
+	 *
+	 * @param service a service to inspect
+	 * @return {@code true} if the service matches criteria; {@code false} otherwise
 	 */
-	List<CfService> findServices(CfEnv cfEnv);
+	boolean accept(CfService service);
 
 	/**
 	 * Given the credentials of the single matching service, set the property values that will be used to
 	 * create the {@see MapPropertySource}.
+	 *
 	 * @param cfCredentials Credentials of the single matching service
 	 * @param properties map to set Spring Boot properties
 	 */
@@ -52,9 +52,8 @@ public interface CfEnvProcessor {
 
 	/**
 	 * Properties describing a CfEnvProcessor, mainly used for better logging messages in {@see CfEnvProcessor}.
+	 * 
 	 * @return processor properties
 	 */
 	CfEnvProcessorProperties getProperties();
-
-
 }

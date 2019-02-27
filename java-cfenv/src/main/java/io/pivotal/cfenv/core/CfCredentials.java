@@ -28,32 +28,28 @@ import java.util.Map;
  */
 public class CfCredentials {
 
-	private final Map<String, Object> credentailsData;
+	private final Map<String, Object> credentialsData;
 
 	private UriInfo uriInfo;
 
 	private Map<String, String> derivedCredentials = new HashMap<>();
 
-	public CfCredentials(Map<String, Object> credentailsData) {
-		this.credentailsData = credentailsData;
+	public CfCredentials(Map<String, Object> credentialsData) {
+		this.credentialsData = credentialsData;
 	}
 
 	private synchronized UriInfo createOrGetUriInfo() {
-		try {
-			if (uriInfo == null) {
-				if (credentailsData.containsKey("uri")
-						|| credentailsData.containsKey("url")) {
-					uriInfo = new UriInfo(getString(new String[]{"uri", "url"}));
-				}
+		if (uriInfo == null) {
+			if (credentialsData.containsKey("uri")
+					|| credentialsData.containsKey("url")) {
+				uriInfo = new UriInfo(getString("uri", "url"));
 			}
-		} catch (Exception e) {
-
 		}
 		return uriInfo;
 	}
 
 	public Map<String, Object> getMap() {
-		return credentailsData;
+		return credentialsData;
 	}
 
 	/**
@@ -70,7 +66,7 @@ public class CfCredentials {
 	 * @return value of the host, null if not found.
 	 */
 	public String getHost() {
-		String host = getString(new String[]{"host", "hostname"});
+		String host = getString("host", "hostname");
 		if (host != null) {
 			return host;
 		}
@@ -102,7 +98,7 @@ public class CfCredentials {
 	 * @return value of the username, null if not found.
 	 */
 	public String getUsername() {
-		String username = getString(new String[]{"username", "user"});
+		String username = getString("username", "user");
 		if (username != null) {
 			return username;
 		}
@@ -133,7 +129,7 @@ public class CfCredentials {
 	 * @return the value of the uri field
 	 */
 	public String getUri(String... uriSchemes) {
-		List<String> keys = new ArrayList<String>();
+		List<String> keys = new ArrayList<>();
 		keys.addAll(Arrays.asList("uri", "url"));
 		for (String uriScheme : uriSchemes) {
 			keys.add(uriScheme + "Uri");
@@ -175,10 +171,10 @@ public class CfCredentials {
 	}
 
 	public String getString(String... keys) {
-		if (this.credentailsData != null) {
+		if (this.credentialsData != null) {
 			for (String key : keys) {
-				if (this.credentailsData.containsKey(key)) {
-					return this.credentailsData.get(key).toString();
+				if (this.credentialsData.containsKey(key)) {
+					return this.credentialsData.get(key).toString();
 				}
 			}
 		}

@@ -16,40 +16,32 @@
 
 package io.pivotal.cfenv.spring.boot;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfCredentials;
-import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.core.UriInfo;
 
 import org.springframework.util.StringUtils;
 
 /**
+ * Retrieve AMQP properties from {@see CfCredentials} and set {@literal spring.rabbitmq} Boot properties.
+ *
  * @author David Turanski
+ * @author Scott Frederick
  **/
 public class AmqpCfEnvProcessor implements CfEnvProcessor {
 
 	private static String[] amqpSchemes = new String[] { "amqp", "amqps" };
 
 	@Override
-	public List<CfService> findServices(CfEnv cfEnv) {
-		List<CfService> cfServices = cfEnv.findAllServices();
-		List<CfService> cfAmqpServices = new ArrayList<>();
-
-		for (CfService service : cfServices) {
-			if (service.existsByTagIgnoreCase("rabbitmq", "amqp") ||
-					service.existsByLabelStartsWith("rabbitmq") ||
-					service.existsByLabelStartsWith("cloudamqp") ||
-					service.existsByUriSchemeStartsWith(amqpSchemes) ||
-					service.existsByCredentialsContainsUriField(amqpSchemes)) {
-				cfAmqpServices.add(service);
-			}
-		}
-
-		return cfAmqpServices;
+	public boolean accept(CfService service) {
+		return service.existsByTagIgnoreCase("rabbitmq", "amqp") ||
+				service.existsByLabelStartsWith("rabbitmq") ||
+				service.existsByLabelStartsWith("cloudamqp") ||
+				service.existsByUriSchemeStartsWith(amqpSchemes) ||
+				service.existsByCredentialsContainsUriField(amqpSchemes);
 	}
 
 	@Override
@@ -86,6 +78,9 @@ public class AmqpCfEnvProcessor implements CfEnvProcessor {
 
 	@Override
 	public CfEnvProcessorProperties getProperties() {
-		return CfEnvProcessorProperties.builder().propertyPrefixes("spring.rabbitmq").serviceName("Rabbit").build();
+		return CfEnvProcessorProperties.builder()
+				.propertyPrefixes("spring.rabbitmq")
+				.serviceName("Rabbit")
+				.build();
 	}
 }
