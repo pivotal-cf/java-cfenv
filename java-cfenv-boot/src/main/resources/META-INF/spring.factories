@@ -8,4 +8,6 @@ org.springframework.context.ApplicationListener=\
   io.pivotal.cfenv.spring.boot.CfEnvironmentPostProcessor
 
 io.pivotal.cfenv.spring.boot.CfEnvProcessor=\
-  io.pivotal.cfenv.spring.boot.RedisCfEnvProcessor
+  io.pivotal.cfenv.spring.boot.RedisCfEnvProcessor,\
+  io.pivotal.cfenv.spring.boot.CassandraCfEnvProcessor
+
