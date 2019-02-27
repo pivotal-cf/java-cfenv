@@ -17,6 +17,7 @@ package io.pivotal.cfenv.spring.boot;
 
 /**
  * Properties describing a CfEnvProcessor, mainly used for better logging messages in {@see CfEnvProcessor}.
+ *
  * @author Mark Pollack
  */
 public class CfEnvProcessorProperties {
@@ -26,12 +27,12 @@ public class CfEnvProcessorProperties {
 	private String serviceName;
 
 	private CfEnvProcessorProperties() {
-
 	}
 
 	public static Builder builder() {
 		return new CfEnvProcessorProperties.Builder();
 	}
+
 	/**
 	 * A string containing the values of property prefixes that will be set in the {@code process} method.  Used
 	 * for logging purposes.
@@ -67,8 +68,4 @@ public class CfEnvProcessorProperties {
 			return processorProperties;
 		}
 	}
-
-
-
-
 }

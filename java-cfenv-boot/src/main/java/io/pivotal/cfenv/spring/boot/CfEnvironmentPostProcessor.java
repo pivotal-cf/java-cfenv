@@ -19,6 +19,7 @@ package io.pivotal.cfenv.spring.boot;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfEnvSingleton;
@@ -61,10 +62,7 @@ public class CfEnvironmentPostProcessor implements
 	// Before ConfigFileApplicationListener so values there can use these ones
 	private int order = ConfigFileApplicationListener.DEFAULT_ORDER - 1;
 
-	private List<CfEnvProcessor> cfEnvProcessors;
-
 	public CfEnvironmentPostProcessor() {
-
 	}
 
 	@Override
@@ -82,30 +80,22 @@ public class CfEnvironmentPostProcessor implements
 
 		increaseInvocationCount();
 		if (CloudPlatform.CLOUD_FOUNDRY.isActive(environment)) {
-			cfEnvProcessors = SpringFactoriesLoader.loadFactories(CfEnvProcessor.class,
-					getClass().getClassLoader());
-			AnnotationAwareOrderComparator.sort(cfEnvProcessors);
 			CfEnv cfEnv = CfEnvSingleton.getCfEnvInstance();
+			List<CfService> allServices = cfEnv.findAllServices();
 
-			for (CfEnvProcessor processor : this.cfEnvProcessors) {
-				List<CfService> cfServices = null;
-				try {
-					cfServices = processor.findServices(cfEnv);
-				} catch (Exception e) {
-					if (invocationCount == 1) {
-						DEFERRED_LOG.debug("Skipping execution of " + processor.getClass().getName());
-					}
-					return;
-				}
+			List<CfEnvProcessor> cfEnvProcessors = SpringFactoriesLoader
+					.loadFactories(CfEnvProcessor.class, getClass().getClassLoader());
+			AnnotationAwareOrderComparator.sort(cfEnvProcessors);
 
-				CfService cfService = null;
+			for (CfEnvProcessor processor : cfEnvProcessors) {
+				List<CfService> cfServices = allServices.stream()
+						.filter(processor::accept)
+						.collect(Collectors.toList());
+
+				throwExceptionIfMultipleMatches(processor.getProperties().getServiceName(), cfServices);
+
 				if (cfServices.size() == 1) {
-					cfService = cfServices.stream().findFirst().get();
-				} else {
-					throwExceptionIfMultipleMatches(processor.getProperties().getServiceName(), cfServices);
-				}
-
-				if (cfService != null) {
+					CfService cfService = cfServices.get(0);
 					Map<String, Object> properties = new LinkedHashMap<>();
 
 					processor.process(cfService.getCredentials(), properties);

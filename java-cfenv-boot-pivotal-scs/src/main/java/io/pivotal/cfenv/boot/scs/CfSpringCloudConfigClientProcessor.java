@@ -15,11 +15,9 @@
  */
 package io.pivotal.cfenv.boot.scs;
 
-import java.util.List;
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfCredentials;
-import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
 import io.pivotal.cfenv.spring.boot.CfEnvProcessorProperties;
@@ -37,10 +35,9 @@ public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
 	private static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI = "spring.cloud.config.client.oauth2.accessTokenUri";
 
 	@Override
-	public List<CfService> findServices(CfEnv cfEnv) {
-		return cfEnv.findServicesByTag(CONFIG_SERVER_SERVICE_TAG_NAME);
+	public boolean accept(CfService service) {
+		return service.existsByTagIgnoreCase(CONFIG_SERVER_SERVICE_TAG_NAME);
 	}
-
 
 	@Override
 	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
@@ -63,5 +60,4 @@ public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
 				.propertyPrefixes("spring.cloud.config")
 				.serviceName("Spring Cloud Config").build();
 	}
-
 }

@@ -15,52 +15,40 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfCredentials;
-import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfService;
-import io.pivotal.cfenv.core.UriInfo;
-
 
 /**
- * Retrieve redis properties from {@see CfCredentials} and set {@literal spring.redis} Boot properties.
+ * Retrieve MongoDB properties from {@see CfCredentials} and set {@literal spring.mongodb} Boot properties.
  *
  * @author Mark Pollack
+ * @author Scott Frederick
  */
 public class MongoCfEnvProcessor implements CfEnvProcessor {
 
-	private static String mongoScheme = "mongodb";;
+	private static String mongoScheme = "mongodb";
 
 	@Override
-	public List<CfService> findServices(CfEnv cfEnv) {
-		List<CfService> cfServices = cfEnv.findAllServices();
-		List<CfService> cfMongoServices = new ArrayList<>();
-
-		for (CfService service : cfServices) {
-			if (service.existsByTagIgnoreCase("mongodb") ||
-					service.existsByLabelStartsWith("mongolab") ||
-					service.existsByUriSchemeStartsWith(mongoScheme) ||
-					service.existsByCredentialsContainsUriField(mongoScheme)) {
-				cfMongoServices.add(service);
-			}
-		}
-
-		return cfMongoServices;
+	public boolean accept(CfService service) {
+		return service.existsByTagIgnoreCase("mongodb") ||
+				service.existsByLabelStartsWith("mongolab") ||
+				service.existsByUriSchemeStartsWith(mongoScheme) ||
+				service.existsByCredentialsContainsUriField(mongoScheme);
 	}
 
 	@Override
 	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-		String uri = cfCredentials.getUri(mongoScheme);
-		UriInfo uriInfo = new UriInfo(uri);
 		properties.put("spring.data.mongodb.uri", cfCredentials.getUri(mongoScheme));
 	}
 
 	@Override
 	public CfEnvProcessorProperties getProperties() {
-		return CfEnvProcessorProperties.builder().propertyPrefixes("spring.data.mongodb").serviceName("MongoDB").build();
+		return CfEnvProcessorProperties.builder()
+				.propertyPrefixes("spring.data.mongodb")
+				.serviceName("MongoDB")
+				.build();
 	}
 
 }
