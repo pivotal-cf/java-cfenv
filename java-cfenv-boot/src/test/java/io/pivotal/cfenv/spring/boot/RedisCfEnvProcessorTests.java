@@ -18,17 +18,13 @@ package io.pivotal.cfenv.spring.boot;
 import io.pivotal.cfenv.test.AbstractCfEnvTests;
 import org.junit.Test;
 
-import org.springframework.boot.Banner;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Mark Pollack
+ * @author David Turanski
  */
 public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 
@@ -56,13 +52,6 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 		assertThat(environment.getProperty("spring.redis.ssl")).isEqualTo("true");
 	}
 
-	public Environment getEnvironment() {
-		SpringApplicationBuilder builder = new SpringApplicationBuilder(TestApp.class)
-				.web(WebApplicationType.NONE);
-		builder.bannerMode(Banner.Mode.OFF);
-		ApplicationContext applicationContext = builder.run();
-		return applicationContext.getEnvironment();
-	}
 
 	private String getRedisServicePayload(String serviceName,
 										  String hostname, int port,
@@ -87,9 +76,5 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 		payload = payload.replace("$name", name);
 
 		return payload;
-	}
-
-	@SpringBootApplication
-	static class TestApp {
 	}
 }
