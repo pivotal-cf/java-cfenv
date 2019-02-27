@@ -15,7 +15,6 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-
 import java.io.File;
 import java.nio.file.Files;
 
@@ -25,7 +24,6 @@ import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.util.ResourceUtils;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -62,6 +60,7 @@ public class DataSourceTests extends AbstractCfEnvTests {
 		assertThat(
 				this.context.getEnvironment().getProperty("spring.datasource.password"))
 				.isEqualTo("mysql_password");
-	}
 
+		System.clearProperty("VCAP_APPLICATION");
+	}
 }

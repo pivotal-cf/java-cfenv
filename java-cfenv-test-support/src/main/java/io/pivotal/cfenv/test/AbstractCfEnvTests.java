@@ -32,6 +32,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.mockito.MockitoAnnotations;
 
+import org.springframework.boot.Banner;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -142,6 +149,14 @@ public abstract class AbstractCfEnvTests {
 		return payload;
 	}
 
+	public Environment getEnvironment() {
+		SpringApplicationBuilder builder = new SpringApplicationBuilder(TestApp.class)
+			.web(WebApplicationType.NONE);
+		builder.bannerMode(Banner.Mode.OFF);
+		ApplicationContext applicationContext = builder.run();
+		return applicationContext.getEnvironment();
+	}
+
 	protected String readTestDataFile(String fileName) {
 		Scanner scanner = null;
 		try {
@@ -195,5 +210,8 @@ public abstract class AbstractCfEnvTests {
 		assertThat(uriInfo.getPort()).isEqualTo(port);
 	}
 
+	@SpringBootApplication
+	static class TestApp {
+	}
 
 }

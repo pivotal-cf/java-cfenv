@@ -6,8 +6,9 @@ org.springframework.boot.env.EnvironmentPostProcessor=\
 org.springframework.context.ApplicationListener=\
   io.pivotal.cfenv.spring.boot.CfDataSourceEnvironmentPostProcessor,\
   io.pivotal.cfenv.spring.boot.CfEnvironmentPostProcessor
-
+# CfEnvironmentPostProcessor delegates to these CfEnvProcessors for each CF service
 io.pivotal.cfenv.spring.boot.CfEnvProcessor=\
   io.pivotal.cfenv.spring.boot.RedisCfEnvProcessor,\
-  io.pivotal.cfenv.spring.boot.MongoCfEnvProcessor
+  io.pivotal.cfenv.spring.boot.MongoCfEnvProcessor,\
+  io.pivotal.cfenv.spring.boot.AmqpCfEnvProcessor
 

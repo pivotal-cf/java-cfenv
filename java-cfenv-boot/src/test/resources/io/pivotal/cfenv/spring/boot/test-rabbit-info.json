@@ -1,0 +1,10 @@
+{
+	"name":"$serviceName",
+	"label":"cloudamqp",
+	"plan":"free",
+	"tags":["amqp","rabbitmq"],
+	"credentials":{
+		"uri": "amqp://$user:$pass@$hostname/$virtualHost",
+		"http_api_uri": "http://$user:$pass@$hostname/api"
+	}
+}
