@@ -36,6 +36,9 @@ public class CfEnvTestUtils {
 				if (name.equalsIgnoreCase("VCAP_SERVICES")) {
 					return serviceJson;
 				}
+				if (name.equalsIgnoreCase("VCAP_APPLICATION")) {
+					return "{\"instance_id\":\"123\"}";
+				}
 				return env.get(name);
 			}
 			@mockit.Mock

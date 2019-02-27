@@ -42,25 +42,28 @@ public class DataSourceTests extends AbstractCfEnvTests {
 	public void testDataSource() throws Exception {
 
 		// To make CloudPlatform test pass
-		System.setProperty("VCAP_APPLICATION", "yes");
+		try {
+			System.setProperty("VCAP_APPLICATION", "yes");
 
-		// To setup values used by CfEnv
-		File file = ResourceUtils.getFile("classpath:vcap-services.json");
-		String fileContents = new String(Files.readAllBytes(file.toPath()));
-		mockVcapServices(fileContents);
+			// To setup values used by CfEnv
+			File file = ResourceUtils.getFile("classpath:vcap-services.json");
+			String fileContents = new String(Files.readAllBytes(file.toPath()));
+			mockVcapServices(fileContents);
 
 
-		environmentPostProcessor.postProcessEnvironment(this.context.getEnvironment(),
-				null);
-		assertThat(this.context.getEnvironment().getProperty("spring.datasource.url"))
-				.isEqualTo(mysqlJdbcUrl);
-		assertThat(
-				this.context.getEnvironment().getProperty("spring.datasource.username"))
-				.isEqualTo("mysql_username");
-		assertThat(
-				this.context.getEnvironment().getProperty("spring.datasource.password"))
-				.isEqualTo("mysql_password");
+			environmentPostProcessor.postProcessEnvironment(this.context.getEnvironment(),
+					null);
+			assertThat(this.context.getEnvironment().getProperty("spring.datasource.url"))
+					.isEqualTo(mysqlJdbcUrl);
+			assertThat(
+					this.context.getEnvironment().getProperty("spring.datasource.username"))
+					.isEqualTo("mysql_username");
+			assertThat(
+					this.context.getEnvironment().getProperty("spring.datasource.password"))
+					.isEqualTo("mysql_password");
 
-		System.clearProperty("VCAP_APPLICATION");
+		} finally {
+			System.clearProperty("VCAP_APPLICATION");
+		}
 	}
 }

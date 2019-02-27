@@ -48,7 +48,7 @@ public class CfEnvIsInCfTests {
 			@Mock
 			public String getenv(String name) {
 				if (name.equalsIgnoreCase("VCAP_APPLICATION")) {
-					return "{\"instance_id\":\"123\"";
+					return "{\"instance_id\":\"123\"}";
 				}
 				return env.get(name);
 			}

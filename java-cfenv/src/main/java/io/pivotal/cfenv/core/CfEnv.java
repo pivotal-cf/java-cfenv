@@ -72,9 +72,7 @@ public class CfEnv {
 			}
 		}
 		catch (Exception e) {
-			// throw new IllegalStateException("Could not access/parse " +
-			// VCAP_APPLICATION + "
-			// environment variable.", e);
+			 throw new IllegalStateException("Could not access/parse " + VCAP_APPLICATION + "environment variable.", e);
 		}
 	}
 

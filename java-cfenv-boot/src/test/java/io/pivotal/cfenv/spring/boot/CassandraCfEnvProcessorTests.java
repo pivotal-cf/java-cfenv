@@ -103,6 +103,9 @@ public class CassandraCfEnvProcessorTests extends AbstractCfEnvTests {
 				if (name.equalsIgnoreCase("VCAP_SERVICES")) {
 					return fileContents;
 				}
+				if (name.equalsIgnoreCase("VCAP_APPLICATION")) {
+					return "{\"instance_id\":\"123\"}";
+				}
 				return env.get(name);
 			}
 			@mockit.Mock
