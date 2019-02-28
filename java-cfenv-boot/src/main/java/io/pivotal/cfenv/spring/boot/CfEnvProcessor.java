@@ -15,12 +15,10 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
-
 
 /**
  * Implementations will be called by {@see io.pivotal.cfenv.spring.boot.CfEnvironmentPostProcessor} to
@@ -31,7 +29,7 @@ import io.pivotal.cfenv.core.CfService;
  * @author Scott Frederick
  * @author Mark Pollack
  */
-public interface CfEnvProcessor {
+public interface CfEnvProcessor extends CfEnvEnabledProcessor {
 
 	/**
 	 * Determine if a service is supported by this processor.

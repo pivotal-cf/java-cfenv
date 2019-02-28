@@ -50,6 +50,7 @@ import org.springframework.stereotype.Component;
  * {@code resources/META-INF/spring.factories} property file.
  *
  * @author Mark Pollack
+ * @author David Turanski
  */
 @Component
 public class CfEnvironmentPostProcessor implements
@@ -90,6 +91,7 @@ public class CfEnvironmentPostProcessor implements
 			for (CfEnvProcessor processor : cfEnvProcessors) {
 				List<CfService> cfServices = allServices.stream()
 						.filter(processor::accept)
+						.filter(cfService-> processor.isEnabled(cfService, environment))
 						.collect(Collectors.toList());
 
 				throwExceptionIfMultipleMatches(processor.getProperties().getServiceName(), cfServices);
