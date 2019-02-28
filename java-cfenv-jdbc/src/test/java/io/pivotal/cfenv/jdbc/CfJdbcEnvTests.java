@@ -15,15 +15,8 @@
  */
 package io.pivotal.cfenv.jdbc;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Map;
-
-import mockit.Mock;
-import mockit.MockUp;
+import io.pivotal.cfenv.core.test.CfEnvMock;
 import org.junit.Test;
-
-import org.springframework.util.ResourceUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,7 +30,7 @@ public class CfJdbcEnvTests {
 
 	@Test
 	public void testCfService() {
-		mockVcapServices("vcap-services-jdbc.json");
+		CfEnvMock.configure().vcapServicesResource("vcap-services-jdbc.json").mock();
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
 		assertThat(cfJdbcEnv.findJdbcService().getUrl()).isEqualTo(mysqlJdbcUrl);
 		assertThat(cfJdbcEnv.findJdbcServiceByName("mysql").getUrl())
@@ -56,31 +49,4 @@ public class CfJdbcEnvTests {
 		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcService();
 		assertThat(cfJdbcService.getUrl()).isEqualTo(mysqlJdbcUrl);
 	}
-
-	private void mockVcapServices(String fileName) {
-		String fileContents;
-		try {
-			File file = ResourceUtils.getFile("classpath:" + fileName);
-			fileContents = new String(Files.readAllBytes(file.toPath()));
-		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-
-		Map<String, String> env = System.getenv();
-		new MockUp<System>() {
-			@Mock
-			public String getenv(String name) {
-				if (name.equalsIgnoreCase("VCAP_SERVICES")) {
-					return fileContents;
-				}
-				if (name.equalsIgnoreCase("VCAP_APPLICATION")) {
-					return "{\"instance_id\":\"123\"}";
-				}
-				return env.get(name);
-			}
-		};
-
-	}
-
 }
