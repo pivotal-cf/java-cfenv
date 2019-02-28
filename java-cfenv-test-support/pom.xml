@@ -32,7 +32,12 @@
 			<artifactId>java-cfenv</artifactId>
 			<version>2.1.2.BUILD-SNAPSHOT</version>
 		</dependency>
-
+		<dependency>
+			<groupId>io.pivotal.cfenv</groupId>
+			<artifactId>java-cfenv</artifactId>
+			<classifier>test-support</classifier>
+			<version>1.0.0.BUILD-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

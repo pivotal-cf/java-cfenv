@@ -15,17 +15,12 @@
  */
 package io.pivotal.cfenv.core;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import mockit.Mock;
-import mockit.MockUp;
+import io.pivotal.cfenv.core.test.CfEnvMock;
 import org.junit.Test;
-
-import org.springframework.util.ResourceUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -33,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * @author Mark Pollack
  * @author Paul Warren
+ * @author David Turanski
  */
 public class CfEnvTests {
 
@@ -321,7 +317,7 @@ public class CfEnvTests {
 
 	@Test
 	public void testFindCredentialsByTag() {
-		mockVcapEnvVars();
+		//CfEnvTestUtils.mockSystemEnvironment(CfEnvTestUtils.resourceToString(""));
 		CfEnv cfEnv = new CfEnv();
 
 		CfCredentials cfCredentials = cfEnv.findCredentialsByTag("mysql");
@@ -376,7 +372,7 @@ public class CfEnvTests {
 
 	@Test
 	public void testMultipleMatchingServices() {
-		mockVcapEnvVars("vcap-services-multiple-mysql.json", "vcap-application.json");
+		CfEnvMock.configure().vcapServicesResource("vcap-services-multiple-mysql.json").mock();
 		CfEnv cfEnv = new CfEnv();
 		List<CfService> services = cfEnv.findAllServices();
 		assertThat(services.size()).isEqualTo(3);
@@ -407,41 +403,8 @@ public class CfEnvTests {
 
 	}
 
-	private void mockVcapEnvVars(String vcapServicesFilename,
-								 String vcapApplicationFilename) {
-		String vcapServicesJson;
-		try {
-			File file = ResourceUtils.getFile("classpath:" + vcapServicesFilename);
-			vcapServicesJson = new String(Files.readAllBytes(file.toPath()));
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-
-		String vcapAppJson;
-		try {
-			File file = ResourceUtils.getFile("classpath:" + vcapApplicationFilename);
-			vcapAppJson = new String(Files.readAllBytes(file.toPath()));
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-
-		Map<String, String> env = System.getenv();
-		new MockUp<System>() {
-			@Mock
-			public String getenv(String name) {
-				if (name.equalsIgnoreCase("VCAP_SERVICES")) {
-					return vcapServicesJson;
-				} else if (name.equalsIgnoreCase("VCAP_APPLICATION")) {
-					return vcapAppJson;
-				}
-				return env.get(name);
-			}
-		};
-
-	}
-
 	private void mockVcapEnvVars() {
-		mockVcapEnvVars("vcap-services.json", "vcap-application.json");
+		CfEnvMock.configure().vcapServicesResource("vcap-services.json").mock();
 	}
 
 }

@@ -15,30 +15,17 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-
-import java.io.File;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-
+import io.pivotal.cfenv.core.test.CfEnvMock;
 import io.pivotal.cfenv.test.AbstractCfEnvTests;
-import mockit.Mock;
-import mockit.MockUp;
 import org.junit.Test;
 
-import org.springframework.boot.Banner;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
-import org.springframework.util.ResourceUtils;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Mark Pollack
+ * @author David Turanski
  */
 public class CassandraCfEnvProcessorTests extends AbstractCfEnvTests {
 
@@ -72,50 +59,8 @@ public class CassandraCfEnvProcessorTests extends AbstractCfEnvTests {
 		assertThat(environment.getProperty("spring.data.cassandra.contact-points")).isNull();
 	}
 
-
-	public Environment getEnvironment() {
-		SpringApplicationBuilder builder = new SpringApplicationBuilder(TestApp.class)
-				.web(WebApplicationType.NONE);
-		builder.bannerMode(Banner.Mode.OFF);
-		ApplicationContext applicationContext = builder.run();
-		return applicationContext.getEnvironment();
-	}
-
-	@SpringBootApplication
-	static class TestApp {
-	}
-
-	//TODO consilidate mocking
 	private void mockVcapServicesWithNames(String fileName) {
-		String fileContents;
-		try {
-			File file = ResourceUtils.getFile("classpath:" + fileName);
-			fileContents = new String(Files.readAllBytes(file.toPath()));
-		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-
-		Map<String, String> env = System.getenv();
-		new MockUp<System>() {
-			@Mock
-			public String getenv(String name) {
-				if (name.equalsIgnoreCase("VCAP_SERVICES")) {
-					return fileContents;
-				}
-				if (name.equalsIgnoreCase("VCAP_APPLICATION")) {
-					return "{\"instance_id\":\"123\"}";
-				}
-				return env.get(name);
-			}
-			@mockit.Mock
-			public Map getenv() {
-				Map<String,String> finalMap = new HashMap<>();
-				finalMap.putAll(env);
-				finalMap.put("VCAP_SERVICES", fileContents);
-				return finalMap;
-			}
-		};
+		CfEnvMock.configure().vcapServicesResource(fileName).mock();
 
 	}
 }
