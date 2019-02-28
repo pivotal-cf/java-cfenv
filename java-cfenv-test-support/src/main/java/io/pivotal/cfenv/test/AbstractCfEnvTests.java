@@ -36,6 +36,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.util.CollectionUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -147,8 +148,15 @@ public abstract class AbstractCfEnvTests {
 	}
 
 	public Environment getEnvironment() {
+		return getEnvironment(null);
+	}
+
+	public Environment getEnvironment(Map<String, Object> properties) {
 		SpringApplicationBuilder builder = new SpringApplicationBuilder(TestApp.class)
 			.web(WebApplicationType.NONE);
+		if (!CollectionUtils.isEmpty(properties)) {
+			builder.properties(properties);
+		}
 		builder.bannerMode(Banner.Mode.OFF);
 		ApplicationContext applicationContext = builder.run();
 		return applicationContext.getEnvironment();

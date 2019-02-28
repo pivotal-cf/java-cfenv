@@ -36,9 +36,10 @@ import org.springframework.core.env.MutablePropertySources;
 
 /**
  * @author Mark Pollack
+ * @author David Turanski
  */
 public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProcessor,
-		Ordered, ApplicationListener<ApplicationEvent> {
+		CfEnvEnabledProcessor, Ordered, ApplicationListener<ApplicationEvent> {
 
 	private static DeferredLog DEFERRED_LOG = new DeferredLog();
 
@@ -74,7 +75,7 @@ public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProc
 				}
 				return;
 			}
-			if (cfJdbcService != null) {
+			if (cfJdbcService != null && isEnabled(cfJdbcService, environment)) {
 				ConnectorLibraryDetector.assertNoConnectorLibrary();
 				Map<String, Object> properties = new LinkedHashMap<>();
 				properties.put("spring.datasource.url", cfJdbcService.getUrl());
