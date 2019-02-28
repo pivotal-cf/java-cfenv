@@ -27,10 +27,8 @@ import java.util.Scanner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.pivotal.cfenv.core.CfEnvSingleton;
 import io.pivotal.cfenv.core.UriInfo;
-import mockit.MockUp;
+import io.pivotal.cfenv.core.test.CfEnvMock;
 import org.junit.After;
-import org.junit.Before;
-import org.mockito.MockitoAnnotations;
 
 import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
@@ -119,13 +117,12 @@ public abstract class AbstractCfEnvTests {
 		return "\"" + str + "\"";
 	}
 
-	protected MockUp<?> mockVcapServices(String serviceJson) {
-		return CfEnvTestUtils.mockVcapServicesFromString(serviceJson);
+	protected CfEnvMock mockVcapServices(String vcapServicesJson) {
+		return CfEnvMock.configure().vcapServices(vcapServicesJson).mock();
 	}
 
-	@Before
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
+	protected CfEnvMock mockCFenv(String vcapServicesJson, String vcapApplicationJson) {
+		return CfEnvMock.configure().vcapApplication(vcapApplicationJson).vcapServices(vcapServicesJson).mock();
 	}
 
 	@After

@@ -15,59 +15,28 @@
  */
 package io.pivotal.cfenv.core;
 
-import java.util.Map;
-
-import mockit.Mock;
-import mockit.MockUp;
+import io.pivotal.cfenv.core.test.CfEnvMock;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Mark Pollack
+ * @author David Turanski
  */
 public class CfEnvIsInCfTests {
 
 	@Test
 	public void testIsInCf() {
-		mockVcapApplication();
+		CfEnvMock.configure().mock();
 		CfEnv cfEnv = new CfEnv();
 		assertThat(cfEnv.isInCf()).isTrue();
 	}
 
 	@Test
 	public void testIsInCfFalse() {
-		mockNoVcapApplication();
+		CfEnvMock.configure().vcapApplication(null).mock();
 		CfEnv cfEnv = new CfEnv();
 		assertThat(cfEnv.isInCf()).isFalse();
 	}
-
-	private void mockVcapApplication() {
-		Map<String, String> env = System.getenv();
-		new MockUp<System>() {
-			@Mock
-			public String getenv(String name) {
-				if (name.equalsIgnoreCase("VCAP_APPLICATION")) {
-					return "{\"instance_id\":\"123\"}";
-				}
-				return env.get(name);
-			}
-		};
-	}
-	private void mockNoVcapApplication() {
-		Map<String, String> env = System.getenv();
-		new MockUp<System>() {
-			@Mock
-			public String getenv(String name) {
-				if (name.equalsIgnoreCase("VCAP_APPLICATION")) {
-					return null;
-				}
-				if (name.equalsIgnoreCase("VCAP_SERVICES")) {
-					return null;
-				}
-				return env.get(name);
-			}
-		};
-	}
-
 }
