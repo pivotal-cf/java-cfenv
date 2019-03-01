@@ -16,6 +16,8 @@
 package io.pivotal.cfenv.spring.boot;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.pivotal.cfenv.core.test.CfEnvMock;
 import io.pivotal.cfenv.test.AbstractCfEnvTests;
@@ -59,6 +61,32 @@ public class DisableServicesTests extends AbstractCfEnvTests {
 
 		assertThat(environment.containsProperty("spring.redis.host")).isTrue();
 		assertThat(environment.containsProperty("spring.datasource.url")).isFalse();
+
+	}
+
+
+	@Test
+	public void disableAllButOneJdbcs() {
+		CfEnvMock.configure().vcapServicesResource("vcap-services-multiple-jdbcs.json").mock();
+
+		Map<String, Object> properties = new HashMap<>();
+		properties.put("cfenv.service.mysql.enabled","false");
+		properties.put("cfenv.service.oracle.enabled","false");
+		Environment environment = getEnvironment(properties);
+
+		assertThat(environment.getProperty("spring.datasource.url").contains("another-host")).isTrue();
+
+	}
+
+	@Test
+	public void disableAOneOfTwoRedis() {
+		CfEnvMock.configure().vcapServicesResource("vcap-multiple-redis-services.json").mock();
+
+		Map<String, Object> properties = new HashMap<>();
+		properties.put("cfenv.service.redis.enabled","false");
+		Environment environment = getEnvironment(properties);
+
+		assertThat(environment.getProperty("spring.redis.host")).isEqualTo("another-host");
 
 	}
 }

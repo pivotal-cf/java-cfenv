@@ -35,6 +35,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
 
@@ -159,7 +160,9 @@ public abstract class AbstractCfEnvTests {
 		}
 		builder.bannerMode(Banner.Mode.OFF);
 		ApplicationContext applicationContext = builder.run();
-		return applicationContext.getEnvironment();
+		Environment environment = applicationContext.getEnvironment();
+		((ConfigurableApplicationContext) applicationContext).close();
+		return environment;
 	}
 
 	protected String readTestDataFile(String fileName) {

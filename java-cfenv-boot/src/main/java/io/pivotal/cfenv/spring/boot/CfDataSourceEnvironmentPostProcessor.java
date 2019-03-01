@@ -16,7 +16,9 @@
 package io.pivotal.cfenv.spring.boot;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.pivotal.cfenv.jdbc.CfJdbcEnv;
 import io.pivotal.cfenv.jdbc.CfJdbcService;
@@ -36,6 +38,7 @@ import org.springframework.core.env.MutablePropertySources;
 
 /**
  * @author Mark Pollack
+ * @author David Turanski
  */
 public class CfDataSourceEnvironmentPostProcessor implements CfServiceEnablingEnvironmentPostProcessor,
 		Ordered, ApplicationListener<ApplicationEvent> {
@@ -62,19 +65,31 @@ public class CfDataSourceEnvironmentPostProcessor implements CfServiceEnablingEn
 		increaseInvocationCount();
 		if (CloudPlatform.CLOUD_FOUNDRY.isActive(environment)) {
 			CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
-			CfJdbcService cfJdbcService;
+			CfJdbcService cfJdbcService = null;
 			try {
 				cfJdbcService = cfJdbcEnv.findJdbcService();
-			}
-			catch (Exception e) {
-				if (invocationCount == 1) {
-					DEFERRED_LOG.debug(
-							"Skipping execution of CfDataSourceEnvironmentPostProcessor. "
+				cfJdbcService = this.isEnabled(cfJdbcService, environment) ? cfJdbcService : null;
+			} catch (Exception e) {
+
+					// Exception is thrown if not unique. If still no unique service after isEnabled applied, log the
+					// exception and return.
+					List<CfJdbcService> jdbcServices =
+					cfJdbcEnv.findJdbcServices().stream()
+						.filter(service -> this.isEnabled(service, environment))
+						.collect(Collectors.toList());
+
+					if (jdbcServices.size() > 1) {
+						if (invocationCount == 1) {
+							DEFERRED_LOG.debug(
+								"Skipping execution of CfDataSourceEnvironmentPostProcessor. "
 									+ e.getMessage());
-				}
-				return;
+						}
+						return;
+					}
+
+					cfJdbcService = jdbcServices.size() == 1 ? jdbcServices.get(0) : null;
 			}
-			if (cfJdbcService != null && this.isEnabled(cfJdbcService, environment)) {
+			if (cfJdbcService != null) {
 				ConnectorLibraryDetector.assertNoConnectorLibrary();
 				Map<String, Object> properties = new LinkedHashMap<>();
 				properties.put("spring.datasource.url", cfJdbcService.getUrl());
