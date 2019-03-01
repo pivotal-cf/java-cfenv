@@ -15,7 +15,6 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CfEnvironmentPostProcessor implements
-		EnvironmentPostProcessor, Ordered, ApplicationListener<ApplicationEvent> {
+	CfServiceEnablingEnvironmentPostProcessor, Ordered, ApplicationListener<ApplicationEvent> {
 
 	private static DeferredLog DEFERRED_LOG = new DeferredLog();
 
@@ -90,7 +89,7 @@ public class CfEnvironmentPostProcessor implements
 			for (CfEnvProcessor processor : cfEnvProcessors) {
 				List<CfService> cfServices = allServices.stream()
 						.filter(processor::accept)
-						.filter(cfService-> processor.isEnabled(cfService, environment))
+						.filter(cfService-> this.isEnabled(cfService, environment))
 						.collect(Collectors.toList());
 
 				throwExceptionIfMultipleMatches(processor.getProperties().getServiceName(), cfServices);
