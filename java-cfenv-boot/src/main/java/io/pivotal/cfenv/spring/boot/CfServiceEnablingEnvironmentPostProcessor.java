@@ -17,24 +17,26 @@ package io.pivotal.cfenv.spring.boot;
 
 import io.pivotal.cfenv.core.CfService;
 
+import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.Environment;
 
 /**
- * Implementations, called by {@see io.pivotal.cfenv.spring.boot.CfEnvironmentPostProcessor}
- * can disable a service by setting a Spring boot property
- * {@code io.pivotal.cfenv.service.<serviceName>.enabled=false}.
+ * Implementations can disable a service by setting a Spring boot property
+ * {@code cfenv.service.<serviceName>.enabled=false}.
  *
  * @author David Turanski
  */
-public interface CfEnvEnabledProcessor {
+public interface CfServiceEnablingEnvironmentPostProcessor extends EnvironmentPostProcessor {
 	/**
-	 * Determine if a service is enabled by this processor.
-	 * @param service a service to inspect
+	 * Determine if a service is enabled.
+	 *
+	 * @param service a service to inspect.
+	 * @param environment the Environment.
 	 * @return {@code true} if the service is enabled; {@code false} otherwise
 	 */
 	default boolean isEnabled(CfService service, Environment environment) {
 		return Boolean.valueOf(
-			environment.getProperty(String.format("io.pivotal.cfenv.service.%s.enabled", service.getName()),
+			environment.getProperty(String.format("cfenv.service.%s.enabled", service.getName()),
 				"true"));
 	}
 }
