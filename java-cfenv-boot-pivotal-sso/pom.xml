@@ -8,7 +8,7 @@
     <parent>
         <groupId>io.pivotal.cfenv</groupId>
         <artifactId>java-cfenv-parent</artifactId>
-        <version>1.0.0.BUILD-SNAPSHOT</version>
+        <version>1.0.0.RELEASE</version>
     </parent>
     <dependencyManagement>
         <dependencies>
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>io.pivotal.cfenv</groupId>
             <artifactId>java-cfenv-boot</artifactId>
-            <version>1.0.0.BUILD-SNAPSHOT</version>
+            <version>1.0.0.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
