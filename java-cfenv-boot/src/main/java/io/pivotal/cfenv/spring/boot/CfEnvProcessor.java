@@ -23,7 +23,7 @@ import io.pivotal.cfenv.core.CfService;
 
 
 /**
- * Implementations will be called by {@see io.pivotal.cfenv.spring.boot.CfEnvironmentPostProcessor} to
+ * Implementations will be called by {@link io.pivotal.cfenv.spring.boot.CfEnvironmentPostProcessor} to
  * find a specific type of service and set Spring Boot properties.
  *
  * Implementation should be registered using the {@code resources/META-INF/spring.factories} property file.
@@ -43,7 +43,7 @@ public interface CfEnvProcessor {
 
 	/**
 	 * Given the credentials of the single matching service, set the property values that will be used to
-	 * create the {@see MapPropertySource}.
+	 * create the MapPropertySource.
 	 *
 	 * @param cfCredentials Credentials of the single matching service
 	 * @param properties map to set Spring Boot properties
@@ -51,7 +51,7 @@ public interface CfEnvProcessor {
 	void process(CfCredentials cfCredentials, Map<String, Object> properties);
 
 	/**
-	 * Properties describing a CfEnvProcessor, mainly used for better logging messages in {@see CfEnvProcessor}.
+	 * Properties describing a CfEnvProcessor, mainly used for better logging messages in {@link CfEnvProcessor}.
 	 * 
 	 * @return processor properties
 	 */

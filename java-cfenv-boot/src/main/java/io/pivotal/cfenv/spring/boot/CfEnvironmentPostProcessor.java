@@ -43,10 +43,10 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.stereotype.Component;
 
 /**
- * An EnvironmentPostProcessor that iterates over {@see CfEnvProcessor} implementations to contribute
+ * An EnvironmentPostProcessor that iterates over {@link CfEnvProcessor} implementations to contribute
  * Spring Boot properties for bound Cloud Foundry Services.
  *
- * Implementation of {@see CfEnvProcessor }should be registered using the
+ * Implementation of {@link CfEnvProcessor }should be registered using the
  * {@code resources/META-INF/spring.factories} property file.
  *
  * @author Mark Pollack

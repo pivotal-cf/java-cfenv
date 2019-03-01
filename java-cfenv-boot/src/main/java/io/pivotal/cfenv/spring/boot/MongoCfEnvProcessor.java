@@ -21,7 +21,7 @@ import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
 
 /**
- * Retrieve MongoDB properties from {@see CfCredentials} and set {@literal spring.mongodb} Boot properties.
+ * Retrieve MongoDB properties from {@link CfCredentials} and set {@literal spring.mongodb} Boot properties.
  *
  * @author Mark Pollack
  * @author Scott Frederick

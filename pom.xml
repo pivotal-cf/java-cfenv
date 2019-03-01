@@ -4,8 +4,28 @@
     <groupId>io.pivotal.cfenv</groupId>
     <artifactId>java-cfenv-parent</artifactId>
     <version>1.0.1.BUILD-SNAPSHOT</version>
-    <name>Java CF Env Parent</name>
     <packaging>pom</packaging>
+
+    <name>Java CF Env Parent</name>
+    <description>Java Library for Accessing Cloud Foundry Environment Variables</description>
+    <url>https://github.com/pivotal-cf/java-cfenv</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/pivotal-cf/java-cfenv</url>
+        <connection>scm:git:git://github.com/pivotal-cf/java-cfenv.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/pivotal-cf/java-cfenv.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <organization>
         <name>Pivotal Software, Inc.</name>
         <url>http://www.spring.io</url>
@@ -60,6 +80,21 @@
       <module>java-cfenv-docs</module>  -->
     </modules>
 
+    <developers>
+        <developer>
+            <name>Scott Frederick</name>
+            <id>scottfrederick</id>
+        </developer>
+        <developer>
+            <name>Mark Pollack</name>
+            <id>markpollack</id>
+        </developer>
+        <developer>
+            <name>David Turanski</name>
+            <id>dturanski</id>
+        </developer>
+    </developers>
+
     <build>
         <plugins>
             <plugin>
@@ -83,6 +118,22 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <quiet>true</quiet>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

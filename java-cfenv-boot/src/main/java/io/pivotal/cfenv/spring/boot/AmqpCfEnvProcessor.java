@@ -26,7 +26,7 @@ import io.pivotal.cfenv.core.UriInfo;
 import org.springframework.util.StringUtils;
 
 /**
- * Retrieve AMQP properties from {@see CfCredentials} and set {@literal spring.rabbitmq} Boot properties.
+ * Retrieve AMQP properties from {@link CfCredentials} and set {@literal spring.rabbitmq} Boot properties.
  *
  * @author David Turanski
  * @author Scott Frederick

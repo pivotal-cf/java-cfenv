@@ -53,8 +53,8 @@ public class CfCredentials {
 	}
 
 	/**
-	 * Get a map that all
-	 * @return
+	 * Get a map that contains credentials derived from the credentials map
+	 * @return derived credentials
 	 */
 	public Map<String, String> getDerivedCredentials() {
 		return derivedCredentials;

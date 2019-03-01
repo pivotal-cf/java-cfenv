@@ -16,7 +16,7 @@
 package io.pivotal.cfenv.spring.boot;
 
 /**
- * Properties describing a CfEnvProcessor, mainly used for better logging messages in {@see CfEnvProcessor}.
+ * Properties describing a CfEnvProcessor, mainly used for better logging messages in {@link CfEnvProcessor}.
  *
  * @author Mark Pollack
  */

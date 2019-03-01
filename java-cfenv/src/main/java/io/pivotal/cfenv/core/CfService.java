@@ -133,7 +133,7 @@ public class CfService {
 	 * maybe 'mysqlUri', 'mysqluri', 'mysqlUrl' or 'mysqlurl'. This method searches for
 	 * the presence of these alternatively named fields in the credentials of the service
 	 * @param uriSchemes
-	 * @return
+	 * @return true if there is a uri field in the credentials map
 	 */
 	public boolean existsByCredentialsContainsUriField(String... uriSchemes) {
 		if (uriSchemes != null) {
@@ -150,6 +150,9 @@ public class CfService {
 		return false;
 	}
 
+	/**
+	 * Return whether the label starts with the provided string
+	 */
 	public boolean existsByLabelStartsWith(String label) {
 		String cfLabel = this.getLabel();
 		if (cfLabel != null && cfLabel.length() > 0) {

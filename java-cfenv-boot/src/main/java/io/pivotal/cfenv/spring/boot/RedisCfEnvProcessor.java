@@ -23,7 +23,7 @@ import io.pivotal.cfenv.core.UriInfo;
 
 
 /**
- * Retrieve Redis properties from {@see CfCredentials} and set {@literal spring.redis} Boot properties.
+ * Retrieve Redis properties from {@link CfCredentials} and set {@literal spring.redis} Boot properties.
  *
  * @author Mark Pollack
  * @author Scott Frederick
