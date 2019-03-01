@@ -15,7 +15,6 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.cloud.CloudPlatform;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
-import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.boot.logging.DeferredLog;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -54,7 +52,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CfEnvironmentPostProcessor implements
-		EnvironmentPostProcessor, Ordered, ApplicationListener<ApplicationEvent> {
+	CfServiceEnablingEnvironmentPostProcessor, Ordered, ApplicationListener<ApplicationEvent> {
 
 	private static DeferredLog DEFERRED_LOG = new DeferredLog();
 
@@ -91,7 +89,7 @@ public class CfEnvironmentPostProcessor implements
 			for (CfEnvProcessor processor : cfEnvProcessors) {
 				List<CfService> cfServices = allServices.stream()
 						.filter(processor::accept)
-						.filter(cfService-> processor.isEnabled(cfService, environment))
+						.filter(cfService-> this.isEnabled(cfService, environment))
 						.collect(Collectors.toList());
 
 				throwExceptionIfMultipleMatches(processor.getProperties().getServiceName(), cfServices);

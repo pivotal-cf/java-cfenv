@@ -25,7 +25,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.cloud.CloudPlatform;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
-import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.boot.logging.DeferredLog;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -37,10 +36,9 @@ import org.springframework.core.env.MutablePropertySources;
 
 /**
  * @author Mark Pollack
- * @author David Turanski
  */
-public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProcessor,
-		CfEnvEnabledProcessor, Ordered, ApplicationListener<ApplicationEvent> {
+public class CfDataSourceEnvironmentPostProcessor implements CfServiceEnablingEnvironmentPostProcessor,
+		Ordered, ApplicationListener<ApplicationEvent> {
 
 	private static DeferredLog DEFERRED_LOG = new DeferredLog();
 
@@ -75,7 +73,7 @@ public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProc
 				}
 				return;
 			}
-			if (cfJdbcService != null && isEnabled(cfJdbcService, environment)) {
+			if (cfJdbcService != null && this.isEnabled(cfJdbcService, environment)) {
 				Map<String, Object> properties = new LinkedHashMap<>();
 				properties.put("spring.datasource.url", cfJdbcService.getUrl());
 				properties.put("spring.datasource.username", cfJdbcService.getUsername());

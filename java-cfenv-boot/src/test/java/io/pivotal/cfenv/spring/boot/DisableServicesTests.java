@@ -43,7 +43,7 @@ public class DisableServicesTests extends AbstractCfEnvTests {
 	public void disableRedis() {
 		CfEnvMock.configure().vcapServicesResource("vcap-services.json").mock();
 
-		Environment environment = getEnvironment(Collections.singletonMap("io.pivotal.cfenv.service.redis.enabled",
+		Environment environment = getEnvironment(Collections.singletonMap("cfenv.service.redis.enabled",
 			"false"));
 
 		assertThat(environment.containsProperty("spring.redis.host")).isFalse();
@@ -54,7 +54,7 @@ public class DisableServicesTests extends AbstractCfEnvTests {
 	public void disableJdbc() {
 		CfEnvMock.configure().vcapServicesResource("vcap-services.json").mock();
 
-		Environment environment = getEnvironment(Collections.singletonMap("io.pivotal.cfenv.service.mysql.enabled",
+		Environment environment = getEnvironment(Collections.singletonMap("cfenv.service.mysql.enabled",
 			"false"));
 
 		assertThat(environment.containsProperty("spring.redis.host")).isTrue();

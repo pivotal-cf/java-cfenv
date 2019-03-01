@@ -29,7 +29,7 @@ import io.pivotal.cfenv.core.CfService;
  * @author Scott Frederick
  * @author Mark Pollack
  */
-public interface CfEnvProcessor extends CfEnvEnabledProcessor {
+public interface CfEnvProcessor {
 
 	/**
 	 * Determine if a service is supported by this processor.
