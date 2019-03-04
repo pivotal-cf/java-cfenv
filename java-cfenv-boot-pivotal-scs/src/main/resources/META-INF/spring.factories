@@ -1,2 +1,11 @@
 io.pivotal.cfenv.spring.boot.CfEnvProcessor=\
   io.pivotal.cfenv.boot.scs.CfSpringCloudConfigClientProcessor
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.pivotal.cfenv.boot.scs.VaultTokenRenewalAutoConfiguration,\
+io.pivotal.cfenv.boot.scs.PlainTextConfigClientAutoConfiguration
+
+org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+io.pivotal.cfenv.boot.scs.VaultPropertyMaskingContextInitializer,\
+io.pivotal.cfenv.boot.scs.ConfigClientOAuth2BootstrapConfiguration,\
+io.pivotal.cfenv.boot.scs.BootStrapConfiguration

@@ -43,8 +43,6 @@
         <!-- Note java-cfenv-boot module uses boot parent pom -->
         <spring.boot.version>2.1.1.RELEASE</spring.boot.version>
 
-
-        <!-- TODO shade -->
         <jackson.version>2.9.7</jackson.version>
         <jmockit.version>1.24</jmockit.version>
 

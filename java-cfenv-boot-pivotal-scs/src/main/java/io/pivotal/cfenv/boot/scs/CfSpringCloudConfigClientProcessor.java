@@ -60,4 +60,5 @@ public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
 				.propertyPrefixes("spring.cloud.config")
 				.serviceName("Spring Cloud Config").build();
 	}
+
 }

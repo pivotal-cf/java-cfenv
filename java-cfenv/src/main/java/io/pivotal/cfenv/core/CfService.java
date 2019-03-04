@@ -132,7 +132,7 @@ public class CfService {
 	 * portion of the URI, e.g. if the uri schema is 'mysql' the field name in the JSON
 	 * maybe 'mysqlUri', 'mysqluri', 'mysqlUrl' or 'mysqlurl'. This method searches for
 	 * the presence of these alternatively named fields in the credentials of the service
-	 * @param uriSchemes
+	 * @param uriSchemes list of uri prefixes to use as uriSchemes
 	 * @return true if there is a uri field in the credentials map
 	 */
 	public boolean existsByCredentialsContainsUriField(String... uriSchemes) {
@@ -151,7 +151,8 @@ public class CfService {
 	}
 
 	/**
-	 * Return whether the label starts with the provided string
+	 * @param label string to search for as a prefix in the service label
+	 * @return whether the label starts with the provided string
 	 */
 	public boolean existsByLabelStartsWith(String label) {
 		String cfLabel = this.getLabel();
