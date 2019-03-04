@@ -11,12 +11,25 @@ The https://spring.io/blog/2019/02/15/introducing-java-cfenv-a-new-library-for-a
 
 == Dependency Info
 
+You can access the stable release from maven central using the coordinates
+
+[source,xml]
+----
+----
+<dependency>
+  <groupId>io.pivotal.cfenv</groupId>
+  <artifactId>java-cfenv-boot</artifactId>
+  <version>1.0.0.RELEASE</version>
+</dependency>
+----
+
+If you want to use snapshot versions, use the following coordinates
 [source,xml]
 ----
 <dependency>
   <groupId>io.pivotal.cfenv</groupId>
   <artifactId>java-cfenv-boot</artifactId>
-  <version>1.0.0.M1</version>
+  <version>1.0.1.BUILD-SNAPSHOT</version>
 </dependency>
 ----
 
@@ -202,6 +215,7 @@ The list of supported services are:
 
 There are two other modules that contain support for Pivotal's Spring Cloud Service and Single Sign on tiles.
 The `java-cfenv-boot-pivotal-scs` module provides support for Config Server and `java-cfenv-boot-pivotal-sso` module provides support for single sign on.
+Note that the `scs` module is not working correctly in the 1.0.0.RELEASE, use snapshot builds until the next point release is made.
 
 
 === Pushing your application to Cloud Foundry
