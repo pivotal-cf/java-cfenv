@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,8 +33,6 @@ import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
-@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ConfigServerTestApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
 		"spring.profiles.active=plaintext,native,integration-test",

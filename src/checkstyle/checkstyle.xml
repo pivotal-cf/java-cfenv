@@ -97,6 +97,8 @@
         org.springframework.test.web.servlet.result.MockMvcResultMatchers.*,
         org.springframework.test.web.servlet.result.MockMvcResultHandlers.*,
         junit.framework.TestCase.*,
+        org.awaitility.Awaitility.*,
+        org.mockito.BDDMockito.*,
         org.springframework.cloud.dataflow.server.single.security.SecurityTestUtils.*,
         org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*,
         org.springframework.restdocs.operation.preprocess.Preprocessors.*,
