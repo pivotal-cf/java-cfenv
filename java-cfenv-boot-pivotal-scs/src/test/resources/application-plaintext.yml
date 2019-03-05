@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: test-app
+    
+  cloud:
+    config:
+      client:
+        oauth2:
+          client-id: acme
+          client-secret: acmesecret
+          scope: read,write
+          auto-approve-scopes: '.*'
+          grant-type: client_credentials
+      server:
+        default-label: default-label-test
+  mvc:
+    pathmatch:
+      use-suffix-pattern: true
+      use-registered-suffix-pattern: false
+security:
+  oauth2:
+    client:
+      client-id: acme
+      client-secret: acmesecret
+      scope: read,write
+      auto-approve-scopes: '.*'
+      grant-type: client_credential
