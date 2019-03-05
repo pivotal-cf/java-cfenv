@@ -15,7 +15,6 @@ You can access the stable release from maven central using the coordinates
 
 [source,xml]
 ----
-----
 <dependency>
   <groupId>io.pivotal.cfenv</groupId>
   <artifactId>java-cfenv-boot</artifactId>
