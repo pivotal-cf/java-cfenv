@@ -17,7 +17,7 @@
 	<parent>
 		<artifactId>java-cfenv-parent</artifactId>
 		<groupId>io.pivotal.cfenv</groupId>
-		<version>1.0.1.RELEASE</version>
+		<version>1.0.2.BUILD-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>io.pivotal.cfenv</groupId>
 			<artifactId>java-cfenv</artifactId>
-			<version>1.0.1.RELEASE</version>
+			<version>1.0.2.BUILD-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
