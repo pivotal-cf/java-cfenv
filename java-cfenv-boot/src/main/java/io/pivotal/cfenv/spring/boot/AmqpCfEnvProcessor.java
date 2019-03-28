@@ -59,7 +59,7 @@ public class AmqpCfEnvProcessor implements CfEnvProcessor {
 			properties.put("spring.rabbitmq.password", uriInfo.getPassword());
 			properties.put("spring.rabbitmq.username", cfCredentials.getUsername());
 			if (uriInfo.getScheme().equals("amqps")) {
-				properties.put("spring.rabbitmq.ssl", "true");
+				properties.put("spring.rabbitmq.ssl.enabled", "true");
 			}
 		}
 
