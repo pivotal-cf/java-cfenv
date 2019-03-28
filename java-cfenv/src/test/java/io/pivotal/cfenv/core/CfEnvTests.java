@@ -344,6 +344,15 @@ public class CfEnvTests {
 	}
 
 	@Test
+	public void testNullCredentials() {
+		mockVcapEnvVars("vcap-null-credentials.json", "vcap-application.json");
+		CfEnv cfEnv = new CfEnv();
+		CfService cfService = cfEnv.findServiceByTag("efs");
+		// should not throw exception
+		cfService.existsByCredentialsContainsUriField("foo");
+	}
+
+	@Test
 	public void testMultipleMatchingServices() {
 		mockVcapEnvVars("vcap-services-multiple-mysql.json", "vcap-application.json");
 		CfEnv cfEnv = new CfEnv();

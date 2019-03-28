@@ -46,6 +46,9 @@ public class CfService {
 		if (this.serviceData.containsKey(CREDENTIALS)) {
 			credentials = (Map<String, Object>) this.serviceData.get(CREDENTIALS);
 		}
+		if (credentials == null) {
+			credentials = new HashMap<>();
+		}
 		return new CfCredentials(credentials);
 	}
 
