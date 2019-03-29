@@ -40,5 +40,27 @@
         "redis"
       ]
     }
+  ],
+  "nfs": [
+    {
+      "binding_name": null,
+      "credentials": {},
+      "instance_name": "nfs1",
+      "label": "nfs",
+      "name": "nfs1",
+      "plan": "Existing",
+      "provider": null,
+      "syslog_drain_url": null,
+      "tags": [
+        "nfs"
+      ],
+      "volume_mounts": [
+        {
+          "container_dir": "/var/vcap/data/78525ee7-196c-4ed4-8ac6-857d15334631",
+          "device_type": "shared",
+          "mode": "rw"
+        }
+      ]
+    }
   ]
 }

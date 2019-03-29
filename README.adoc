@@ -93,6 +93,28 @@ For example, here is the value of `VCAP_SERVICES` for an application bound to th
         "redis"
       ]
     }
+  ],
+  "nfs": [
+    {
+      "binding_name": null,
+      "credentials": {},
+      "instance_name": "nfs1",
+      "label": "nfs",
+      "name": "nfs1",
+      "plan": "Existing",
+      "provider": null,
+      "syslog_drain_url": null,
+      "tags": [
+        "nfs"
+      ],
+      "volume_mounts": [
+        {
+          "container_dir": "/var/vcap/data/78525ee7-196c-4ed4-8ac6-857d15334631",
+          "device_type": "shared",
+          "mode": "rw"
+        }
+      ]
+    }
   ]
 }
 ----
@@ -135,6 +157,16 @@ Integer redisPort = redisCredentials.getMap().get("port");
 cfService = cfEnv.findServiceByName("redis");
 cfService = cfEnv.findServiceByLabel("p-redis");
 cfService = cfEnv.findServiceByLabel(".*-redis");
+----
+
+The class `CfVolume` contains information for a shared disk provided by Cloud Foundry volume services.
+You can access it using the `getVolumes` method on `CfService` as shown below.
+
+[source,java]
+----
+CfEnv cfEnv = new CfEnv();
+List<CfVolume> cfVolumes = cfEnv.findServiceByName("nfs1").getVolumes();
+String path = cfVolumes.get(0).getPath();
 ----
 
 === JDBC Support
@@ -188,14 +220,20 @@ Or say for cassandra, you can use the `CfEnv` class registered as a bean.
 public CfEnv cfEnv() {
   return new CfEnv();
 }
-
 ----
+
 [source]
 ----
 cassandra.contact-points=#{ cfEnv.findCredentialsByTag('cassandra').get('node_ips') }
 cassandra.username=#{ cfEnv.findCredentialsByTag('cassandra').getUserName() }
 cassandra.password=#{ cfEnv.findCredentialsByTag('cassandra').getPassword() }
 cassandra.port=#{ cfEnv.findCredentialsByTag('cassandra').get('cqlsh_port') }
+----
+
+Similar for setting a custom application property to access the disk mounted by Volume Services.
+[source]
+----
+myapp.config.path=#{ cfEnv.findServiceByName("nfs1").getVolumes().get(0).getPath() }
 ----
 
 === Using Spring Boot
@@ -214,6 +252,7 @@ The list of supported services are:
 
 There are two other modules that contain support for Pivotal's Spring Cloud Service and Single Sign on tiles.
 The `java-cfenv-boot-pivotal-scs` module provides support for Config Server and `java-cfenv-boot-pivotal-sso` module provides support for single sign on.
+
 Note that the `scs` module is not working correctly in the 1.0.0.RELEASE, use snapshot builds until the next point release is made.
 
 

@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * @author Mark Pollack
+ * @author Paul Warren
  */
 public class CfEnvTests {
 
@@ -67,7 +68,7 @@ public class CfEnvTests {
 		CfEnv cfEnv = new CfEnv();
 
 		List<CfService> cfServices = cfEnv.findAllServices();
-		assertThat(cfServices.size()).isEqualTo(2);
+		assertThat(cfServices.size()).isEqualTo(3);
 
 		CfService cfService = cfEnv.findServiceByTag("mysql");
 		assertThat(cfService.getString("blah")).isNull();
@@ -115,6 +116,12 @@ public class CfEnvTests {
 		assertThat(cfCredentials.getHost()).isEqualTo("10.0.4.30");
 		assertThat(cfService.getName()).isEqualTo("redis-binding");
 
+		// Test Volume Services
+
+		cfService = cfEnv.findServiceByName("nfs1");
+		assertThat(cfService.getTags()).containsExactly("nfs");
+		List<CfVolume> cfVolumes = cfService.getVolumes();
+		assertNfsVolumes(cfVolumes);
 	}
 
 	private void assertMySqlCredentials(CfCredentials cfCredentials) {
@@ -350,6 +357,21 @@ public class CfEnvTests {
 		CfService cfService = cfEnv.findServiceByTag("efs");
 		// should not throw exception
 		cfService.existsByCredentialsContainsUriField("foo");
+	}
+
+	private void assertNfsVolumes(List<CfVolume> cfVolumes) {
+		assertThat(cfVolumes.size()).isEqualTo(1);
+
+		Map<String, String> cfVolumeMap = cfVolumes.get(0).getMap();
+		assertThat(cfVolumeMap)
+				.containsEntry("container_dir", "/var/vcap/data/78525ee7-196c-4ed4-8ac6-857d15334631")
+				.containsEntry("device_type", "shared")
+				.containsEntry("mode", "rw");
+
+		CfVolume cfVolume = cfVolumes.get(0);
+
+		assertThat(cfVolume.getPath().toString()).isEqualTo("/var/vcap/data/78525ee7-196c-4ed4-8ac6-857d15334631");
+		assertThat(cfVolume.getMode()).isEqualTo(CfVolume.Mode.READ_WRITE);
 	}
 
 	@Test

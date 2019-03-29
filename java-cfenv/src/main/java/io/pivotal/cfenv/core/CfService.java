@@ -32,13 +32,18 @@ public class CfService {
 
 	private static final String CREDENTIALS = "credentials";
 
+	private static final String VOLUME_MOUNTS = "volume_mounts";
+
 	private final Map<String, Object> serviceData;
 
 	private final CfCredentials cfCredentials;
 
+	private final List<CfVolume> cfVolumes;
+
 	public CfService(Map<String, Object> serviceData) {
 		this.serviceData = serviceData;
 		this.cfCredentials = createCredentials();
+		this.cfVolumes = createVolumes();
 	}
 
 	public CfCredentials createCredentials() {
@@ -52,12 +57,27 @@ public class CfService {
 		return new CfCredentials(credentials);
 	}
 
+	public List<CfVolume> createVolumes() {
+		List<CfVolume> volumes = new ArrayList<>();
+		if (this.serviceData.containsKey(VOLUME_MOUNTS)) {
+			List<Map<String,String>> volumeDatas = (List<Map<String,String>>) this.serviceData.get(VOLUME_MOUNTS);
+			for (Map<String,String> volumeData : volumeDatas) {
+				volumes.add(new CfVolume(volumeData));
+			}
+		}
+		return volumes;
+	}
+
 	public Map<String, Object> getMap() {
 		return this.serviceData;
 	}
 
 	public CfCredentials getCredentials() {
 		return this.cfCredentials;
+	}
+
+	List<CfVolume> getVolumes() {
+		return cfVolumes;
 	}
 
 	public List<String> getTags() {
