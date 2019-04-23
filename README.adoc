@@ -108,9 +108,9 @@ Using the JSON from the previous section, here are some simple API calls to extr
 [source,java]
 ----
 CfEnv cfEnv = new CfEnv();
-String redisHost = cfEnv.findCredentialsByTag('redis').getHost();
-String redisPort = cfEnv.findCredentialsByTag('redis').getPort();
-String redisPassword - cfEnv.findCredentailsByTag('redis').getPassword();
+String redisHost = cfEnv.findCredentialsByTag("redis").getHost();
+String redisPort = cfEnv.findCredentialsByTag("redis").getPort();
+String redisPassword = cfEnv.findCredentailsByTag("redis").getPassword();
 ----
 
 Multiple strings can be passed to match against more than one tag.
@@ -121,7 +121,7 @@ The classes `CfService` and `CfCredentials` are returned from the following API 
 [source,java]
 ----
 CfEnv cfEnv = new CfEnv();
-List<CfService> cfService = cfEnv.getServices();
+List<CfService> cfService = cfEnv.findAllServices();
 
 CfService redisService = cfEnv.findServiceByTag("redis");
 List<String> redisServiceTags = redisService.getTags();
@@ -157,8 +157,8 @@ If there is more than one database bound to the application, an exception will b
 
 [source,java]
 ----
-String jdbcUrl1 = cfEnvJdbc.findJdbcServiceByName('mysqlA').getUrl();
-String jdbcUrl2 = cfEnvJdbc.findJdbcServiceByName('mysqlB').getUrl();
+String jdbcUrl1 = cfEnvJdbc.findJdbcServiceByName("mysqlA").getUrl();
+String jdbcUrl2 = cfEnvJdbc.findJdbcServiceByName("mysqlB").getUrl();
 ----
 
 === Use with Spring
