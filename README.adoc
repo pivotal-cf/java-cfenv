@@ -110,7 +110,7 @@ Using the JSON from the previous section, here are some simple API calls to extr
 CfEnv cfEnv = new CfEnv();
 String redisHost = cfEnv.findCredentialsByTag("redis").getHost();
 String redisPort = cfEnv.findCredentialsByTag("redis").getPort();
-String redisPassword - cfEnv.findCredentailsByTag("redis").getPassword();
+String redisPassword = cfEnv.findCredentailsByTag("redis").getPassword();
 ----
 
 Multiple strings can be passed to match against more than one tag.
