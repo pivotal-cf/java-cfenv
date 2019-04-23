@@ -121,7 +121,7 @@ The classes `CfService` and `CfCredentials` are returned from the following API 
 [source,java]
 ----
 CfEnv cfEnv = new CfEnv();
-List<CfService> cfService = cfEnv.getServices();
+List<CfService> cfService = cfEnv.findAllServices();
 
 CfService redisService = cfEnv.findServiceByTag("redis");
 List<String> redisServiceTags = redisService.getTags();
