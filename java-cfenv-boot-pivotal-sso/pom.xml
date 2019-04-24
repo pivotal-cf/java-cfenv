@@ -38,6 +38,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>io.pivotal.cfenv</groupId>
+            <artifactId>java-cfenv-test-support</artifactId>
+            <version>1.0.2.BUILD-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jmockit</groupId>
             <artifactId>jmockit</artifactId>
             <version>${jmockit.version}</version>

@@ -15,6 +15,8 @@
  */
 package io.pivotal.cfenv.boot.sso;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfCredentials;
@@ -23,43 +25,65 @@ import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
 import io.pivotal.cfenv.spring.boot.CfEnvProcessorProperties;
 
 /**
- * @author Mark Pollack
- * @author Scott Frederick
+ * @author Pivotal Application Single Sign-On
  */
 public class CfSingleSignOnProcessor implements CfEnvProcessor {
+    private static final String PIVOTAL_SSO_LABEL = "p-identity";
+    private static final String SPRING_SECURITY_CLIENT = "spring.security.oauth2.client";
+    private static final String SSO_CLIENT_NAME = "sso";
+    private static final String SSO_SERVICE = "ssoServiceUrl";
 
-	private static final String PIVOTAL_SSO_LABEL = "p-identity";
+    @Override
+    public boolean accept(CfService service) {
+        return SpringSecurityDetector.isSpringSecurityPresent() && service.existsByLabelStartsWith(PIVOTAL_SSO_LABEL);
+    }
 
-	@Override
-	public boolean accept(CfService service) {
-		return service.existsByLabelStartsWith(PIVOTAL_SSO_LABEL);
-	}
+    @Override
+    public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
+        String clientId = cfCredentials.getString("client_id");
+        String clientSecret = cfCredentials.getString("client_secret");
+        String authDomain = cfCredentials.getString("auth_domain");
+        String issuer = fromAuthDomain(authDomain);
 
-	@Override
-	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-		String clientId = cfCredentials.getString("client_id");
-		String clientSecret = cfCredentials.getString("client_secret");
-		String authDomain = cfCredentials.getString("auth_domain");
+        properties.put(SSO_SERVICE, authDomain);
+        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-id", clientId);
+        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-secret", clientSecret);
+        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-name", SSO_CLIENT_NAME);
+        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.redirect-uri", "{baseUrl}/login/oauth2/code/{registrationId}");
+        properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.issuer-uri", issuer + "/oauth/token");
+        properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.authorization-uri", authDomain + "/oauth/authorize");
+    }
 
-		properties.put("security.oauth2.client.clientId", clientId);
-		properties.put("security.oauth2.client.clientSecret", clientSecret);
-		properties.put("security.oauth2.client.accessTokenUri",
-				authDomain + "/oauth/token");
-		properties.put("security.oauth2.client.userAuthorizationUri",
-				authDomain + "/oauth/authorize");
-		properties.put("ssoServiceUrl", authDomain);
-		properties.put("security.oauth2.resource.userInfoUri",
-				authDomain + "/userinfo");
-		properties.put("security.oauth2.resource.tokenInfoUri",
-				authDomain + "/check_token");
-		properties.put("security.oauth2.resource.jwk.key-set-uri",
-				authDomain + "/token_keys");
-	}
+    @Override
+    public CfEnvProcessorProperties getProperties() {
+        return CfEnvProcessorProperties.builder()
+                .propertyPrefixes(String.join(",", SSO_SERVICE, SPRING_SECURITY_CLIENT))
+                .serviceName("Single Sign On").build();
+    }
 
-	@Override
-	public CfEnvProcessorProperties getProperties() {
-		return CfEnvProcessorProperties.builder()
-				.propertyPrefixes("security.oauth2.client, security.oauth2.resource")
-				.serviceName("Single Sign On").build();
-	}
+    public String fromAuthDomain(String authUri) {
+        URI uri = URI.create(authUri);
+
+        String host = uri.getHost();
+
+        if (host == null) {
+            throw new IllegalArgumentException("Unable to parse URI host from VCAP_SERVICES with label: \"" + PIVOTAL_SSO_LABEL + "\" and auth_domain: \"" + authUri +"\"");
+        }
+
+        String issuerHost = uri.getHost().replaceFirst("login\\.", "uaa.");
+
+        try {
+            return new URI(
+                    uri.getScheme(),
+                    uri.getUserInfo(),
+                    issuerHost,
+                    uri.getPort(),
+                    uri.getPath(),
+                    uri.getQuery(),
+                    uri.getFragment()
+            ).toString();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+    }
 }

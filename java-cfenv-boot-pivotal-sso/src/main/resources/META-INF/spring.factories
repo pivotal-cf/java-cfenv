@@ -1,2 +1,3 @@
 io.pivotal.cfenv.spring.boot.CfEnvProcessor=\
-  io.pivotal.cfenv.boot.sso.CfSingleSignOnProcessor
+  io.pivotal.cfenv.boot.sso.CfSingleSignOnProcessor,\
+  io.pivotal.cfenv.boot.sso.CfSingleSignOnLegacyProcessor
