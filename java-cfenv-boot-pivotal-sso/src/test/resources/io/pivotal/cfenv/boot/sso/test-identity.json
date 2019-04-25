@@ -1,0 +1,16 @@
+{
+  "binding_name": null,
+  "credentials": {
+    "auth_domain": "$authDomain",
+    "client_id": "my-sso-client-id",
+    "client_secret": "my-sso-client-secret"
+  },
+  "instance_name": "my-sso-instance",
+  "label": "p-identity",
+  "name": "my-sso-instance",
+  "plan": "my-plan",
+  "provider": null,
+  "syslog_drain_url": null,
+  "tags": [],
+  "volume_mounts": []
+}
