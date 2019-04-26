@@ -34,7 +34,6 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
     private static final String PIVOTAL_SSO_LABEL = "p-identity";
     private static final String SSO_SERVICE = "ssoServiceUrl";
     private static final String SPRING_SECURITY_CLIENT = "spring.security.oauth2.client";
-    private static final String SPRING_SECURITY_RESOURCE_SERVER = "spring.security.oauth2.resourceserver";
 
     @Override
     public boolean accept(CfService service) {
@@ -57,7 +56,6 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.scope", "${SSO_SCOPES}");
         properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.issuer-uri", issuer + "/oauth/token");
         properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.authorization-uri", authDomain + "/oauth/authorize");
-        properties.put(SPRING_SECURITY_RESOURCE_SERVER + ".jwt.issuer-uri", issuer + "/oauth/token");
     }
 
     private String getIssuer(String authDomain) {
@@ -78,7 +76,7 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
     @Override
     public CfEnvProcessorProperties getProperties() {
         return CfEnvProcessorProperties.builder()
-                .propertyPrefixes(String.join(",", SSO_SERVICE, SPRING_SECURITY_CLIENT, SPRING_SECURITY_RESOURCE_SERVER))
+                .propertyPrefixes(String.join(",", SSO_SERVICE, SPRING_SECURITY_CLIENT))
                 .serviceName("Single Sign On").build();
     }
 }

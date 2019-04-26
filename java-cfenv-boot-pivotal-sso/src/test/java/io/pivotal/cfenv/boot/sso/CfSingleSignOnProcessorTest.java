@@ -45,8 +45,6 @@ public class CfSingleSignOnProcessorTest extends CfSingleSignOnTestSupport {
         assertThat(env.getProperty("ssoServiceUrl")).isEqualTo("https://my-plan.login.run.pivotal.io");
         assertThat(env.getProperty("spring.security.oauth2.client.provider.sso.issuer-uri"))
                 .isEqualTo("https://my-plan.uaa.run.pivotal.io/oauth/token");
-        assertThat(env.getProperty("spring.security.oauth2.resourceserver.jwt.issuer-uri"))
-                .isEqualTo("https://my-plan.uaa.run.pivotal.io/oauth/token");
     }
 
     @Test
@@ -55,8 +53,6 @@ public class CfSingleSignOnProcessorTest extends CfSingleSignOnTestSupport {
         Environment env = getEnvironment();
         assertThat(env.getProperty("ssoServiceUrl")).isEqualTo("https://login.run.pivotal.io");
         assertThat(env.getProperty("spring.security.oauth2.client.provider.sso.issuer-uri"))
-                .isEqualTo("https://uaa.run.pivotal.io/oauth/token");
-        assertThat(env.getProperty("spring.security.oauth2.resourceserver.jwt.issuer-uri"))
                 .isEqualTo("https://uaa.run.pivotal.io/oauth/token");
     }
 }
