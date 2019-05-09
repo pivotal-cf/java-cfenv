@@ -37,7 +37,7 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
 
     @Override
     public boolean accept(CfService service) {
-        return service.existsByLabelStartsWith(PIVOTAL_SSO_LABEL);
+        return SpringSecurityDetector.isSpringSecurityPresent() && service.existsByLabelStartsWith(PIVOTAL_SSO_LABEL);
     }
 
     @Override

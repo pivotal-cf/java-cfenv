@@ -15,15 +15,33 @@
  */
 package io.pivotal.cfenv.boot.sso;
 
+
 import io.pivotal.cfenv.test.AbstractCfEnvTests;
+import mockit.Mock;
+import mockit.MockUp;
 
 /**
  * @author Pivotal Application Single Sign-On
  */
 public class CfSingleSignOnTestSupport extends AbstractCfEnvTests {
 
-    protected String getSsoServicePayload(String authDomain) {
+    String getSsoServicePayload(String authDomain) {
         return readTestDataFile("test-identity.json")
                 .replace("$authDomain", authDomain);
     }
+
+    public static MockUp<?> mockSpringSecurityDetector(boolean isPresent, boolean isLegacyPresent) {
+        return new MockUp<SpringSecurityDetector>() {
+            @Mock
+            public boolean isSpringSecurityPresent() {
+                return isPresent;
+            }
+
+            @Mock
+            public boolean isLegacySpringSecurityPresent() {
+                return isLegacyPresent;
+            }
+        };
+    }
+
 }
