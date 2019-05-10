@@ -33,7 +33,7 @@ public class CfSingleSignOnLegacyProcessor implements CfEnvProcessor {
 
 	@Override
 	public boolean accept(CfService service) {
-		return SpringSecurityDetector.isLegacySpringSecurityPresent() && service.existsByLabelStartsWith(PIVOTAL_SSO_LABEL);
+		return service.existsByLabelStartsWith(PIVOTAL_SSO_LABEL);
 	}
 
 	@Override

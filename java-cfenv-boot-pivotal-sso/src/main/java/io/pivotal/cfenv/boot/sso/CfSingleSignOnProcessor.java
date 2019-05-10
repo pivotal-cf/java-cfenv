@@ -15,15 +15,12 @@
  */
 package io.pivotal.cfenv.boot.sso;
 
-import java.net.URI;
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
 import io.pivotal.cfenv.spring.boot.CfEnvProcessorProperties;
-
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * @author Mark Pollack
@@ -32,12 +29,13 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public class CfSingleSignOnProcessor implements CfEnvProcessor {
     private static final String PIVOTAL_SSO_LABEL = "p-identity";
-    private static final String SSO_SERVICE = "ssoServiceUrl";
     private static final String SPRING_SECURITY_CLIENT = "spring.security.oauth2.client";
+    private static final String SSO_CLIENT_NAME = "sso";
+    private static final String SSO_SERVICE = "ssoServiceUrl";
 
     @Override
     public boolean accept(CfService service) {
-        return SpringSecurityDetector.isSpringSecurityPresent() && service.existsByLabelStartsWith(PIVOTAL_SSO_LABEL);
+        return service.existsByLabelStartsWith(PIVOTAL_SSO_LABEL);
     }
 
     @Override
@@ -45,32 +43,17 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         String clientId = cfCredentials.getString("client_id");
         String clientSecret = cfCredentials.getString("client_secret");
         String authDomain = cfCredentials.getString("auth_domain");
-        String issuer = getIssuer(authDomain);
+        String issuer = IssuerUtils.fromAuthDomain(authDomain);
 
         properties.put(SSO_SERVICE, authDomain);
         properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-id", clientId);
         properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-secret", clientSecret);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.authorization-grant-type", "${GRANT_TYPE}");
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-name", "sso");
+        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.authorization-grant-type", "${sso.authorization.grant.type}");
+        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-name", SSO_CLIENT_NAME);
         properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.redirect-uri", "{baseUrl}/login/oauth2/code/{registrationId}");
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.scope", "${SSO_SCOPES}");
+        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.scope", "${sso.scopes}");
         properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.issuer-uri", issuer + "/oauth/token");
         properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.authorization-uri", authDomain + "/oauth/authorize");
-    }
-
-    private String getIssuer(String authDomain) {
-        URI uri = UriComponentsBuilder.fromHttpUrl(authDomain).build().toUri();
-        UriComponentsBuilder issueBuilder = UriComponentsBuilder.fromUri(uri);
-        String host = uri.getHost();
-
-        // Bound app is using the System Zone
-        if (host.startsWith("login")) {
-            issueBuilder.host(host.replaceFirst("login", "uaa"));
-        } else {
-            issueBuilder.host(host.replaceFirst("(.*)\\.login\\.(.*)", "$1.uaa.$2"));
-        }
-
-        return issueBuilder.build().toString();
     }
 
     @Override
