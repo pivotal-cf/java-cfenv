@@ -52,24 +52,6 @@ public class CfSingleSignOnProcessorTest extends CfSingleSignOnTestSupport {
     }
 
     @Test
-    public void testScopePropertyFromPlaceHolders() {
-        mockVcapServices(getServicesPayload(getSsoServicePayload("https://my-plan.login.run.pivotal.io")));
-        Environment env = getEnvironment();
-
-        assertThat(env.getProperty("spring.security.oauth2.client.registration.sso.scope"))
-                .isEqualTo("openid");
-    }
-
-    @Test
-    public void testAuthorizationGrantTypePropertyFromPlaceHolders() {
-        mockVcapServices(getServicesPayload(getSsoServicePayload("https://my-plan.login.run.pivotal.io")));
-        Environment env = getEnvironment();
-
-        assertThat(env.getProperty("spring.security.oauth2.client.registration.sso.authorization-grant-type"))
-                .isEqualTo("authorization_code");
-    }
-
-    @Test
     public void testIssuerUriNonSystemZoneIssuer() {
         mockVcapServices(getServicesPayload(getSsoServicePayload("https://my-plan.login.run.pivotal.io")));
         Environment env = getEnvironment();

@@ -48,10 +48,8 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         properties.put(SSO_SERVICE, authDomain);
         properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-id", clientId);
         properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-secret", clientSecret);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.authorization-grant-type", "${sso.authorization.grant.type}");
         properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-name", SSO_CLIENT_NAME);
         properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.redirect-uri", "{baseUrl}/login/oauth2/code/{registrationId}");
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.scope", "${sso.scopes}");
         properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.issuer-uri", issuer + "/oauth/token");
         properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.authorization-uri", authDomain + "/oauth/authorize");
     }

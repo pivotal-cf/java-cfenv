@@ -1,6 +1,0 @@
-sso:
-  scopes: "openid"
-  authorization.grant.type: "authorization_code"
-
-# SSO_SCOPES
-# SSO_AUTHORIZATION_GRANT_TYPE
