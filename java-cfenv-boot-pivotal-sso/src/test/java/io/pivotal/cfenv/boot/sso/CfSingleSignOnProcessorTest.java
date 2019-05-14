@@ -15,6 +15,7 @@
  */
 package io.pivotal.cfenv.boot.sso;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import org.springframework.core.env.Environment;
@@ -25,6 +26,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Pivotal Application Single Sign-On
  */
 public class CfSingleSignOnProcessorTest extends CfSingleSignOnTestSupport {
+
+    @Before
+    public void setUp() {
+        mockSpringSecurityDetector(true, false);
+    }
 
     @Test
     public void testBasicSpringSecurityProperties() {
