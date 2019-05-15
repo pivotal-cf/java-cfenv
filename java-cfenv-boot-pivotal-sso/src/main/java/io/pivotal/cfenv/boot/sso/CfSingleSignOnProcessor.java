@@ -15,6 +15,8 @@
  */
 package io.pivotal.cfenv.boot.sso;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import io.pivotal.cfenv.core.CfCredentials;
@@ -23,8 +25,6 @@ import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
 import io.pivotal.cfenv.spring.boot.CfEnvProcessorProperties;
 
 /**
- * @author Mark Pollack
- * @author Scott Frederick
  * @author Pivotal Application Single Sign-On
  */
 public class CfSingleSignOnProcessor implements CfEnvProcessor {
@@ -43,7 +43,7 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         String clientId = cfCredentials.getString("client_id");
         String clientSecret = cfCredentials.getString("client_secret");
         String authDomain = cfCredentials.getString("auth_domain");
-        String issuer = IssuerUtils.fromAuthDomain(authDomain);
+        String issuer = fromAuthDomain(authDomain);
 
         properties.put(SSO_SERVICE, authDomain);
         properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-id", clientId);
@@ -59,5 +59,31 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         return CfEnvProcessorProperties.builder()
                 .propertyPrefixes(String.join(",", SSO_SERVICE, SPRING_SECURITY_CLIENT))
                 .serviceName("Single Sign On").build();
+    }
+
+    public String fromAuthDomain(String authUri) {
+        URI uri = URI.create(authUri);
+
+        String host = uri.getHost();
+
+        if (host == null) {
+            throw new IllegalArgumentException("Unable to parse URI host from VCAP_SERVICES with label: \"" + PIVOTAL_SSO_LABEL + "\" and auth_domain: \"" + authUri +"\"");
+        }
+
+        String issuerHost = uri.getHost().replaceFirst("login\\.", "uaa.");
+
+        try {
+            return new URI(
+                    uri.getScheme(),
+                    uri.getUserInfo(),
+                    issuerHost,
+                    uri.getPort(),
+                    uri.getPath(),
+                    uri.getQuery(),
+                    uri.getFragment()
+            ).toString();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
     }
 }

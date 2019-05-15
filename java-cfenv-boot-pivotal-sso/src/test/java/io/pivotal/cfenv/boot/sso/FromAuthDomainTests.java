@@ -15,18 +15,26 @@
  */
 package io.pivotal.cfenv.boot.sso;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-public class IssuerUtilsTest {
+public class FromAuthDomainTests {
+
+    private CfSingleSignOnProcessor cfSingleSignOnProcessor;
+
+    @Before
+    public void setUp() {
+        cfSingleSignOnProcessor = new CfSingleSignOnProcessor();
+    }
 
     @Test
     public void testGetIssuerWithNonSystemZoneIssuer() {
         String authURI = "https://my-plan.login.run.pivotal.io";
 
-        String issuerUri = IssuerUtils.fromAuthDomain(authURI);
+        String issuerUri = cfSingleSignOnProcessor.fromAuthDomain(authURI);
 
         assertThat(issuerUri).isEqualTo("https://my-plan.uaa.run.pivotal.io");
     }
@@ -35,7 +43,7 @@ public class IssuerUtilsTest {
     public void testGetIssuerWithSystemZoneIssuer() {
         String authURI = "https://login.run.pivotal.io";
 
-        String issuerUri = IssuerUtils.fromAuthDomain(authURI);
+        String issuerUri = cfSingleSignOnProcessor.fromAuthDomain(authURI);
 
         assertThat(issuerUri).isEqualTo("https://uaa.run.pivotal.io");
     }
@@ -44,7 +52,7 @@ public class IssuerUtilsTest {
     public void testGetIssuerWithLoginBeforeSubdomainForSystemZone() {
         String authURIWithLoginBeforeSubdomain = "https://login:password@login.run.pivotal.io";
 
-        String issuerUri = IssuerUtils.fromAuthDomain(authURIWithLoginBeforeSubdomain);
+        String issuerUri = cfSingleSignOnProcessor.fromAuthDomain(authURIWithLoginBeforeSubdomain);
 
         assertThat(issuerUri).isEqualTo("https://login:password@uaa.run.pivotal.io");
     }
@@ -53,7 +61,7 @@ public class IssuerUtilsTest {
     public void testGetIssuerWithLoginWithDotBeforeSubdomainForSystemZone() {
         String authURIWithLoginBeforeSubdomain = "https://login.lastname:password@login.run.pivotal.io";
 
-        String issuerUri = IssuerUtils.fromAuthDomain(authURIWithLoginBeforeSubdomain);
+        String issuerUri = cfSingleSignOnProcessor.fromAuthDomain(authURIWithLoginBeforeSubdomain);
 
         assertThat(issuerUri).isEqualTo("https://login.lastname:password@uaa.run.pivotal.io");
     }
@@ -62,7 +70,7 @@ public class IssuerUtilsTest {
     public void testGetIssueWithLoginDuplicatedForNonSystemZone() {
         String authURIWithLoginBeforeSubdomain = "https://logincorp.login.run.pivotal.io";
 
-        String issuerUri = IssuerUtils.fromAuthDomain(authURIWithLoginBeforeSubdomain);
+        String issuerUri = cfSingleSignOnProcessor.fromAuthDomain(authURIWithLoginBeforeSubdomain);
 
         assertThat(issuerUri).isEqualTo("https://logincorp.uaa.run.pivotal.io");
     }
@@ -72,7 +80,7 @@ public class IssuerUtilsTest {
         String authUriMissingHost = "asdf";
 
         try {
-                IssuerUtils.fromAuthDomain(authUriMissingHost);
+            cfSingleSignOnProcessor.fromAuthDomain(authUriMissingHost);
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage()).isEqualTo("Unable to parse URI host from VCAP_SERVICES with label: \"p-identity\" and auth_domain: \"" + authUriMissingHost + "\"");
             return;
@@ -84,6 +92,6 @@ public class IssuerUtilsTest {
     public void testInvalidAuthUri() {
         String invalidAuthUri = "asdf^";
 
-        IssuerUtils.fromAuthDomain(invalidAuthUri);
+        cfSingleSignOnProcessor.fromAuthDomain(invalidAuthUri);
     }
 }
