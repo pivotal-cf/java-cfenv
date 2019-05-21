@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author David Turanski
  */
 public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
+	private final static int TLS_PORT = 11111;
 
 	public static void commonAssertions(Environment environment) {
 		assertThat(environment.getProperty("spring.redis.host")).isEqualTo(hostname);
@@ -35,46 +36,111 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 	}
 
 	@Test
-	public void testRedisBootProperties() {
-		mockVcapServices(getServicesPayload(
-				getRedisServicePayload("redis-1", hostname, port, password, "redis-db")
-		));
+	public void testRedisBootPropertiesWithoutUriInCredentials() {
+		String payload = payloadBuilder("test-redis-info.json").payload();
+		mockVcapServices(getServicesPayload(payload));
+
 		commonAssertions(getEnvironment());
 	}
 
 	@Test
-	public void testRedisSSlBootProperties() {
-		mockVcapServices(getServicesPayload(
-				getRedisServicePayloadNoLabelNoTags("redis-1", hostname, port, password, "redis-db")
-		));
+	public void testRedisBootPropertiesWithTLSEnabledInCredentials() {
+		String payload = payloadBuilder("test-redis-info-with-tls-port.json")
+				.withTLSPort(TLS_PORT)
+				.payload();
+		mockVcapServices(getServicesPayload(payload));
+
+		Environment environment = getEnvironment();
+
+		assertThat(environment.getProperty("spring.redis.host")).isEqualTo(hostname);
+		assertThat(environment.getProperty("spring.redis.port")).isEqualTo(String.valueOf(TLS_PORT));
+		assertThat(environment.getProperty("spring.redis.password")).isEqualTo(password);
+		assertThat(environment.getProperty("spring.redis.ssl")).isEqualTo("true");
+	}
+
+	@Test
+	public void testRedisSSlBootPropertiesWithUriInCredentials() {
+		String payload = payloadBuilder("test-redis-info-no-label-no-tags-secure.json").payload();
+		mockVcapServices(getServicesPayload(payload));
+
 		Environment environment = getEnvironment();
 		commonAssertions(environment);
 		assertThat(environment.getProperty("spring.redis.ssl")).isEqualTo("true");
 	}
 
+	@Test
+	public void testNoCredentials() {
+		String payload = "{}";
+		mockVcapServices(getServicesPayload(payload));
 
-	private String getRedisServicePayload(String serviceName,
-										  String hostname, int port,
-										  String password, String name) {
-		return getRedisServicePayload("test-redis-info.json", serviceName, hostname, port, password, name);
+		Environment environment = getEnvironment();
+
+		assertThat(environment.getProperty("spring.redis.host")).isNull();
+		assertThat(environment.getProperty("spring.redis.port")).isNull();
+		assertThat(environment.getProperty("spring.redis.password")).isNull();
+		assertThat(environment.getProperty("spring.redis.ssl")).isNull();
 	}
 
-	private String getRedisServicePayloadNoLabelNoTags(String serviceName,
-													   String hostname, int port,
-													   String password, String name) {
-		return getRedisServicePayload("test-redis-info-no-label-no-tags-secure.json", serviceName, hostname, port, password, name);
+	private RedisFilePayloadBuilder payloadBuilder(String filename) {
+		return new RedisFilePayloadBuilder(filename)
+				.withServiceName("redis-1")
+				.withHostname(hostname)
+				.withPassword(password)
+				.withPort(port)
+				.withName("redis-db");
 	}
 
-	private String getRedisServicePayload(String payloadFile, String serviceName,
-										  String hostname, int port,
-										  String password, String name) {
-		String payload = readTestDataFile(payloadFile);
-		payload = payload.replace("$serviceName", serviceName);
-		payload = payload.replace("$hostname", hostname);
-		payload = payload.replace("$port", Integer.toString(port));
-		payload = payload.replace("$password", password);
-		payload = payload.replace("$name", name);
+	private class RedisFilePayloadBuilder {
+		private String payload;
+		private String serviceName;
+		private String hostname;
+		private Integer port;
+		private Integer tlsPort;
+		private String password;
+		private String name;
 
-		return payload;
+		RedisFilePayloadBuilder(String filename) {
+			this.payload = readTestDataFile(filename);
+		}
+
+		RedisFilePayloadBuilder withServiceName(String serviceName) {
+			this.serviceName = serviceName;
+			return this;
+		}
+
+		RedisFilePayloadBuilder withHostname(String hostname) {
+			this.hostname = hostname;
+			return this;
+		}
+
+		RedisFilePayloadBuilder withPort(int port) {
+			this.port = port;
+			return this;
+		}
+
+		RedisFilePayloadBuilder withPassword(String password) {
+			this.password = password;
+			return this;
+		}
+
+		RedisFilePayloadBuilder withTLSPort(int tlsPort) {
+			this.tlsPort = tlsPort;
+			return this;
+		}
+
+		RedisFilePayloadBuilder withName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		String payload() {
+			return payload.replace("$serviceName", serviceName)
+					.replace("$hostname", hostname)
+					.replace("$port", String.valueOf(port))
+					.replace("$password", password)
+					.replace("$tls_port", String.valueOf(tlsPort))
+					.replace("$name", name);
+		}
+
 	}
 }
