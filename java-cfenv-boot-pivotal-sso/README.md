@@ -26,7 +26,7 @@ Note: ssoServiceUrl refers to the service uri corresponding to a Pivotal Single 
 You will very likely need to configure 2 addition Spring Security 5 properties in order to satisfy the full configuration of and OAuth2/OIDC client:
 
 ```
-# The grant type used in the /authorize call by Spring Security 5
+# The grant type used in the call by Spring Security 5
 spring.security.oauth2.client.registration.sso.client-id.authorization-grant-type
 
 # The scopes requested when obtaining a token by Spring Security 5
