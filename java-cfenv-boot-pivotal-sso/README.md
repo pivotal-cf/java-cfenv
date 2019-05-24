@@ -35,7 +35,7 @@ spring.security.oauth2.client.registration.sso.client-id.sso.scope: openid, emai
 
 Note: You may also use the environment variables rather than Java properties directly that will undergo the standard Spring Boot property transformation (e.g. SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_SSO_AUTHORIZATIONGRANTTYPE).
 
-Please see the Sample Apps below for more invormation.
+Please see the Sample Apps below for more information.
 
 ### Sample Apps
 
