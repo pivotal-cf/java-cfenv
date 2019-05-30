@@ -16,6 +16,7 @@
 package io.pivotal.cfenv.spring.boot;
 
 import java.util.Map;
+import java.util.Optional;
 
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
@@ -46,8 +47,15 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 
 		if (uri == null) {
 			properties.put("spring.redis.host", cfCredentials.getHost());
-			properties.put("spring.redis.port", cfCredentials.getPort());
 			properties.put("spring.redis.password", cfCredentials.getPassword());
+
+			Optional<String> tlsPort = Optional.ofNullable(cfCredentials.getString("tls_port"));
+			if (tlsPort.isPresent()) {
+				properties.put("spring.redis.port", tlsPort.get());
+				properties.put("spring.redis.ssl", "true");
+			} else {
+				properties.put("spring.redis.port", cfCredentials.getPort());
+			}
 		} else {
 			UriInfo uriInfo = new UriInfo(uri);
 			properties.put("spring.redis.host", uriInfo.getHost());
