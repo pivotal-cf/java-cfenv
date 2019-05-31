@@ -28,7 +28,7 @@ If you want to use snapshot versions, use the following coordinates
 <dependency>
   <groupId>io.pivotal.cfenv</groupId>
   <artifactId>java-cfenv-boot</artifactId>
-  <version>1.0.2.BUILD-SNAPSHOT</version>
+  <version>1.1.0.BUILD-SNAPSHOT</version>
 </dependency>
 ----
 
