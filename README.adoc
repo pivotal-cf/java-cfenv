@@ -18,7 +18,7 @@ You can access the stable release from maven central using the coordinates
 <dependency>
   <groupId>io.pivotal.cfenv</groupId>
   <artifactId>java-cfenv-boot</artifactId>
-  <version>1.0.0.RELEASE</version>
+  <version>1.0.1.RELEASE</version>
 </dependency>
 ----
 
@@ -28,7 +28,7 @@ If you want to use snapshot versions, use the following coordinates
 <dependency>
   <groupId>io.pivotal.cfenv</groupId>
   <artifactId>java-cfenv-boot</artifactId>
-  <version>1.0.1.BUILD-SNAPSHOT</version>
+  <version>1.0.2.BUILD-SNAPSHOT</version>
 </dependency>
 ----
 
@@ -250,8 +250,9 @@ The list of supported services are:
 * MongnoDB
 * Redis
 
-There are two other modules that contain support for Pivotal's Spring Cloud Service and Single Sign on tiles.
-The `java-cfenv-boot-pivotal-scs` module provides support for Config Server and `java-cfenv-boot-pivotal-sso` module provides support for single sign on.
+There are two other modules that contain support for *Pivotal's Spring Cloud Service* and *Single Sign-On Service* tiles.
+
+The `java-cfenv-boot-pivotal-scs` module provides support for Config Server and `java-cfenv-boot-pivotal-sso` module provides support for single sign on.  You can read more about the integration with the Pivotal Single Sign-On Service in the https://github.com/pivotal-cf/java-cfenv/blob/master/java-cfenv-boot-pivotal-sso/README.md[readme] for that module.
 
 Note that the `scs` module is not working correctly in the 1.0.0.RELEASE, use snapshot builds until the next point release is made.
 
