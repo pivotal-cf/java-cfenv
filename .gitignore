@@ -35,3 +35,6 @@ spring-*/src/main/java/META-INF/MANIFEST.MF
 *.iws
 .idea/
 rebel.xml
+
+# VSCode artifacts
+.vscode/

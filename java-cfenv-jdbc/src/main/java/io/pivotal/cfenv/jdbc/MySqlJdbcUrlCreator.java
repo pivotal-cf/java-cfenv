@@ -44,7 +44,19 @@ public class MySqlJdbcUrlCreator extends AbstractJdbcUrlCreator {
 
 	@Override
 	public String getDriverClassName() {
-		return "org.mariadb.jdbc.Driver";
+		String driverClassNameToUse = null;
+		try {
+			driverClassNameToUse = "org.mariadb.jdbc.Driver";
+			Class.forName(driverClassNameToUse, false, getClass().getClassLoader());
+		} catch (ClassNotFoundException e) {
+			try {
+				driverClassNameToUse = "com.mysql.cj.jdbc.Driver";
+				Class.forName(driverClassNameToUse, false, getClass().getClassLoader());
+			} catch (ClassNotFoundException e2) {
+				return null;
+			}
+		}
+		return driverClassNameToUse;
 	}
 
 	@Override

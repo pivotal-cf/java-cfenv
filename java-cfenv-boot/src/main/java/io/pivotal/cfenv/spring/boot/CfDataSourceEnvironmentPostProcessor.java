@@ -79,8 +79,10 @@ public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProc
 				properties.put("spring.datasource.url", cfJdbcService.getUrl());
 				properties.put("spring.datasource.username", cfJdbcService.getUsername());
 				properties.put("spring.datasource.password", cfJdbcService.getPassword());
-				properties.put("spring.datasource.driver-class-name",
-						cfJdbcService.getDriverClassName());
+				Object driverClassName = cfJdbcService.getDriverClassName();
+				if (driverClassName != null) {
+					properties.put("spring.datasource.driver-class-name", driverClassName);
+				}
 
 				MutablePropertySources propertySources = environment.getPropertySources();
 				if (propertySources.contains(
