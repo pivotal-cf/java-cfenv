@@ -37,6 +37,7 @@ import org.springframework.core.env.MutablePropertySources;
 
 /**
  * @author Mark Pollack
+ * @author Thomas Risberg
  */
 public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProcessor,
 		Ordered, ApplicationListener<ApplicationEvent> {
@@ -80,7 +81,7 @@ public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProc
 				properties.put("spring.datasource.username", cfJdbcService.getUsername());
 				properties.put("spring.datasource.password", cfJdbcService.getPassword());
 				Object driverClassName = cfJdbcService.getDriverClassName();
-				if (driverClassName != null) {
+				if (driverClassName != null && ((String)driverClassName).startsWith("org.mariadb.jdbc")) {
 					properties.put("spring.datasource.driver-class-name", driverClassName);
 				}
 

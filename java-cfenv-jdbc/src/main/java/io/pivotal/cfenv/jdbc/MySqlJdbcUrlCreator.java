@@ -21,6 +21,7 @@ import io.pivotal.cfenv.core.UriInfo;
 
 /**
  * @author Mark Pollack
+ * @author Thomas Risberg
  */
 public class MySqlJdbcUrlCreator extends AbstractJdbcUrlCreator {
 
@@ -46,11 +47,11 @@ public class MySqlJdbcUrlCreator extends AbstractJdbcUrlCreator {
 	public String getDriverClassName() {
 		String driverClassNameToUse = null;
 		try {
-			driverClassNameToUse = "org.mariadb.jdbc.Driver";
+			driverClassNameToUse = "com.mysql.cj.jdbc.Driver";
 			Class.forName(driverClassNameToUse, false, getClass().getClassLoader());
 		} catch (ClassNotFoundException e) {
 			try {
-				driverClassNameToUse = "com.mysql.cj.jdbc.Driver";
+				driverClassNameToUse = "org.mariadb.jdbc.Driver";
 				Class.forName(driverClassNameToUse, false, getClass().getClassLoader());
 			} catch (ClassNotFoundException e2) {
 				return null;
