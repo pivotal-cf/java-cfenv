@@ -11,6 +11,7 @@ io.pivotal.cfenv.spring.boot.CfEnvProcessor=\
   io.pivotal.cfenv.spring.boot.RedisCfEnvProcessor,\
   io.pivotal.cfenv.spring.boot.MongoCfEnvProcessor,\
   io.pivotal.cfenv.spring.boot.AmqpCfEnvProcessor,\
+  io.pivotal.cfenv.spring.boot.CredHubCfEnvProcessor,\
   io.pivotal.cfenv.spring.boot.CassandraCfEnvProcessor
 
 

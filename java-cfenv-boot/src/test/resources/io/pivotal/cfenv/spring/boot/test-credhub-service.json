@@ -1,0 +1,20 @@
+{
+  "credhub": [
+	{
+	  "binding_name": null,
+	  "credentials": {
+		"some.external.service.password": "p4ssw0rd"
+	  },
+	  "instance_name": "credhub",
+	  "label": "credhub",
+	  "name": "credhub",
+	  "plan": "default",
+	  "provider": null,
+	  "syslog_drain_url": null,
+	  "tags": [
+		"credhub"
+	  ],
+	  "volume_mounts": []
+	}
+  ]
+}
