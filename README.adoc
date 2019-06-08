@@ -230,6 +230,7 @@ The list of supported services are:
 * Cassandara
 * MongoDB
 * Redis
+* CredHub
 
 If, for any reason, you need to disable processing of a specific service instance, you can do so by setting the following flag in your application properties:
 [source]
