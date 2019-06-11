@@ -16,6 +16,8 @@
 package io.pivotal.cfenv.spring.boot;
 
 import io.pivotal.cfenv.test.AbstractCfEnvTests;
+import mockit.Mock;
+import mockit.MockUp;
 import org.junit.Test;
 
 import org.springframework.boot.Banner;
@@ -26,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 /**
  * @author Mark Pollack
@@ -33,7 +36,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MongoCfEnvProcessorTests extends AbstractCfEnvTests {
 
 	@Test
+	public void testWithConnectorLibraryOnCP() {
+		mockConnectorLibrary(true);
+		mockVcapServices(getServicesPayload(
+				getMongoServicePayload("mongo-1", hostname, port, username, password, "inventory-1", "db")
+		));
+		// Note, the exception is actually thrown from the CfDataSourceEnvironmentPostProcessor
+		assertThatIllegalStateException().isThrownBy( () ->  getEnvironment().getProperty("spring.data.mongodb.uri"))
+				.withMessage(ConnectorLibraryDetector.MESSAGE);
+	}
+
+	@Test
 	public void mongoServiceCreation() {
+		mockConnectorLibrary(false);
 		mockVcapServices(getServicesPayload(
 				getMongoServicePayload("mongo-1", hostname, port, username, password, "inventory-1", "db")
 		));
@@ -42,6 +57,7 @@ public class MongoCfEnvProcessorTests extends AbstractCfEnvTests {
 
 	@Test
 	public void mongoServiceCreationNoLabelNoTags() {
+		mockConnectorLibrary(false);
 		mockVcapServices(getServicesPayload(
 				getMongoServicePayloadNoLabelNoTags("mongo-1", hostname, port, username, password, "inventory-1", "db")
 		));
@@ -54,6 +70,15 @@ public class MongoCfEnvProcessorTests extends AbstractCfEnvTests {
 		builder.bannerMode(Banner.Mode.OFF);
 		ApplicationContext applicationContext = builder.run();
 		return applicationContext.getEnvironment();
+	}
+
+	private MockUp<?> mockConnectorLibrary(boolean isUsingConnectorLibrary) {
+		return new MockUp<ConnectorLibraryDetector>() {
+			@Mock
+			public boolean isUsingConnectorLibrary() {
+				return isUsingConnectorLibrary;
+			}
+		};
 	}
 
 	@SpringBootApplication

@@ -26,7 +26,7 @@ import org.springframework.util.StringUtils;
 /**
  * @author Mark Pollack
  */
-public class CassandraCfEnvProcessor implements CfEnvProcessor {
+public class CassandraCfEnvProcessor extends AbstractCfEnvProcessor {
 
 	@Override
 	public boolean accept(CfService service) {
@@ -40,9 +40,11 @@ public class CassandraCfEnvProcessor implements CfEnvProcessor {
 		properties.put("spring.data.cassandra.password", cfCredentials.getPassword());
 		properties.put("spring.data.cassandra.port", cfCredentials.getMap().get("cqlsh_port"));
 		ArrayList<String> contactPoints = (ArrayList<String>) cfCredentials.getMap().get("node_ips");
-		properties.put("spring.data.cassandra.contact-points", StringUtils.collectionToCommaDelimitedString(contactPoints));
+		properties.put("spring.data.cassandra.contact-points",
+				StringUtils.collectionToCommaDelimitedString(contactPoints));
 
 	}
+
 	private boolean cassandraCredentialsPresent(Map<String, Object> credentials) {
 		return credentials != null &&
 				credentials.containsKey("cqlsh_port") &&

@@ -22,16 +22,16 @@ import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.core.UriInfo;
 
-
 /**
- * Retrieve Redis properties from {@link CfCredentials} and set {@literal spring.redis} Boot properties.
+ * Retrieve Redis properties from {@link CfCredentials} and set {@literal spring.redis}
+ * Boot properties.
  *
  * @author Mark Pollack
  * @author Scott Frederick
  */
-public class RedisCfEnvProcessor implements CfEnvProcessor {
+public class RedisCfEnvProcessor extends AbstractCfEnvProcessor {
 
-	private static String[] redisSchemes = {"redis", "rediss"};
+	private static String[] redisSchemes = { "redis", "rediss" };
 
 	@Override
 	public boolean accept(CfService service) {
@@ -53,10 +53,12 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 			if (tlsPort.isPresent()) {
 				properties.put("spring.redis.port", tlsPort.get());
 				properties.put("spring.redis.ssl", "true");
-			} else {
+			}
+			else {
 				properties.put("spring.redis.port", cfCredentials.getPort());
 			}
-		} else {
+		}
+		else {
 			UriInfo uriInfo = new UriInfo(uri);
 			properties.put("spring.redis.host", uriInfo.getHost());
 			properties.put("spring.redis.port", uriInfo.getPort());
