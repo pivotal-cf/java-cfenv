@@ -252,7 +252,7 @@ The list of supported services are:
 
 There are two other modules that contain support for *Pivotal's Spring Cloud Service* and *Single Sign-On Service* tiles.
 
-The `java-cfenv-boot-pivotal-scs` module provides support for Config Server and `java-cfenv-boot-pivotal-sso` module provides support for single sign on.  You can read more about the integration with the Pivotal Single Sign-On Service in the https://github.com/pivotal-cf/java-cfenv/blob/master/java-cfenv-boot-pivotal-sso/README.md[readme] for that module.
+The `java-cfenv-boot-pivotal-scs` module provides support for Config Server and `java-cfenv-boot-pivotal-sso` module provides support for single sign on.  You can read more about the integration with the Pivotal Single Sign-On Service in the https://github.com/pivotal-cf/java-cfenv/blob/master/java-cfenv-boot-pivotal-sso/README.md[SSO library readme] for that module.
 
 Note that the `scs` module is not working correctly in the 1.0.0.RELEASE, use snapshot builds until the next point release is made.
 

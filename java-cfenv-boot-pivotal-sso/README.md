@@ -1,11 +1,11 @@
-# Spring Cloud SSO Starter library
+# Spring Cloud SSO support
 
-The Spring Cloud SSO Starter library is for use with the Pivotal Single Sign-On Service on Cloud Foundry. This library uses VCAP_SERVICES environment data to set Spring Security 5.x properties, thus removing much of manual Spring Security 5 boilerplate OAuth2/OIDC client configuration.
+The Spring Cloud SSO support is for use with the Pivotal Single Sign-On Service on Cloud Foundry.
+This library uses the `VCAP_SERVICES` environment data to set Spring Security 5.x properties, thus removing much of manual Spring Security 5 boilerplate OAuth2/OIDC client configuration.
 
 ### Spring Applications
 
-Spring Applications can use this connector to auto-configure its OAuth 2.0 client
-which enables the application with the Pivotal Single Sign-On Service
+Spring Applications can use this connector to auto-configure Spring Security's OAuth 2.0 client which enables the application with the Pivotal Single Sign-On Service.
 
 This service provides the following properties to your spring application:
 
