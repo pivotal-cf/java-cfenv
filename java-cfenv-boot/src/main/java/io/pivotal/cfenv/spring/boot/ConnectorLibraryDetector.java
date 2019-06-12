@@ -30,7 +30,8 @@ public abstract class ConnectorLibraryDetector {
 
 	static {
 		ClassLoader classLoader = ConnectorLibraryDetector.class.getClassLoader();
-		usingConnectorLibrary = ClassUtils.isPresent("org.springframework.cloud.Cloud", classLoader);
+		usingConnectorLibrary = ClassUtils.isPresent("org.springframework.cloud.Cloud", classLoader) ||
+				ClassUtils.isPresent("org.cloudfoundry.reconfiguration.org.springframework.cloud.Cloud", classLoader);
 	}
 
 	static boolean isUsingConnectorLibrary() {
