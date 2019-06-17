@@ -29,16 +29,20 @@ import io.pivotal.cfenv.core.UriInfo;
  * @author Mark Pollack
  * @author Scott Frederick
  */
-public class RedisCfEnvProcessor extends AbstractCfEnvProcessor {
+public class RedisCfEnvProcessor implements CfEnvProcessor {
 
 	private static String[] redisSchemes = { "redis", "rediss" };
 
 	@Override
 	public boolean accept(CfService service) {
-		return service.existsByTagIgnoreCase("redis") ||
+		boolean serviceIsBound = service.existsByTagIgnoreCase("redis") ||
 				service.existsByLabelStartsWith("rediscloud") ||
 				service.existsByUriSchemeStartsWith(redisSchemes) ||
 				service.existsByCredentialsContainsUriField(redisSchemes);
+		if (serviceIsBound) {
+			ConnectorLibraryDetector.assertNoConnectorLibrary();
+		}
+		return serviceIsBound;
 	}
 
 	@Override

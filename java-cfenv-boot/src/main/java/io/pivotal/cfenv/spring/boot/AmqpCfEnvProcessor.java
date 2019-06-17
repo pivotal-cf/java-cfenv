@@ -32,17 +32,21 @@ import org.springframework.util.StringUtils;
  * @author David Turanski
  * @author Scott Frederick
  **/
-public class AmqpCfEnvProcessor extends AbstractCfEnvProcessor {
+public class AmqpCfEnvProcessor implements CfEnvProcessor {
 
 	private static String[] amqpSchemes = new String[] { "amqp", "amqps" };
 
 	@Override
 	public boolean accept(CfService service) {
-		return service.existsByTagIgnoreCase("rabbitmq", "amqp") ||
+		boolean serviceIsBound = service.existsByTagIgnoreCase("rabbitmq", "amqp") ||
 				service.existsByLabelStartsWith("rabbitmq") ||
 				service.existsByLabelStartsWith("cloudamqp") ||
 				service.existsByUriSchemeStartsWith(amqpSchemes) ||
 				service.existsByCredentialsContainsUriField(amqpSchemes);
+		if (serviceIsBound) {
+			ConnectorLibraryDetector.assertNoConnectorLibrary();
+		}
+		return serviceIsBound;
 	}
 
 	@Override

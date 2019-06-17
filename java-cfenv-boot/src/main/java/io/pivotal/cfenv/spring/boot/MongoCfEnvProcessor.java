@@ -27,16 +27,20 @@ import io.pivotal.cfenv.core.CfService;
  * @author Mark Pollack
  * @author Scott Frederick
  */
-public class MongoCfEnvProcessor extends AbstractCfEnvProcessor {
+public class MongoCfEnvProcessor implements CfEnvProcessor {
 
 	private static String mongoScheme = "mongodb";
 
 	@Override
 	public boolean accept(CfService service) {
-		return service.existsByTagIgnoreCase("mongodb") ||
+		boolean serviceIsBound = service.existsByTagIgnoreCase("mongodb") ||
 				service.existsByLabelStartsWith("mongolab") ||
 				service.existsByUriSchemeStartsWith(mongoScheme) ||
 				service.existsByCredentialsContainsUriField(mongoScheme);
+		if (serviceIsBound) {
+			ConnectorLibraryDetector.assertNoConnectorLibrary();
+		}
+		return serviceIsBound;
 	}
 
 	@Override

@@ -26,12 +26,16 @@ import org.springframework.util.StringUtils;
 /**
  * @author Mark Pollack
  */
-public class CassandraCfEnvProcessor extends AbstractCfEnvProcessor {
+public class CassandraCfEnvProcessor implements CfEnvProcessor {
 
 	@Override
 	public boolean accept(CfService service) {
-		return service.existsByTagIgnoreCase("cassandra") &&
+		boolean serviceIsBound = service.existsByTagIgnoreCase("cassandra") &&
 				cassandraCredentialsPresent(service.getCredentials().getMap());
+		if (serviceIsBound) {
+			ConnectorLibraryDetector.assertNoConnectorLibrary();
+		}
+		return serviceIsBound;
 	}
 
 	@Override

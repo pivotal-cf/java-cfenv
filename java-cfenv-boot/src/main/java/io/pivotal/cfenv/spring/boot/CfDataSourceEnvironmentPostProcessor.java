@@ -59,7 +59,6 @@ public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProc
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment,
 			SpringApplication application) {
-		ConnectorLibraryDetector.assertNoConnectorLibrary();
 		increaseInvocationCount();
 		if (CloudPlatform.CLOUD_FOUNDRY.isActive(environment)) {
 			CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
@@ -76,6 +75,7 @@ public class CfDataSourceEnvironmentPostProcessor implements EnvironmentPostProc
 				return;
 			}
 			if (cfJdbcService != null) {
+				ConnectorLibraryDetector.assertNoConnectorLibrary();
 				Map<String, Object> properties = new LinkedHashMap<>();
 				properties.put("spring.datasource.url", cfJdbcService.getUrl());
 				properties.put("spring.datasource.username", cfJdbcService.getUsername());
