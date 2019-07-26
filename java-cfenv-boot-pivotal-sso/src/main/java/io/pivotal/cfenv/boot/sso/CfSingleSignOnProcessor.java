@@ -17,7 +17,11 @@ package io.pivotal.cfenv.boot.sso;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
@@ -26,12 +30,19 @@ import io.pivotal.cfenv.spring.boot.CfEnvProcessorProperties;
 
 /**
  * @author Pivotal Application Single Sign-On
+ * Mapping values for // https://docs.spring.io/spring-security/site/docs/current/reference/html5/#oauth2login-boot-property-mappings
  */
 public class CfSingleSignOnProcessor implements CfEnvProcessor {
     private static final String PIVOTAL_SSO_LABEL = "p-identity";
     private static final String SPRING_SECURITY_CLIENT = "spring.security.oauth2.client";
-    private static final String SSO_CLIENT_NAME = "sso";
+    private static final String PROVIDER_ID = "sso";
+    private static final String BASE_CLIENT_REGISTRATION_ID = "sso";
+    private static final String AUTHCODE_CLIENT_REGISTRATION_ID = BASE_CLIENT_REGISTRATION_ID + "authorizationcode";
+    private static final String CLIENTCRED_CLIENT_REGISTRATION_ID = BASE_CLIENT_REGISTRATION_ID + "clientcredentials";
     private static final String SSO_SERVICE = "ssoServiceUrl";
+    private static final String AUTHORIZATION_CODE = "authorization_code";
+    private static final String CLIENT_CREDENTIALS = "client_credentials";
+    private static final Set<String> AUTH_CODE_AND_CLIENT_CREDS = new HashSet<>(Arrays.asList(AUTHORIZATION_CODE, CLIENT_CREDENTIALS));
 
     @Override
     public boolean accept(CfService service) {
@@ -46,12 +57,36 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         String issuer = fromAuthDomain(authDomain);
 
         properties.put(SSO_SERVICE, authDomain);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-id", clientId);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-secret", clientSecret);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-name", SSO_CLIENT_NAME);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.redirect-uri", "{baseUrl}/login/oauth2/code/{registrationId}");
-        properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.issuer-uri", issuer + "/oauth/token");
-        properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.authorization-uri", authDomain + "/oauth/authorize");
+        properties.put(SPRING_SECURITY_CLIENT + ".provider." + PROVIDER_ID + ".issuer-uri", issuer + "/oauth/token");
+        properties.put(SPRING_SECURITY_CLIENT + ".provider." + PROVIDER_ID + ".authorization-uri", authDomain + "/oauth/authorize");
+
+        ArrayList<String> grantTypes = (ArrayList<String>) cfCredentials.getMap().get("grant_types");
+        if (grantTypes != null && isAuthCodeAndClientCreds(grantTypes)) {
+            mapBasicClientProperties(properties, AUTHCODE_CLIENT_REGISTRATION_ID, clientId, clientSecret);
+            properties.put(SPRING_SECURITY_CLIENT + ".registration." + AUTHCODE_CLIENT_REGISTRATION_ID + ".authorization-grant-type", AUTHORIZATION_CODE);
+
+            mapBasicClientProperties(properties, CLIENTCRED_CLIENT_REGISTRATION_ID, clientId, clientSecret);
+            properties.put(SPRING_SECURITY_CLIENT + ".registration." + CLIENTCRED_CLIENT_REGISTRATION_ID + ".authorization-grant-type", CLIENT_CREDENTIALS);
+        } else if (grantTypes != null && grantTypes.size() == 1) { // if one grant type
+            mapBasicClientProperties(properties, BASE_CLIENT_REGISTRATION_ID, clientId, clientSecret);
+            String grantType = grantTypes.get(0);
+            properties.put(SPRING_SECURITY_CLIENT + ".registration." + BASE_CLIENT_REGISTRATION_ID + ".authorization-grant-type", grantType);
+        } else { // if grant type is empty, invalid combo, or more than 2 grant types
+            mapBasicClientProperties(properties, BASE_CLIENT_REGISTRATION_ID, clientId, clientSecret);
+        }
+    }
+
+    private boolean isAuthCodeAndClientCreds(ArrayList<String> grantTypes) {
+        return (new HashSet<>(grantTypes)).equals(AUTH_CODE_AND_CLIENT_CREDS);
+    }
+
+    private void mapBasicClientProperties(Map<String, Object> properties, String clientRegistrationId, String clientId, String clientSecret) {
+        String registrationPrefix = SPRING_SECURITY_CLIENT + ".registration." + clientRegistrationId;
+        properties.put(registrationPrefix + ".client-id", clientId);
+        properties.put(registrationPrefix + ".client-secret", clientSecret);
+        properties.put(registrationPrefix + ".client-name", clientRegistrationId);
+        properties.put(registrationPrefix + ".redirect-uri", "{baseUrl}/login/oauth2/code/{registrationId}");
+        properties.put(registrationPrefix + ".provider", PROVIDER_ID);
     }
 
     @Override
@@ -61,13 +96,13 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
                 .serviceName("Single Sign On").build();
     }
 
-    public String fromAuthDomain(String authUri) {
+    String fromAuthDomain(String authUri) {
         URI uri = URI.create(authUri);
 
         String host = uri.getHost();
 
         if (host == null) {
-            throw new IllegalArgumentException("Unable to parse URI host from VCAP_SERVICES with label: \"" + PIVOTAL_SSO_LABEL + "\" and auth_domain: \"" + authUri +"\"");
+            throw new IllegalArgumentException("Unable to parse URI host from VCAP_SERVICES with label: \"" + PIVOTAL_SSO_LABEL + "\" and auth_domain: \"" + authUri + "\"");
         }
 
         String issuerHost = uri.getHost().replaceFirst("login\\.", "uaa.");
