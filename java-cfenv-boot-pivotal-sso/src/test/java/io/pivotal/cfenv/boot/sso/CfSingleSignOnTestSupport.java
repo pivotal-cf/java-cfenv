@@ -30,6 +30,19 @@ public class CfSingleSignOnTestSupport extends AbstractCfEnvTests {
                 .replace("$authDomain", authDomain);
     }
 
+    String getSsoServicePayload(String authDomain, String grantType) {
+        return readTestDataFile("test-identity-with-one-grant-types.json")
+                .replace("$authDomain", authDomain)
+                .replace("$grantType", grantType);
+    }
+
+    String getSsoServicePayload(String authDomain, String grantType1, String grantType2) {
+        return readTestDataFile("test-identity-with-two-grant-types.json")
+                .replace("$authDomain", authDomain)
+                .replace("$grantType-1", grantType1)
+                .replace("$grantType-2", grantType2);
+    }
+
     public static MockUp<?> mockSpringSecurityDetector(boolean isPresent, boolean isLegacyPresent) {
         return new MockUp<SpringSecurityDetector>() {
             @Mock

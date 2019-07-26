@@ -17,7 +17,11 @@ package io.pivotal.cfenv.boot.sso;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
@@ -26,12 +30,18 @@ import io.pivotal.cfenv.spring.boot.CfEnvProcessorProperties;
 
 /**
  * @author Pivotal Application Single Sign-On
+ * Mapping values for // https://docs.spring.io/spring-security/site/docs/current/reference/html5/#oauth2login-boot-property-mappings
  */
 public class CfSingleSignOnProcessor implements CfEnvProcessor {
     private static final String PIVOTAL_SSO_LABEL = "p-identity";
     private static final String SPRING_SECURITY_CLIENT = "spring.security.oauth2.client";
-    private static final String SSO_CLIENT_NAME = "sso";
+    private static final String BASE_CLIENT_REGISTRATION_ID = "sso";
+    private static final String AUTHCODE_CLIENT_REGISTRATION_ID = BASE_CLIENT_REGISTRATION_ID + "authorizationcode";
+    private static final String CLIENTCRED_CLIENT_REGISTRATION_ID = BASE_CLIENT_REGISTRATION_ID + "clientcredentials";
     private static final String SSO_SERVICE = "ssoServiceUrl";
+    private static final String AUTHORIZATION_CODE = "authorization_code";
+    private static final String CLIENT_CREDENTIALS = "client_credentials";
+    private static final Set<String> VALID_MULTI_GRANT_COMBO = new HashSet<>(Arrays.asList(AUTHORIZATION_CODE, CLIENT_CREDENTIALS));
 
     @Override
     public boolean accept(CfService service) {
@@ -44,14 +54,41 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         String clientSecret = cfCredentials.getString("client_secret");
         String authDomain = cfCredentials.getString("auth_domain");
         String issuer = fromAuthDomain(authDomain);
+        ArrayList<String> grantTypes = (ArrayList<String>) cfCredentials.getMap().get("grant_types");
 
-        properties.put(SSO_SERVICE, authDomain);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-id", clientId);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-secret", clientSecret);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.client-name", SSO_CLIENT_NAME);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration.sso.redirect-uri", "{baseUrl}/login/oauth2/code/{registrationId}");
-        properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.issuer-uri", issuer + "/oauth/token");
-        properties.put(SPRING_SECURITY_CLIENT + ".provider.sso.authorization-uri", authDomain + "/oauth/authorize");
+        if (grantTypes != null && grantTypes.size() == 2 && isValidGrantTypesCombo(grantTypes)) {
+            properties.put(SSO_SERVICE, authDomain);
+
+            mapBasicClientProperties(properties, clientId, clientSecret, authDomain, issuer, AUTHCODE_CLIENT_REGISTRATION_ID);
+            properties.put(SPRING_SECURITY_CLIENT + ".registration." + AUTHCODE_CLIENT_REGISTRATION_ID + ".authorization-grant-type", AUTHORIZATION_CODE);
+
+            mapBasicClientProperties(properties, clientId, clientSecret, authDomain, issuer, CLIENTCRED_CLIENT_REGISTRATION_ID);
+            properties.put(SPRING_SECURITY_CLIENT + ".registration." + CLIENTCRED_CLIENT_REGISTRATION_ID + ".authorization-grant-type", CLIENT_CREDENTIALS);
+            properties.put(SPRING_SECURITY_CLIENT + ".registration." + CLIENTCRED_CLIENT_REGISTRATION_ID + ".provider", AUTHCODE_CLIENT_REGISTRATION_ID); // TODO it seems odd that ssoclientcredentials's provider needs to be set to ssoauthorizationcode
+
+        } else if (grantTypes != null && grantTypes.size() == 1) { // if one grant type
+            String grantType = grantTypes.get(0);
+            properties.put(SSO_SERVICE, authDomain);
+            mapBasicClientProperties(properties, clientId, clientSecret, authDomain, issuer, BASE_CLIENT_REGISTRATION_ID);
+            properties.put(SPRING_SECURITY_CLIENT + ".registration." + BASE_CLIENT_REGISTRATION_ID + ".authorization-grant-type", grantType);
+
+        } else { // if grant type is empty, invalid combo, or more than 2 grant types
+            properties.put(SSO_SERVICE, authDomain);
+            mapBasicClientProperties(properties, clientId, clientSecret, authDomain, issuer, BASE_CLIENT_REGISTRATION_ID);
+        }
+    }
+
+    private boolean isValidGrantTypesCombo(ArrayList<String> grantTypes) {
+        return (new HashSet<>(grantTypes)).equals(VALID_MULTI_GRANT_COMBO);
+    }
+
+    private void mapBasicClientProperties(Map<String, Object> properties, String clientId, String clientSecret, String authDomain, String issuer, String clientRegistrationId) {
+        properties.put(SPRING_SECURITY_CLIENT + ".registration." + clientRegistrationId + ".client-id", clientId);
+        properties.put(SPRING_SECURITY_CLIENT + ".registration." + clientRegistrationId + ".client-secret", clientSecret);
+        properties.put(SPRING_SECURITY_CLIENT + ".registration." + clientRegistrationId + ".client-name", clientRegistrationId);
+        properties.put(SPRING_SECURITY_CLIENT + ".registration." + clientRegistrationId + ".redirect-uri", "{baseUrl}/login/oauth2/code/{registrationId}");
+        properties.put(SPRING_SECURITY_CLIENT + ".provider." + clientRegistrationId + ".issuer-uri", issuer + "/oauth/token");
+        properties.put(SPRING_SECURITY_CLIENT + ".provider." + clientRegistrationId + ".authorization-uri", authDomain + "/oauth/authorize");
     }
 
     @Override
@@ -67,7 +104,7 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         String host = uri.getHost();
 
         if (host == null) {
-            throw new IllegalArgumentException("Unable to parse URI host from VCAP_SERVICES with label: \"" + PIVOTAL_SSO_LABEL + "\" and auth_domain: \"" + authUri +"\"");
+            throw new IllegalArgumentException("Unable to parse URI host from VCAP_SERVICES with label: \"" + PIVOTAL_SSO_LABEL + "\" and auth_domain: \"" + authUri + "\"");
         }
 
         String issuerHost = uri.getHost().replaceFirst("login\\.", "uaa.");

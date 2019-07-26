@@ -58,6 +58,98 @@ public class CfSingleSignOnProcessorTest extends CfSingleSignOnTestSupport {
     }
 
     @Test
+    public void testBasicSpringSecurityPropertiesWithSingleGrantType() {
+        String authDomain = "https://my-plan.login.run.pivotal.io";
+        String grantType = "authorization_code";
+        System.out.println(getServicesPayload(getSsoServicePayload(authDomain, grantType)));
+        mockVcapServices(getServicesPayload(getSsoServicePayload(authDomain, grantType)));
+        Environment env = getEnvironment();
+
+        assertThat(env.getProperty("ssoServiceUrl"))
+                .isEqualTo(authDomain);
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.sso.client-id"))
+                .isEqualTo("my-sso-client-id");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.sso.client-secret"))
+                .isEqualTo("my-sso-client-secret");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.sso.client-name"))
+                .isEqualTo("sso");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.sso.redirect-uri"))
+                .isEqualTo("{baseUrl}/login/oauth2/code/{registrationId}");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.provider.sso.authorization-uri"))
+                .isEqualTo(authDomain + "/oauth/authorize");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.sso.authorization-grant-type"))
+                .isEqualTo("authorization_code");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.provider.sso.issuer-uri"))
+                .isEqualTo("https://my-plan.uaa.run.pivotal.io/oauth/token");
+    }
+
+    @Test
+    public void testBasicSpringSecurityPropertiesWithTwoGrantTypes() {
+        String authDomain = "https://my-plan.login.run.pivotal.io";
+        String grantType1 = "authorization_code";
+        String grantType2 = "client_credentials";
+        mockVcapServices(getServicesPayload(getSsoServicePayload(authDomain, grantType1, grantType2)));
+        Environment env = getEnvironment();
+
+        assertThat(env.getProperty("ssoServiceUrl"))
+                .isEqualTo(authDomain);
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.ssoauthorizationcode.client-id"))
+                .isEqualTo("my-sso-client-id");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.ssoauthorizationcode.client-secret"))
+                .isEqualTo("my-sso-client-secret");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.ssoauthorizationcode.client-name"))
+                .isEqualTo("ssoauthorizationcode");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.ssoauthorizationcode.redirect-uri"))
+                .isEqualTo("{baseUrl}/login/oauth2/code/{registrationId}");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.ssoauthorizationcode.authorization-grant-type"))
+                .isEqualTo("authorization_code");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.provider.ssoauthorizationcode.authorization-uri"))
+                .isEqualTo(authDomain + "/oauth/authorize");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.provider.ssoauthorizationcode.issuer-uri"))
+                .isEqualTo("https://my-plan.uaa.run.pivotal.io/oauth/token");
+
+
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.ssoclientcredentials.client-id"))
+                .isEqualTo("my-sso-client-id");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.ssoclientcredentials.client-secret"))
+                .isEqualTo("my-sso-client-secret");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.ssoclientcredentials.client-name"))
+                .isEqualTo("ssoclientcredentials");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.ssoclientcredentials.redirect-uri"))
+                .isEqualTo("{baseUrl}/login/oauth2/code/{registrationId}");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.ssoclientcredentials.authorization-grant-type"))
+                .isEqualTo("client_credentials");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.provider.ssoclientcredentials.authorization-uri"))
+                .isEqualTo(authDomain + "/oauth/authorize");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.registration.ssoclientcredentials.provider"))
+                .isEqualTo("ssoauthorizationcode");
+
+        assertThat(env.getProperty("spring.security.oauth2.client.provider.ssoclientcredentials.issuer-uri"))
+                .isEqualTo("https://my-plan.uaa.run.pivotal.io/oauth/token");
+    }
+
+    @Test
     public void testIssuerUriNonSystemZoneIssuer() {
         mockVcapServices(getServicesPayload(getSsoServicePayload("https://my-plan.login.run.pivotal.io")));
         Environment env = getEnvironment();
