@@ -35,13 +35,14 @@ import io.pivotal.cfenv.spring.boot.CfEnvProcessorProperties;
 public class CfSingleSignOnProcessor implements CfEnvProcessor {
     private static final String PIVOTAL_SSO_LABEL = "p-identity";
     private static final String SPRING_SECURITY_CLIENT = "spring.security.oauth2.client";
+    private static final String PROVIDER_ID = "sso";
     private static final String BASE_CLIENT_REGISTRATION_ID = "sso";
     private static final String AUTHCODE_CLIENT_REGISTRATION_ID = BASE_CLIENT_REGISTRATION_ID + "authorizationcode";
     private static final String CLIENTCRED_CLIENT_REGISTRATION_ID = BASE_CLIENT_REGISTRATION_ID + "clientcredentials";
     private static final String SSO_SERVICE = "ssoServiceUrl";
     private static final String AUTHORIZATION_CODE = "authorization_code";
     private static final String CLIENT_CREDENTIALS = "client_credentials";
-    private static final Set<String> VALID_MULTI_GRANT_COMBO = new HashSet<>(Arrays.asList(AUTHORIZATION_CODE, CLIENT_CREDENTIALS));
+    private static final Set<String> AUTH_CODE_AND_CLIENT_CREDS = new HashSet<>(Arrays.asList(AUTHORIZATION_CODE, CLIENT_CREDENTIALS));
 
     @Override
     public boolean accept(CfService service) {
@@ -54,41 +55,38 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         String clientSecret = cfCredentials.getString("client_secret");
         String authDomain = cfCredentials.getString("auth_domain");
         String issuer = fromAuthDomain(authDomain);
+
+        properties.put(SSO_SERVICE, authDomain);
+        properties.put(SPRING_SECURITY_CLIENT + ".provider." + PROVIDER_ID + ".issuer-uri", issuer + "/oauth/token");
+        properties.put(SPRING_SECURITY_CLIENT + ".provider." + PROVIDER_ID + ".authorization-uri", authDomain + "/oauth/authorize");
+
         ArrayList<String> grantTypes = (ArrayList<String>) cfCredentials.getMap().get("grant_types");
-
-        if (grantTypes != null && grantTypes.size() == 2 && isValidGrantTypesCombo(grantTypes)) {
-            properties.put(SSO_SERVICE, authDomain);
-
-            mapBasicClientProperties(properties, clientId, clientSecret, authDomain, issuer, AUTHCODE_CLIENT_REGISTRATION_ID);
+        if (grantTypes != null && isAuthCodeAndClientCreds(grantTypes)) {
+            mapBasicClientProperties(properties, AUTHCODE_CLIENT_REGISTRATION_ID, clientId, clientSecret);
             properties.put(SPRING_SECURITY_CLIENT + ".registration." + AUTHCODE_CLIENT_REGISTRATION_ID + ".authorization-grant-type", AUTHORIZATION_CODE);
 
-            mapBasicClientProperties(properties, clientId, clientSecret, authDomain, issuer, CLIENTCRED_CLIENT_REGISTRATION_ID);
+            mapBasicClientProperties(properties, CLIENTCRED_CLIENT_REGISTRATION_ID, clientId, clientSecret);
             properties.put(SPRING_SECURITY_CLIENT + ".registration." + CLIENTCRED_CLIENT_REGISTRATION_ID + ".authorization-grant-type", CLIENT_CREDENTIALS);
-            properties.put(SPRING_SECURITY_CLIENT + ".registration." + CLIENTCRED_CLIENT_REGISTRATION_ID + ".provider", AUTHCODE_CLIENT_REGISTRATION_ID); // TODO it seems odd that ssoclientcredentials's provider needs to be set to ssoauthorizationcode
-
         } else if (grantTypes != null && grantTypes.size() == 1) { // if one grant type
+            mapBasicClientProperties(properties, BASE_CLIENT_REGISTRATION_ID, clientId, clientSecret);
             String grantType = grantTypes.get(0);
-            properties.put(SSO_SERVICE, authDomain);
-            mapBasicClientProperties(properties, clientId, clientSecret, authDomain, issuer, BASE_CLIENT_REGISTRATION_ID);
             properties.put(SPRING_SECURITY_CLIENT + ".registration." + BASE_CLIENT_REGISTRATION_ID + ".authorization-grant-type", grantType);
-
         } else { // if grant type is empty, invalid combo, or more than 2 grant types
-            properties.put(SSO_SERVICE, authDomain);
-            mapBasicClientProperties(properties, clientId, clientSecret, authDomain, issuer, BASE_CLIENT_REGISTRATION_ID);
+            mapBasicClientProperties(properties, BASE_CLIENT_REGISTRATION_ID, clientId, clientSecret);
         }
     }
 
-    private boolean isValidGrantTypesCombo(ArrayList<String> grantTypes) {
-        return (new HashSet<>(grantTypes)).equals(VALID_MULTI_GRANT_COMBO);
+    private boolean isAuthCodeAndClientCreds(ArrayList<String> grantTypes) {
+        return (new HashSet<>(grantTypes)).equals(AUTH_CODE_AND_CLIENT_CREDS);
     }
 
-    private void mapBasicClientProperties(Map<String, Object> properties, String clientId, String clientSecret, String authDomain, String issuer, String clientRegistrationId) {
-        properties.put(SPRING_SECURITY_CLIENT + ".registration." + clientRegistrationId + ".client-id", clientId);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration." + clientRegistrationId + ".client-secret", clientSecret);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration." + clientRegistrationId + ".client-name", clientRegistrationId);
-        properties.put(SPRING_SECURITY_CLIENT + ".registration." + clientRegistrationId + ".redirect-uri", "{baseUrl}/login/oauth2/code/{registrationId}");
-        properties.put(SPRING_SECURITY_CLIENT + ".provider." + clientRegistrationId + ".issuer-uri", issuer + "/oauth/token");
-        properties.put(SPRING_SECURITY_CLIENT + ".provider." + clientRegistrationId + ".authorization-uri", authDomain + "/oauth/authorize");
+    private void mapBasicClientProperties(Map<String, Object> properties, String clientRegistrationId, String clientId, String clientSecret) {
+        String registrationPrefix = SPRING_SECURITY_CLIENT + ".registration." + clientRegistrationId;
+        properties.put(registrationPrefix + ".client-id", clientId);
+        properties.put(registrationPrefix + ".client-secret", clientSecret);
+        properties.put(registrationPrefix + ".client-name", clientRegistrationId);
+        properties.put(registrationPrefix + ".redirect-uri", "{baseUrl}/login/oauth2/code/{registrationId}");
+        properties.put(registrationPrefix + ".provider", PROVIDER_ID);
     }
 
     @Override
@@ -98,7 +96,7 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
                 .serviceName("Single Sign On").build();
     }
 
-    public String fromAuthDomain(String authUri) {
+    String fromAuthDomain(String authUri) {
         URI uri = URI.create(authUri);
 
         String host = uri.getHost();
