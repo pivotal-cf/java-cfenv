@@ -68,7 +68,6 @@ public class CfSingleSignOnProcessorTest extends CfSingleSignOnTestSupport {
     public void testSpringSecurityPropertiesWhenVCAPServicesContainsSingleGrantType() {
         String authDomain = "https://my-plan.login.run.pivotal.io";
         String grantType = "authorization_code";
-        System.out.println(getServicesPayload(getSsoServicePayload(authDomain, grantType)));
         mockVcapServices(getServicesPayload(getSsoServicePayload(authDomain, grantType)));
         Environment env = getEnvironment();
 
