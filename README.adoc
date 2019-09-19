@@ -256,7 +256,7 @@ The list of supported services are:
 * Databases - DB2, MySQL, Oracle, Postgresl, SqlServer
 * RabbitMQ
 * Cassandara
-* MongnoDB
+* MongoDB
 * Redis
 
 There are two other modules that contain support for *Pivotal's Spring Cloud Service* and *Single Sign-On Service* tiles.
