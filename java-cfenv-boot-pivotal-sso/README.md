@@ -27,13 +27,13 @@ You will very likely need to configure 2 addition Spring Security 5 properties i
 
 ```
 # The grant type used in the call by Spring Security 5
-spring.security.oauth2.client.registration.sso.client-id.authorization-grant-type
+spring.security.oauth2.client.registration.sso.authorization-grant-type
 
 # The scopes requested when obtaining a token by Spring Security 5
-spring.security.oauth2.client.registration.sso.client-id.sso.scope: openid, email, profile, roles, user_attributes, todo.read, todo.write
+spring.security.oauth2.client.registration.sso.scope: openid, email, profile, roles, user_attributes, todo.read, todo.write
 ```
 
-Note: You may also use the environment variables rather than Java properties directly that will undergo the standard Spring Boot property transformation (e.g. SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_SSO_AUTHORIZATIONGRANTTYPE).
+Note: You may also use the environment variables rather than Java properties directly that will undergo the standard Spring Boot property transformation (e.g. `SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_SSO_AUTHORIZATIONGRANTTYPE`).
 
 Please see the Sample Apps below for more information.
 
