@@ -1,6 +1,0 @@
-spring:
-  main:
-    banner-mode: "off"
-eureka:
-  client:
-    enabled: false
