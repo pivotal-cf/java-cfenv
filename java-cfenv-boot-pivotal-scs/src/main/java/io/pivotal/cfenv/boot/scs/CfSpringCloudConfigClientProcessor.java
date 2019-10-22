@@ -23,20 +23,17 @@ import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
 import io.pivotal.cfenv.spring.boot.CfEnvProcessorProperties;
 
 /**
+ * Sets spring-cloud-config-client properties with values found in service bindings of a
+ * spring-cloud-services config-server service instance.
+ *
  * @author Mark Pollack
  * @author Scott Frederick
  */
 public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
-	private static final String CONFIG_SERVER_SERVICE_TAG_NAME = "configuration";
-
-	private static final String SPRING_CLOUD_CONFIG_URI = "spring.cloud.config.uri";
-	private static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID = "spring.cloud.config.client.oauth2.clientId";
-	private static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_SECRET = "spring.cloud.config.client.oauth2.clientSecret";
-	private static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI = "spring.cloud.config.client.oauth2.accessTokenUri";
 
 	@Override
 	public boolean accept(CfService service) {
-		return service.existsByTagIgnoreCase(CONFIG_SERVER_SERVICE_TAG_NAME);
+		return service.existsByTagIgnoreCase("configuration");
 	}
 
 	@Override
@@ -46,12 +43,10 @@ public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
 		String clientSecret = cfCredentials.getString("client_secret");
 		String accessTokenUri = cfCredentials.getString("access_token_uri");
 
-		properties.put(SPRING_CLOUD_CONFIG_URI, uri);
-		properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID, clientId);
-		properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_SECRET,
-				clientSecret);
-		properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI,
-				accessTokenUri);
+		properties.put("spring.cloud.config.uri", uri);
+		properties.put("spring.cloud.config.client.oauth2.clientId", clientId);
+		properties.put("spring.cloud.config.client.oauth2.clientSecret", clientSecret);
+		properties.put("spring.cloud.config.client.oauth2.accessTokenUri", accessTokenUri);
 	}
 
 	@Override
