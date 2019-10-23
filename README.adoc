@@ -5,7 +5,7 @@ It is modeled after the design of the node library https://github.com/cloudfound
 
 The class `CfEnv` is the entry point to the API for accessing Cloud Foundry environment variables.
 In a Spring application, you can use the https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions-bean-references[Spring Expression Language] to invoke methods on bean of type `CfEnv` to set properties.
-CFEnv's Boot support sets https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[common application properties] so that Java objects such as the `DataSource` or the `RabbitConnectionFactory` are created using Spring Boot autoconfiguration.
+CFEnv's Boot support sets https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties[common application properties] so that Java objects such as the `DataSource` or the `RabbitConnectionFactory` are created using Spring Boot autoconfiguration.
 
 The https://spring.io/blog/2019/02/15/introducing-java-cfenv-a-new-library-for-accessing-cloud-foundry-services[1.0 M1 blog] provides some additional background information.
 
