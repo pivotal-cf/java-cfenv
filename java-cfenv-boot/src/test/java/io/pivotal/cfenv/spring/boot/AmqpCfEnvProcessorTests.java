@@ -50,6 +50,7 @@ public class AmqpCfEnvProcessorTests extends AmqpTestSupport {
 		Environment environment = getEnvironment();
 		commonAssertions(environment);
 		assertThat(environment.getProperty("spring.rabbitmq.ssl.enabled")).isEqualTo("true");
+		assertThat(environment.getProperty("spring.rabbitmq.port")).isEqualTo("5671");
 	}
 
 	@Test
