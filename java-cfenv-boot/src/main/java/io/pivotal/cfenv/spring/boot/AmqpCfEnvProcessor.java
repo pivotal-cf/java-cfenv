@@ -65,19 +65,24 @@ public class AmqpCfEnvProcessor implements CfEnvProcessor {
 			properties.put("spring.rabbitmq.username", cfCredentials.getUsername());
 			if (uriInfo.getScheme().equals("amqps")) {
 				properties.put("spring.rabbitmq.ssl.enabled", "true");
+				properties.put("spring.rabbitmq.port", "5671");
+			} else {
+				populateAddress(cfCredentials, properties, uri);
 			}
 		}
 
+		if (cfCredentials.getMap().get("vhost") != null) {
+			properties.put("spring.rabbitmq.virtualHost", cfCredentials.getMap().get("vhost"));
+		}
+	}
+
+	public void populateAddress(CfCredentials cfCredentials, Map<String, Object> properties, String uri) {
 		if (cfCredentials.getMap().get("uris") != null) {
 			properties.put("spring.rabbitmq.addresses", StringUtils.collectionToCommaDelimitedString(
 					(List<String>) cfCredentials.getMap().get("uris")));
 		}
 		else if (uri != null) {
 			properties.put("spring.rabbitmq.addresses", uri);
-		}
-
-		if (cfCredentials.getMap().get("vhost") != null) {
-			properties.put("spring.rabbitmq.virtualHost", cfCredentials.getMap().get("vhost"));
 		}
 	}
 
