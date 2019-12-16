@@ -18,40 +18,12 @@ You can access the stable release from maven central using the coordinates
 <dependency>
   <groupId>io.pivotal.cfenv</groupId>
   <artifactId>java-cfenv-boot</artifactId>
-  <version>1.0.1.RELEASE</version>
+  <version>2.1.0.RELEASE</version>
 </dependency>
 ----
 
-If you want to use snapshot versions, use the following coordinates
-[source,xml]
-----
-<dependency>
-  <groupId>io.pivotal.cfenv</groupId>
-  <artifactId>java-cfenv-boot</artifactId>
-  <version>1.1.0.BUILD-SNAPSHOT</version>
-</dependency>
-----
-
-Add the dependency and repository definition if you want to use the milestone or release candidates
-
-[source,xml]
-----
-<dependency>
-  <groupId>io.pivotal.cfenv</groupId>
-  <artifactId>java-cfenv-boot</artifactId>
-  <version>1.1.0.RC1</version>
-</dependency>
-----
-
-[source,xml]
-----
-<repository>
-   <id>spring-milestones</id>
-   <name>Spring Milestones</name>
-   <url>http://repo.spring.io/libs-milestone-local</url>
-</repository>
-----
-
+== SCS and SSO modules
+If you're attempting to connect a client app to a https://docs.pivotal.io/spring-cloud-services/3-1/common/client-dependencies.html[Spring Cloud Services] or https://docs.pivotal.io/p-identity/1-11/integrating-sso.html[Single Sign-On] service instance, you should follow their respective docs.
 
 == Introduction
 The entry point is the class `CfEnv` which parses Cloud Foundry environment variables such as `VCAP_SERVICES`.
@@ -258,13 +230,6 @@ The list of supported services are:
 * Cassandara
 * MongoDB
 * Redis
-
-There are two other modules that contain support for *Pivotal's Spring Cloud Service* and *Single Sign-On Service* tiles.
-
-The `java-cfenv-boot-pivotal-scs` module provides support for Config Server and `java-cfenv-boot-pivotal-sso` module provides support for single sign on.  You can read more about the integration with the Pivotal Single Sign-On Service in the https://github.com/pivotal-cf/java-cfenv/blob/master/java-cfenv-boot-pivotal-sso/README.md[SSO library readme] for that module.
-
-Note that the `scs` module is not working correctly in the 1.0.0.RELEASE, use snapshot builds until the next point release is made.
-
 
 === Pushing your application to Cloud Foundry
 
