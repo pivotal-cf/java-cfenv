@@ -176,7 +176,7 @@ String jdbcUrl2 = cfEnvJdbc.findJdbcServiceByName("mysqlB").getUrl();
 
 === Use with Spring
 
-If you register a the `CfEnv` class as a bean, then you can use the Spring Expression Language to set properties.
+If you register the `CfJdbcEnv` class as a bean, then you can use the Spring Expression Language to set properties.
 
 [source,java]
 ----
