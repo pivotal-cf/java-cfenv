@@ -40,12 +40,6 @@
                 <version>3.1.1</version>
                 <executions>
                     <execution>
-                        <configuration>
-                            <includes>
-                                <include>**/test/*</include>
-                            </includes>
-                            <classifier>test-support</classifier>
-                        </configuration>
                         <goals>
                             <goal>test-jar</goal>
                         </goals>
