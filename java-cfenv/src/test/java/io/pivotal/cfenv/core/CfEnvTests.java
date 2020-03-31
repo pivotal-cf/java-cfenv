@@ -348,7 +348,7 @@ public class CfEnvTests {
 
 	@Test
 	public void testNullCredentials() {
-		mockVcapEnvVars("vcap-null-credentials.json", "vcap-application.json");
+		CfEnvMock.configure().vcapServicesResource("vcap-null-credentials.json").mock();
 		CfEnv cfEnv = new CfEnv();
 		CfService cfService = cfEnv.findServiceByTag("efs");
 		// should not throw exception
