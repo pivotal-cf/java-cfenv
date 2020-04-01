@@ -231,6 +231,12 @@ The list of supported services are:
 * MongoDB
 * Redis
 
+If, for any reason, you need to disable processing of a specific service instance, you can do so by setting the following flag in your application properties:
+[source]
+----
+cfenv.service.{serviceName}.enabled=false
+----
+
 === Pushing your application to Cloud Foundry
 
 You must disable the java buildpack's auto-reconfiguration so that you always delegate to Boot to create beans.
