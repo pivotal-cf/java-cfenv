@@ -15,6 +15,7 @@
  */
 package io.pivotal.cfenv.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -358,15 +359,19 @@ public class CfEnvTests {
 	private void assertNfsVolumes(List<CfVolume> cfVolumes) {
 		assertThat(cfVolumes.size()).isEqualTo(1);
 
+		String expectedVolumePath = "/var/vcap/data/78525ee7-196c-4ed4-8ac6-857d15334631";
+
 		Map<String, String> cfVolumeMap = cfVolumes.get(0).getMap();
 		assertThat(cfVolumeMap)
-				.containsEntry("container_dir", "/var/vcap/data/78525ee7-196c-4ed4-8ac6-857d15334631")
+				.containsEntry("container_dir", expectedVolumePath)
 				.containsEntry("device_type", "shared")
 				.containsEntry("mode", "rw");
 
 		CfVolume cfVolume = cfVolumes.get(0);
 
-		assertThat(cfVolume.getPath().toString()).isEqualTo("/var/vcap/data/78525ee7-196c-4ed4-8ac6-857d15334631");
+		String normalizedVolumePath = expectedVolumePath.replace('/', File.separatorChar);
+
+		assertThat(cfVolume.getPath().toString()).isEqualTo(normalizedVolumePath);
 		assertThat(cfVolume.getMode()).isEqualTo(CfVolume.Mode.READ_WRITE);
 	}
 
