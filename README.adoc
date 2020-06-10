@@ -237,6 +237,10 @@ If, for any reason, you need to disable processing of a specific service instanc
 cfenv.service.{serviceName}.enabled=false
 ----
 
+=== Connecting Multiple Instances of a Single Service Type
+
+If you need to configure connections to multiple instances of a given service type, or do anything more than setting application properties for spring-boot to pick up and use in auto-configuration, you will need to follow the approach layed out in the sections above (Basic Usage, JDBC Support, Use with Spring) to access the binding credentials. Then follow the same procedure that would be used to connect to your services in any other deployment environment. In this scenario, you may want to depend on the core `java-cfenv` or `java-cfenv-jdbc` module rather than the `java-cfenv-boot` module.
+
 === Pushing your application to Cloud Foundry
 
 You must disable the java buildpack's auto-reconfiguration so that you always delegate to Boot to create beans.
