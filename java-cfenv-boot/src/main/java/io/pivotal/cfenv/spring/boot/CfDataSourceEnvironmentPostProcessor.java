@@ -42,12 +42,12 @@ import org.springframework.core.env.MutablePropertySources;
 public class CfDataSourceEnvironmentPostProcessor implements CfServiceEnablingEnvironmentPostProcessor,
 		Ordered, ApplicationListener<ApplicationEvent> {
 
-	private static DeferredLog DEFERRED_LOG = new DeferredLog();
+	private static final DeferredLog DEFERRED_LOG = new DeferredLog();
 
 	private static int invocationCount;
 
-	// Before ConfigFileApplicationListener so values there can use these ones
-	private int order = ConfigFileApplicationListener.DEFAULT_ORDER - 1;
+	// After ConfigFileApplicationListener so values from files can be used here
+	private int order = ConfigFileApplicationListener.DEFAULT_ORDER + 1;
 
 	@Override
 	public int getOrder() {

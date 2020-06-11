@@ -19,11 +19,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.pivotal.cfenv.core.test.CfEnvMock;
-import io.pivotal.cfenv.test.AbstractCfEnvTests;
 import org.junit.Test;
 
 import org.springframework.core.env.Environment;
+
+import io.pivotal.cfenv.core.test.CfEnvMock;
+import io.pivotal.cfenv.test.AbstractCfEnvTests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -89,4 +90,5 @@ public class DisableServicesTests extends AbstractCfEnvTests {
 		assertThat(environment.getProperty("spring.redis.host")).isEqualTo("another-host");
 
 	}
+
 }

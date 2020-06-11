@@ -1,0 +1,6 @@
+cfenv:
+  service:
+    mysql:
+      enabled: false
+    redis:
+      enabled: false
