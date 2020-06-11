@@ -18,14 +18,15 @@ package io.pivotal.cfenv.boot.scs.serviceregistry;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.pivotal.cfenv.core.CfCredentials;
-import io.pivotal.cfenv.core.CfService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import io.pivotal.cfenv.core.CfCredentials;
+import io.pivotal.cfenv.core.CfService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;

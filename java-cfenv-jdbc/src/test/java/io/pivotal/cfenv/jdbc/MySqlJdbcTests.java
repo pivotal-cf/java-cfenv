@@ -17,8 +17,9 @@ package io.pivotal.cfenv.jdbc;
 
 import java.util.List;
 
-import io.pivotal.cfenv.core.UriInfo;
 import org.junit.Test;
+
+import io.pivotal.cfenv.core.UriInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

@@ -15,9 +15,10 @@
  */
 package io.pivotal.cfenv.jdbc;
 
+import org.junit.Test;
+
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.UriInfo;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

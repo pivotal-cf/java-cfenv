@@ -15,11 +15,12 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import io.pivotal.cfenv.core.test.CfEnvMock;
-import io.pivotal.cfenv.test.AbstractCfEnvTests;
 import org.junit.Test;
 
 import org.springframework.core.env.Environment;
+
+import io.pivotal.cfenv.core.test.CfEnvMock;
+import io.pivotal.cfenv.test.AbstractCfEnvTests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

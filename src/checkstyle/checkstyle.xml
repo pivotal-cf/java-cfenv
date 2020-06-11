@@ -110,7 +110,7 @@
         </module>
         <!--<module name="FallThrough"/>-->
         <module name="ImportOrder">
-            <property name="groups" value="java,/^javax?\./,*,org.springframework"/>
+            <property name="groups" value="java,/^javax?\./,*,org.springframework,io.pivotal"/>
             <property name="ordered" value="true"/>
             <property name="separated" value="true"/>
             <property name="option" value="bottom"/>

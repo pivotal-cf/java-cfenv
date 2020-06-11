@@ -20,9 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.pivotal.cfenv.jdbc.CfJdbcEnv;
-import io.pivotal.cfenv.jdbc.CfJdbcService;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.cloud.CloudPlatform;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
@@ -34,6 +31,9 @@ import org.springframework.core.env.CommandLinePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
+
+import io.pivotal.cfenv.jdbc.CfJdbcEnv;
+import io.pivotal.cfenv.jdbc.CfJdbcService;
 
 /**
  * @author Mark Pollack

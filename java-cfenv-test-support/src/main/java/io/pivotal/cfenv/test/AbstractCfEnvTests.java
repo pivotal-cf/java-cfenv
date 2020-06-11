@@ -25,9 +25,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.pivotal.cfenv.core.CfEnvSingleton;
-import io.pivotal.cfenv.core.UriInfo;
-import io.pivotal.cfenv.core.test.CfEnvMock;
 import org.junit.After;
 
 import org.springframework.boot.Banner;
@@ -38,6 +35,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
+
+import io.pivotal.cfenv.core.CfEnvSingleton;
+import io.pivotal.cfenv.core.UriInfo;
+import io.pivotal.cfenv.core.test.CfEnvMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

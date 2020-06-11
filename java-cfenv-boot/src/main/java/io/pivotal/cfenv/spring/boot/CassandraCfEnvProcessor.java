@@ -18,10 +18,10 @@ package io.pivotal.cfenv.spring.boot;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.springframework.util.StringUtils;
+
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
-
-import org.springframework.util.StringUtils;
 
 /**
  * @author Mark Pollack

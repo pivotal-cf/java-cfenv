@@ -19,12 +19,13 @@ package io.pivotal.cfenv.core.test;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.pivotal.cfenv.core.CfEnv;
 import mockit.MockUp;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
+
+import io.pivotal.cfenv.core.CfEnv;
 
 /**
  * @author David Turanski

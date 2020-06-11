@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import io.pivotal.cfenv.core.test.CfEnvMock;
 import org.junit.Test;
+
+import io.pivotal.cfenv.core.test.CfEnvMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

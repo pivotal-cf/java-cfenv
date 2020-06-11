@@ -18,10 +18,11 @@ package io.pivotal.cfenv.spring.boot;
 
 import java.util.List;
 
+import org.junit.Test;
+
 import io.pivotal.cfenv.core.CfEnv;
 import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.test.AbstractCfEnvTests;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

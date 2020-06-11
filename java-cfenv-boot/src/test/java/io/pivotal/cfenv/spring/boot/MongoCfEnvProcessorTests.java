@@ -15,7 +15,6 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import io.pivotal.cfenv.test.AbstractCfEnvTests;
 import mockit.Mock;
 import mockit.MockUp;
 import org.junit.Test;
@@ -26,6 +25,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+
+import io.pivotal.cfenv.test.AbstractCfEnvTests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;

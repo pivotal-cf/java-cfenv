@@ -19,11 +19,11 @@ package io.pivotal.cfenv.spring.boot;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.util.StringUtils;
+
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.core.UriInfo;
-
-import org.springframework.util.StringUtils;
 
 /**
  * Retrieve AMQP properties from {@link CfCredentials} and set {@literal spring.rabbitmq}

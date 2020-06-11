@@ -15,10 +15,10 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import io.pivotal.cfenv.core.CfService;
-
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.Environment;
+
+import io.pivotal.cfenv.core.CfService;
 
 /**
  * Implementations can disable a service by setting a Spring boot property

@@ -16,9 +16,10 @@
 package io.pivotal.cfenv.boot.sso;
 
 
-import io.pivotal.cfenv.test.AbstractCfEnvTests;
 import mockit.Mock;
 import mockit.MockUp;
+
+import io.pivotal.cfenv.test.AbstractCfEnvTests;
 
 /**
  * @author Pivotal Application Single Sign-On

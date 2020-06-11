@@ -20,10 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.pivotal.cfenv.core.CfEnv;
-import io.pivotal.cfenv.core.CfEnvSingleton;
-import io.pivotal.cfenv.core.CfService;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.cloud.CloudPlatform;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
@@ -38,6 +34,10 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.stereotype.Component;
+
+import io.pivotal.cfenv.core.CfEnv;
+import io.pivotal.cfenv.core.CfEnvSingleton;
+import io.pivotal.cfenv.core.CfService;
 
 /**
  * An EnvironmentPostProcessor that iterates over {@link CfEnvProcessor} implementations to contribute

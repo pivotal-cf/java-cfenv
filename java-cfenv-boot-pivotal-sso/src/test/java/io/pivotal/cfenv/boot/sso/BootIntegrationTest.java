@@ -15,8 +15,6 @@
  */
 package io.pivotal.cfenv.boot.sso;
 
-import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
-import io.pivotal.cfenv.spring.boot.ConnectorLibraryDetector;
 import mockit.MockUp;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +24,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
+import io.pivotal.cfenv.spring.boot.ConnectorLibraryDetector;
 
 /**
  * @author Mark Pollack
