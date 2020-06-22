@@ -15,6 +15,7 @@
  */
 package io.pivotal.cfenv.jdbc;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.pivotal.cfenv.core.UriInfo;
@@ -34,20 +35,16 @@ public class SqlServerJdbcTests extends AbstractJdbcTests {
 	@Test
 	public void sqlServerServiceCreation() {
 		mockVcapServices(getServicesPayload(
-				getUserProvidedServicePayload(SERVICE_NAME, hostname, port, username, password, INSTANCE_NAME, SqlServerJdbcUrlCreator.SQLSERVER_SCHEME + ":")
+				getSqlserverUserProvidedServicePayload(SERVICE_NAME, hostname, port, username, password, INSTANCE_NAME)
 		));
 
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
 		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME);
-		assertThat(cfJdbcService.getUsername()).isEqualTo(username);
-		assertThat(cfJdbcService.getPassword()).isEqualTo(password);
 		assertThat(cfJdbcService.getDriverClassName()).isEqualTo("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
-		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME).getUrl();
+		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME).getJdbcUrl();
 		String expectedJdbcUrl = getExpectedJdbcUrl(SqlServerJdbcUrlCreator.SQLSERVER_SCHEME, INSTANCE_NAME);
-		assertThat(expectedJdbcUrl).isEqualTo(jdbcUrl);
-		UriInfo uriInfo = cfJdbcService.getCredentials().getUriInfo();
-		assertUriInfo(uriInfo, SqlServerJdbcUrlCreator.SQLSERVER_SCHEME, INSTANCE_NAME);
+		assertThat(jdbcUrl).isEqualTo(expectedJdbcUrl);
 	}
 
 	@Test
@@ -56,21 +53,17 @@ public class SqlServerJdbcTests extends AbstractJdbcTests {
 		String passwordWithSpecialChars = "p%p:p+";
 
 		mockVcapServices(getServicesPayload(
-				getUserProvidedServicePayload(SERVICE_NAME, hostname, port, userWithSpecialChars,
-						passwordWithSpecialChars, INSTANCE_NAME, SqlServerJdbcUrlCreator.SQLSERVER_SCHEME + ":")
+				getSqlserverUserProvidedServicePayload(SERVICE_NAME, hostname, port, userWithSpecialChars,
+						passwordWithSpecialChars, INSTANCE_NAME)
 		));
 
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
 		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME);
 
-		String jdbcUrl = cfJdbcService.getUrl();
+		String jdbcUrl = cfJdbcService.getJdbcUrl();
 		String expectedJdbcUrl = getExpectedJdbcUrl(SqlServerJdbcUrlCreator.SQLSERVER_SCHEME, INSTANCE_NAME,
 				userWithSpecialChars, passwordWithSpecialChars);
 		assertThat(expectedJdbcUrl).isEqualTo(jdbcUrl);
-
-		UriInfo uriInfo = cfJdbcService.getCredentials().getUriInfo();
-		assertUriInfo(uriInfo, SqlServerJdbcUrlCreator.SQLSERVER_SCHEME, INSTANCE_NAME, userWithSpecialChars,
-				passwordWithSpecialChars);
 	}
 
 
@@ -82,5 +75,11 @@ public class SqlServerJdbcTests extends AbstractJdbcTests {
 	protected String getExpectedJdbcUrl(String scheme, String name, String uname, String pwd) {
 		return String.format("jdbc:%s://%s:%d;database=%s;user=%s;password=%s",
 				scheme, hostname, port, name, UriInfo.urlEncode(uname), UriInfo.urlEncode(pwd));
+	}
+
+	private String getSqlserverUserProvidedServicePayload(String serviceName, String hostname, int port,
+			String user, String password, String name) {
+		return getTemplatedPayload("test-sqlserver-info.json", serviceName,
+				hostname, port, user, password, name);
 	}
 }

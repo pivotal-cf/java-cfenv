@@ -67,7 +67,7 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
 		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName("postgresql-1");
 
-		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName("postgresql-1").getUrl();
+		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName("postgresql-1").getJdbcUrl();
 		String expectedJdbcUrl = getExpectedJdbcUrl(name1, userWithSpecialChars, passwordWithSpecialChars);
 		assertThat(expectedJdbcUrl).isEqualTo(jdbcUrl);
 
@@ -90,7 +90,7 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 	}
 
 	private void assertJdbcUrlAndUriInfo(String name1, String name2, CfJdbcEnv cfJdbcEnv) {
-		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName("postgresql-1").getUrl();
+		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName("postgresql-1").getJdbcUrl();
 		String expectedJdbcUrl = getExpectedJdbcUrl(PostgresqlJdbcUrlCreator.POSTGRESQL_SCHEME, name1);
 		assertThat(expectedJdbcUrl).isEqualTo(jdbcUrl);
 
@@ -98,7 +98,7 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 		assertUriInfo(uriInfo, PostgresqlJdbcUrlCreator.POSTGRESQL_SCHEME, name1, username,
 				password);
 
-		jdbcUrl = cfJdbcEnv.findJdbcServiceByName("postgresql-2").getUrl();
+		jdbcUrl = cfJdbcEnv.findJdbcServiceByName("postgresql-2").getJdbcUrl();
 		expectedJdbcUrl = getExpectedJdbcUrl(PostgresqlJdbcUrlCreator.POSTGRESQL_SCHEME, name2);
 		assertThat(expectedJdbcUrl).isEqualTo(jdbcUrl);
 
@@ -122,8 +122,8 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 
 	private void assertJdbcServiceValues(String name1, String name2) {
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
-		String jdbcUrl1 = cfJdbcEnv.findJdbcServiceByName("postgresql-1").getUrl();
-		String jdbcUrl2 = cfJdbcEnv.findJdbcServiceByName("postgresql-2").getUrl();
+		String jdbcUrl1 = cfJdbcEnv.findJdbcServiceByName("postgresql-1").getJdbcUrl();
+		String jdbcUrl2 = cfJdbcEnv.findJdbcServiceByName("postgresql-2").getJdbcUrl();
 
 		assertThat(getExpectedJdbcUrl(PostgresqlJdbcUrlCreator.POSTGRESQL_SCHEME, name1))
 				.isEqualTo(jdbcUrl1);
@@ -132,8 +132,8 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 
 		CfJdbcService cfJdbcService1 = cfJdbcEnv.findJdbcServiceByName("postgresql-1");
 		CfJdbcService cfJdbcService2 = cfJdbcEnv.findJdbcServiceByName("postgresql-2");
-		jdbcUrl1 = cfJdbcService1.getUrl();
-		jdbcUrl2 = cfJdbcService2.getUrl();
+		jdbcUrl1 = cfJdbcService1.getJdbcUrl();
+		jdbcUrl2 = cfJdbcService2.getJdbcUrl();
 		assertThat(getExpectedJdbcUrl(PostgresqlJdbcUrlCreator.POSTGRESQL_SCHEME, name1))
 				.isEqualTo(jdbcUrl1);
 		assertThat(getExpectedJdbcUrl(PostgresqlJdbcUrlCreator.POSTGRESQL_SCHEME, name2))
@@ -143,7 +143,7 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 		assertThat(cfJdbcServices.size()).isEqualTo(2);
 
 		assertThatThrownBy(() -> {
-			cfJdbcEnv.findJdbcService().getUrl();
+			cfJdbcEnv.findJdbcService().getJdbcUrl();
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage(
 				"No unique database service found. Found database service names [postgresql-1, postgresql-2]");
 

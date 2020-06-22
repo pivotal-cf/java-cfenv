@@ -45,7 +45,7 @@ public class OracleJdbcTests extends AbstractJdbcTests {
 		assertThat(cfJdbcService.getPassword()).isEqualTo(password);
 		assertThat(cfJdbcService.getDriverClassName()).isEqualTo("oracle.jdbc.OracleDriver");
 
-		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME).getUrl();
+		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME).getJdbcUrl();
 		String expectedJdbcUrl = getExpectedJdbcUrl(OracleJdbcUrlCreator.ORACLE_SCHEME, INSTANCE_NAME);
 		assertThat(expectedJdbcUrl).isEqualTo(jdbcUrl);
 		UriInfo uriInfo = cfJdbcService.getCredentials().getUriInfo();
@@ -78,7 +78,7 @@ public class OracleJdbcTests extends AbstractJdbcTests {
 		));
 
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
-		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME).getUrl();
+		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME).getJdbcUrl();
 		String expectedJdbcUrl = getExpectedJdbcUrl(OracleJdbcUrlCreator.ORACLE_SCHEME, INSTANCE_NAME);
 		assertThat(expectedJdbcUrl).isEqualTo(jdbcUrl);
 

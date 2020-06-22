@@ -15,6 +15,14 @@
  */
 package io.pivotal.cfenv.jdbc;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.core.UriInfo;
@@ -31,22 +39,62 @@ public class SqlServerJdbcUrlCreator extends AbstractJdbcUrlCreator {
 	@Override
 	public String buildJdbcUrlFromUriField(CfCredentials cfCredentials) {
 		UriInfo uriInfo = cfCredentials.getUriInfo(SQLSERVER_SCHEME);
-		return String.format("jdbc:%s://%s:%d;database=%s;user=%s;password=%s", SQLSERVER_SCHEME,
-				uriInfo.getHost(), uriInfo.getPort(), uriInfo.getPath(),
-				UriInfo.urlEncode(uriInfo.getUsername()),
-				UriInfo.urlEncode(uriInfo.getPassword()));
+		Map<String, String> uriParameters = parseSqlServerUriParameters(uriInfo.getUriString());
+		String databaseName = getDatabaseName(uriParameters);
+		try {
+			URI uri = new URI(uriInfo.getUriString().substring(0, uriInfo.getUriString().indexOf(";")));
+			return String.format("jdbc:%s://%s:%d%s%s%s%s",
+					SQLSERVER_SCHEME,
+					uri.getHost(),
+					uri.getPort(),
+					uri.getPath() != null && !uri.getPath().isEmpty() ? "/" + uri.getPath() : "",
+					databaseName != null ? ";database=" + UriInfo.urlEncode(databaseName) : "",
+					uriParameters.containsKey("user") ? ";user=" +  UriInfo.urlEncode(uriParameters.get("user")) : "",
+					uriParameters.containsKey("password") ? ";password=" +  UriInfo.urlEncode(uriParameters.get("password")) : ""
+			);
+		}
+		catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private String getDatabaseName(Map<String, String> uriParameters) {
+		String databaseName = null;
+		if (uriParameters.containsKey("databaseName")) {
+			databaseName = uriParameters.get("databaseName");
+		} else if (uriParameters.containsKey("database")) {
+			databaseName = uriParameters.get("database");
+		}
+		return databaseName;
+	}
+
+	private Map<String, String> parseSqlServerUriParameters(String uriString) {
+		return Arrays.stream(uriString.split(";"))
+					.filter(s -> s.contains("="))
+					.map(s -> s.split("="))
+					.filter(t -> t.length == 2)
+					.collect(Collectors.toMap(parameterName(), parameterValue(), takeFirst()));
+	}
+
+	private BinaryOperator<String> takeFirst() {
+		return (s, s2) -> s;
+	}
+
+	private Function<String[], String> parameterValue() {
+		return t -> UriInfo.urlDecode(t[1]);
+	}
+
+	private Function<String[], String> parameterName() {
+		return t -> UriInfo.urlDecode(t[0]);
 	}
 
 	@Override
 	public boolean isDatabaseService(CfService cfService) {
 		// Match tags
-		if (jdbcUrlMatchesScheme(cfService, SQLSERVER_SCHEME)
+		return jdbcUrlMatchesScheme(cfService, SQLSERVER_SCHEME)
 				|| cfService.existsByLabelStartsWith(SQLSERVER_LABEL)
 				|| cfService.existsByUriSchemeStartsWith(SQLSERVER_SCHEME)
-				|| cfService.existsByCredentialsContainsUriField(SQLSERVER_SCHEME)) {
-			return true;
-		}
-		return false;
+				|| cfService.existsByCredentialsContainsUriField(SQLSERVER_SCHEME);
 	}
 
 	@Override

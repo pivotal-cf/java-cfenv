@@ -33,8 +33,6 @@ public class UriInfoTests {
 		assertUriInfoEquals(uriInfo, "localhost", 1527, "joe", "joes_password", "big_db",
 				null);
 		assertThat(uri).isEqualTo(uriInfo.getUriString());
-		assertThat("//joe:joes_password@localhost:1527/big_db")
-				.isEqualTo(uriInfo.getSchemeSpecificPart());
 	}
 
 	@Test

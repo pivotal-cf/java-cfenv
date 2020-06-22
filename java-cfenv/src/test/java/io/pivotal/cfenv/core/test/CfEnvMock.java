@@ -25,12 +25,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
-import io.pivotal.cfenv.core.CfEnv;
-
 /**
  * @author David Turanski
  **/
 public class CfEnvMock {
+	private static final String VCAP_APPLICATION = "VCAP_APPLICATION";
+	private static final String VCAP_SERVICES = "VCAP_SERVICES";
+
 	private MockUp<?> mockUp;
 
 	private CfEnvMock(String vcapServicesJson, String vcapApplicationJson) {
@@ -39,10 +40,10 @@ public class CfEnvMock {
 		this.mockUp = new MockUp<System>() {
 			@mockit.Mock
 			public String getenv(String name) {
-				if (name.equalsIgnoreCase(CfEnv.VCAP_SERVICES)) {
+				if (name.equalsIgnoreCase(VCAP_SERVICES)) {
 					return vcapServicesJson;
 				}
-				else if (name.equalsIgnoreCase(CfEnv.VCAP_APPLICATION)) {
+				else if (name.equalsIgnoreCase(VCAP_APPLICATION)) {
 					return vcapApplicationJson;
 				}
 				return env.get(name);

@@ -16,10 +16,13 @@
 package io.pivotal.cfenv.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -28,51 +31,43 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Mark Pollack
  */
 public class CfEnv {
+	private static final String VCAP_APPLICATION = "VCAP_APPLICATION";
+	private static final String VCAP_SERVICES = "VCAP_SERVICES";
 
-	public static final String VCAP_APPLICATION = "VCAP_APPLICATION";
-
-	public static final String VCAP_SERVICES = "VCAP_SERVICES";
-
-	/* TODO pick small json parser and package as a shadowed jar */
-	private ObjectMapper objectMapper = new ObjectMapper();
-
-	private List<CfService> cfServices = new ArrayList<>();
+	private final List<CfService> cfServices = new ArrayList<>();
 
 	private CfApplication cfApplication;
 
 	public CfEnv() {
-		try {
-			String vcapServicesJson = System.getenv(VCAP_SERVICES);
-			if (vcapServicesJson != null && vcapServicesJson.length() > 0) {
-				Map<String, List<Map<String, Object>>> rawServices = this.objectMapper
-						.readValue(vcapServicesJson,
-								new TypeReference<Map<String, List<Map<String, Object>>>>() {
-								}
+		/* TODO pick small json parser and package as a shadowed jar */
+		ObjectMapper objectMapper = new ObjectMapper();
+		parseVcapServices(objectMapper);
+		parseVcapApplication(objectMapper);
+	}
 
-						);
-				for (Map.Entry<String, List<Map<String, Object>>> entry : rawServices
-						.entrySet()) {
-					for (Map<String, Object> serviceData : entry.getValue()) {
-						cfServices.add(new CfService(serviceData));
-					}
-				}
-			}
-		}
-		catch (Exception e) {
-			throw new IllegalStateException(
-					"Could not access/parse " + VCAP_SERVICES + " environment variable.",
-					e);
-		}
+	private void parseVcapApplication(ObjectMapper objectMapper) {
 		try {
 			String vcapApplicationJson = System.getenv(VCAP_APPLICATION);
 			if (vcapApplicationJson != null && vcapApplicationJson.length() > 0) {
-				Map<String, Object> applicationData = objectMapper
-						.readValue(vcapApplicationJson, Map.class);
+				Map<String, Object> applicationData = objectMapper.readValue(vcapApplicationJson, Map.class);
 				this.cfApplication = new CfApplication(applicationData);
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			 throw new IllegalStateException("Could not access/parse " + VCAP_APPLICATION + "environment variable.", e);
+		}
+	}
+
+	private void parseVcapServices(ObjectMapper objectMapper) {
+		try {
+			String vcapServicesJson = System.getenv(VCAP_SERVICES);
+			if (vcapServicesJson != null && vcapServicesJson.length() > 0) {
+				Map<String, List<Map<String, Object>>> rawServicesMap = objectMapper.readValue(vcapServicesJson, Map.class);
+				rawServicesMap.values().stream()
+						.flatMap(Collection::stream)
+						.forEach(serviceData -> cfServices.add(new CfService(serviceData)));
+			}
+		} catch (Exception e) {
+			throw new IllegalStateException("Could not access/parse " + VCAP_SERVICES + " environment variable.", e);
 		}
 	}
 
@@ -85,20 +80,16 @@ public class CfEnv {
 	}
 
 	public List<CfService> findServicesByName(String... spec) {
-		List<CfService> cfServices = new ArrayList<>();
-		for (CfService cfService : this.cfServices) {
-			if (spec != null) {
-				for (String regex : spec) {
-					String name = cfService.getName();
-					if (name != null && name.length() > 0) {
-						if (name.matches(regex)) {
-							cfServices.add(cfService);
-						}
-					}
-				}
-			}
+		if (spec == null || spec.length == 0) {
+			return Collections.emptyList();
 		}
-		return cfServices;
+		return Arrays.stream(spec)
+				.flatMap(regex -> this.cfServices.stream().filter(cfService -> {
+					String name = cfService.getName();
+					return name != null && name.length() > 0 && name.matches(regex);
+				}))
+				.distinct()
+				.collect(Collectors.toList());
 	}
 
 	public CfService findServiceByName(String... spec) {
@@ -125,20 +116,16 @@ public class CfEnv {
 	}
 
 	public List<CfService> findServicesByLabel(String... spec) {
-		List<CfService> cfServices = new ArrayList<>();
-		for (CfService cfService : this.cfServices) {
-			if (spec != null) {
-				for (String regex : spec) {
-					String name = cfService.getLabel();
-					if (name != null && name.length() > 0) {
-						if (name.matches(regex)) {
-							cfServices.add(cfService);
-						}
-					}
-				}
-			}
+		if (spec == null || spec.length == 0) {
+			return Collections.emptyList();
 		}
-		return cfServices;
+		return Arrays.stream(spec)
+				.flatMap(regex -> this.cfServices.stream().filter(cfService -> {
+					String label = cfService.getLabel();
+					return label != null && label.length() > 0 && label.matches(regex);
+				}))
+				.distinct()
+				.collect(Collectors.toList());
 	}
 
 	public CfService findServiceByLabel(String... spec) {
@@ -164,22 +151,15 @@ public class CfEnv {
 	}
 
 	public List<CfService> findServicesByTag(String... spec) {
-		List<CfService> cfServices = new ArrayList<>();
-		for (CfService cfService : this.cfServices) {
-			if (spec != null) {
-				for (String regex : spec) {
-					List<String> tags = cfService.getTags();
-					for (String tag : tags) {
-						if (tag != null && tag.length() > 0) {
-							if (tag.matches(regex)) {
-								cfServices.add(cfService);
-							}
-						}
-					}
-				}
-			}
+		if (spec == null || spec.length == 0) {
+			return Collections.emptyList();
 		}
-		return cfServices;
+		return Arrays.stream(spec)
+				.flatMap(regex -> cfServices.stream()
+						.filter(cfService -> cfService.getTags().stream()
+								.anyMatch(tag -> tag != null && tag.matches(regex))))
+				.distinct()
+				.collect(Collectors.toList());
 	}
 
 	public CfCredentials findCredentialsByName(String... spec) {

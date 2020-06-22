@@ -43,7 +43,7 @@ public class DB2JdbcTests extends AbstractJdbcTests {
 
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
 		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME);
-		String jdbcUrl = cfJdbcService.getUrl();
+		String jdbcUrl = cfJdbcService.getJdbcUrl();
 		String expectedJdbcUrl = getExpectedJdbcUrl(SqlServerJdbcUrlCreator.SQLSERVER_SCHEME, INSTANCE_NAME);
 		assertThat(expectedJdbcUrl).isEqualTo(jdbcUrl);
 
@@ -64,7 +64,7 @@ public class DB2JdbcTests extends AbstractJdbcTests {
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
 		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME);
 
-		String jdbcUrl = cfJdbcService.getUrl();
+		String jdbcUrl = cfJdbcService.getJdbcUrl();
 		String expectedJdbcUrl = getExpectedJdbcUrl(SqlServerJdbcUrlCreator.SQLSERVER_SCHEME, INSTANCE_NAME,
 				userWithSpecialChars, passwordWithSpecialChars);
 		assertThat(expectedJdbcUrl).isEqualTo(jdbcUrl);
@@ -100,7 +100,7 @@ public class DB2JdbcTests extends AbstractJdbcTests {
 		));
 
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
-		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME).getUrl();
+		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME).getJdbcUrl();
 		String expectedJdbcUrl = getExpectedJdbcUrl(DB2JdbcUrlCreator.DB2_SCHEME, INSTANCE_NAME);
 		assertThat(expectedJdbcUrl).isEqualTo(jdbcUrl);
 

@@ -64,7 +64,7 @@ public class MySqlJdbcUrlCreator extends AbstractJdbcUrlCreator {
 		UriInfo uriInfo = cfCredentials.getUriInfo(MYSQL_SCHEME);
 		return String.format("%s%s://%s%s/%s%s%s", JDBC_PREFIX, MYSQL_SCHEME,
 				uriInfo.getHost(), uriInfo.formatPort(), uriInfo.getPath(),
-				uriInfo.formatUserNameAndPassword(), uriInfo.formatQuery());
+				uriInfo.formatUserNameAndPasswordQuery(), uriInfo.formatQuery());
 	}
 
 }

@@ -33,21 +33,21 @@ public class CfJdbcEnvTests {
 	public void testCfService() {
 		CfEnvMock.configure().vcapServicesResource("vcap-services-jdbc.json").mock();
 		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
-		assertThat(cfJdbcEnv.findJdbcService().getUrl()).isEqualTo(mysqlJdbcUrl);
-		assertThat(cfJdbcEnv.findJdbcServiceByName("mysql").getUrl())
+		assertThat(cfJdbcEnv.findJdbcService().getJdbcUrl()).isEqualTo(mysqlJdbcUrl);
+		assertThat(cfJdbcEnv.findJdbcServiceByName("mysql").getJdbcUrl())
 				.isEqualTo(mysqlJdbcUrl);
 
 		assertThatThrownBy(() -> {
-			cfJdbcEnv.findJdbcServiceByName("blah").getUrl();
+			cfJdbcEnv.findJdbcServiceByName("blah").getJdbcUrl();
 		}).isInstanceOf(IllegalArgumentException.class)
 				.hasMessageContaining("No database service with name [blah] was found.");
 
 		assertThatThrownBy(() -> {
-			cfJdbcEnv.findJdbcServiceByName((String[]) null).getUrl();
+			cfJdbcEnv.findJdbcServiceByName((String[]) null).getJdbcUrl();
 		}).isInstanceOf(IllegalArgumentException.class)
 				.hasMessageContaining("No database service with name [null]");
 
 		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcService();
-		assertThat(cfJdbcService.getUrl()).isEqualTo(mysqlJdbcUrl);
+		assertThat(cfJdbcService.getJdbcUrl()).isEqualTo(mysqlJdbcUrl);
 	}
 }

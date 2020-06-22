@@ -70,28 +70,25 @@ public class CfDataSourceEnvironmentPostProcessor implements CfServiceEnablingEn
 				cfJdbcService = this.isEnabled(cfJdbcService, environment) ? cfJdbcService : null;
 			} catch (Exception e) {
 
-					// Exception is thrown if not unique. If still no unique service after isEnabled applied, log the
-					// exception and return.
-					List<CfJdbcService> jdbcServices =
-					cfJdbcEnv.findJdbcServices().stream()
+				List<CfJdbcService> jdbcServices = cfJdbcEnv.findJdbcServices().stream()
 						.filter(service -> this.isEnabled(service, environment))
 						.collect(Collectors.toList());
 
-					if (jdbcServices.size() > 1) {
-						if (invocationCount == 1) {
-							DEFERRED_LOG.debug(
-								"Skipping execution of CfDataSourceEnvironmentPostProcessor. "
-									+ e.getMessage());
-						}
-						return;
+				if (jdbcServices.size() > 1) {
+					if (invocationCount == 1) {
+						DEFERRED_LOG.debug(
+							"Skipping execution of CfDataSourceEnvironmentPostProcessor. "
+								+ e.getMessage());
 					}
+					return;
+				}
 
-					cfJdbcService = jdbcServices.size() == 1 ? jdbcServices.get(0) : null;
+				cfJdbcService = jdbcServices.size() == 1 ? jdbcServices.get(0) : null;
 			}
 			if (cfJdbcService != null) {
 				ConnectorLibraryDetector.assertNoConnectorLibrary();
 				Map<String, Object> properties = new LinkedHashMap<>();
-				properties.put("spring.datasource.url", cfJdbcService.getUrl());
+				properties.put("spring.datasource.url", cfJdbcService.getJdbcUrl());
 				properties.put("spring.datasource.username", cfJdbcService.getUsername());
 				properties.put("spring.datasource.password", cfJdbcService.getPassword());
 				Object driverClassName = cfJdbcService.getDriverClassName();

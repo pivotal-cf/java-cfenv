@@ -44,8 +44,6 @@ public class UriInfo {
 
 	private String query;
 
-	private String schemeSpecificPart;
-
 	private String uriString;
 
 	public UriInfo(String scheme, String host, int port, String username,
@@ -80,14 +78,13 @@ public class UriInfo {
 		this.port = uri.getPort();
 		this.path = parsePath(uri);
 		this.query = uri.getQuery();
-		this.schemeSpecificPart = uri.getSchemeSpecificPart();
 
 		String[] userinfo = parseUserinfo(uri);
-		this.userName = uriDecode(userinfo[0]);
-		this.password = uriDecode(userinfo[1]);
+		this.userName = urlDecode(userinfo[0]);
+		this.password = urlDecode(userinfo[1]);
 	}
 
-	private static String uriDecode(String s) {
+	public static String urlDecode(String s) {
 		if (s == null) {
 			return null;
 		}
@@ -138,10 +135,6 @@ public class UriInfo {
 		return query;
 	}
 
-	public String getSchemeSpecificPart() {
-		return schemeSpecificPart;
-	}
-
 	public URI getUri() {
 		try {
 			return new URI(uriString);
@@ -154,7 +147,7 @@ public class UriInfo {
 		return uriString;
 	}
 
-	public String formatUserNameAndPassword() {
+	public String formatUserNameAndPasswordQuery() {
 		if (userName != null && password != null) {
 			return String.format("?user=%s&password=%s", UriInfo.urlEncode(userName),
 					UriInfo.urlEncode(password));
@@ -174,7 +167,7 @@ public class UriInfo {
 
 	public String formatQuery() {
 		if (getQuery() != null) {
-			if (formatUserNameAndPassword().isEmpty()) {
+			if (formatUserNameAndPasswordQuery().isEmpty()) {
 				return String.format("?%s", getQuery());
 			} else {
 				return String.format("&%s", getQuery());
