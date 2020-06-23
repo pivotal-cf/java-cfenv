@@ -15,7 +15,6 @@
  */
 package io.pivotal.cfenv.jdbc;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.pivotal.cfenv.core.UriInfo;

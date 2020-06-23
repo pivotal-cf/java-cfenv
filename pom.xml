@@ -153,6 +153,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire-maven-plugin.version}</version>
                 <configuration>
+                    <!-- Most of the tests are not thread-safe due to static mocking in CfEnvMock  -->
+                    <runOrder>alphabetical</runOrder>
                     <includes>
                         <include>**/*Tests.java</include>
                         <include>**/*Test.java</include>

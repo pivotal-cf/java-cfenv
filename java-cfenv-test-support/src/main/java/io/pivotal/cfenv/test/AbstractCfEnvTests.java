@@ -124,10 +124,6 @@ public abstract class AbstractCfEnvTests {
 		return CfEnvMock.configure().vcapServices(vcapServicesJson).mock();
 	}
 
-	protected CfEnvMock mockCFenv(String vcapServicesJson, String vcapApplicationJson) {
-		return CfEnvMock.configure().vcapApplication(vcapApplicationJson).vcapServices(vcapServicesJson).mock();
-	}
-
 	@After
 	public void after() throws Exception {
 		Field field = CfEnvSingleton.class.getDeclaredField("INSTANCE");
