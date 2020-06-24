@@ -91,9 +91,13 @@ public class CfEnvironmentPostProcessor implements
 						.filter(cfService-> this.isEnabled(cfService, environment))
 						.collect(Collectors.toList());
 
-				throwExceptionIfMultipleMatches(processor.getProperties().getServiceName(), cfServices);
-
-				if (cfServices.size() == 1) {
+				if (cfServices.size() > 1) {
+					List<String> names = cfServices.stream().map(CfService::getName).collect(Collectors.toList());
+					DEFERRED_LOG.warn(String.format("Skipping auto-configuration: No unique %s service found. Found services named [%s]",
+							processor.getProperties().getServiceName(),
+							String.join(",", names)
+					));
+				} else if (cfServices.size() == 1) {
 					CfService cfService = cfServices.get(0);
 					Map<String, Object> properties = new LinkedHashMap<>();
 
@@ -145,13 +149,4 @@ public class CfEnvironmentPostProcessor implements
 		}
 	}
 
-	protected void throwExceptionIfMultipleMatches(String serviceName, List<CfService> services) {
-		if (services.size() > 1) {
-			String[] names = services.stream().map(CfService::getName)
-					.toArray(String[]::new);
-			throw new IllegalArgumentException(
-					"No unique " + serviceName + " service found. Found service names ["
-							+ String.join(", ", names) + "]");
-		}
-	}
 }
