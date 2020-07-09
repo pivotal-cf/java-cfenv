@@ -43,10 +43,10 @@ public class SqlServerJdbcUrlCreator extends AbstractJdbcUrlCreator {
 		String databaseName = getDatabaseName(uriParameters);
 		try {
 			URI uri = new URI(uriInfo.getUriString().substring(0, uriInfo.getUriString().indexOf(";")));
-			return String.format("jdbc:%s://%s:%d%s%s%s%s",
+			return String.format("jdbc:%s://%s%s%s%s%s%s",
 					SQLSERVER_SCHEME,
 					uri.getHost(),
-					uri.getPort(),
+					uri.getPort() > 0 ? ":" + uri.getPort() : "",
 					uri.getPath() != null && !uri.getPath().isEmpty() ? "/" + uri.getPath() : "",
 					databaseName != null ? ";database=" + UriInfo.urlEncode(databaseName) : "",
 					uriParameters.containsKey("user") ? ";user=" +  UriInfo.urlEncode(uriParameters.get("user")) : "",
