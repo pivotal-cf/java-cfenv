@@ -174,12 +174,21 @@ String jdbcUrl1 = cfEnvJdbc.findJdbcServiceByName("mysqlA").getUrl();
 String jdbcUrl2 = cfEnvJdbc.findJdbcServiceByName("mysqlB").getUrl();
 ----
 
-If you are creating a user-provided-service in order to connect to a database by jdbc, you will want to provide a uri property along with username and password in the credentials block.
+If you are creating a user-provided-service in order to connect to a database by jdbc, provide a `uri` property along with `username` and `password` in the credentials block.
 
 [source,bash]
 ----
 cf cups sqlserver-ups -p '{ "uri": "sqlserver://hostname:1433;database=test_db", "username": "someuser", "password": "whatmeworry?" }'
 ----
+
+Alternatively, you can simply provide a fully qualified `jdbcUrl`.
+
+[source,bash]
+----
+cf cups sqlserver-ups -p '{ "jdbcUrl": "jdbc:sqlserver://hostname:1433;database=test_db;user=someuse;password=whatmeworry?" }'
+----
+
+In either case, consult your database provider's documentation on the correct format of a connection uri. This library will preserve any platform specific uri elements.
 
 === Use with Spring
 
