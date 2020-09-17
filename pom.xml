@@ -68,10 +68,9 @@
         <module>java-cfenv-test-support</module>
         <module>java-cfenv-jdbc</module>
         <module>java-cfenv-boot</module>
-	    <module>java-cfenv-boot-pivotal-scs</module>
+        <module>java-cfenv-boot-pivotal-scs</module>
         <module>java-cfenv-boot-pivotal-sso</module>
-        <!--
-      <module>java-cfenv-docs</module>  -->
+        <!-- <module>java-cfenv-docs</module> -->
     </modules>
 
     <developers>
@@ -133,8 +132,8 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>javadoc</id>
@@ -153,7 +152,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire-maven-plugin.version}</version>
                 <configuration>
-                    <!-- Most of the tests are not thread-safe due to static mocking in CfEnvMock  -->
+                    <!-- Most of the tests are not thread-safe due to static mocking in CfEnvMock -->
                     <runOrder>alphabetical</runOrder>
                     <includes>
                         <include>**/*Tests.java</include>
@@ -188,7 +187,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.0.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
@@ -226,7 +224,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -236,7 +234,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
+                    <version>3.0.1</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
