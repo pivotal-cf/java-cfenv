@@ -14,37 +14,53 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<artifactId>java-cfenv-parent</artifactId>
-		<groupId>io.pivotal.cfenv</groupId>
-		<version>2.2.3.BUILD-SNAPSHOT</version>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>java-cfenv-parent</artifactId>
+        <groupId>io.pivotal.cfenv</groupId>
+        <version>2.2.3.BUILD-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-	<artifactId>java-cfenv-test-support</artifactId>
-	<packaging>jar</packaging>
-	<name>Java CF Env Test Support</name>
-	<description>Java CF Env Test Support Library</description>
+    <artifactId>java-cfenv-test-support</artifactId>
+    <packaging>jar</packaging>
+    <name>Java CF Env Test Support</name>
+    <description>Java CF Env Test Support Library</description>
 
-	<dependencies>
-		<dependency>
-			<groupId>io.pivotal.cfenv</groupId>
-			<artifactId>java-cfenv</artifactId>
-			<version>2.2.3.BUILD-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>io.pivotal.cfenv</groupId>
-			<artifactId>java-cfenv</artifactId>
-			<type>test-jar</type>
-			<version>2.2.3.BUILD-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jmockit</groupId>
-			<artifactId>jmockit</artifactId>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>io.pivotal.cfenv</groupId>
+            <artifactId>java-cfenv</artifactId>
+            <version>2.2.3.BUILD-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.pivotal.cfenv</groupId>
+            <artifactId>java-cfenv</artifactId>
+            <type>test-jar</type>
+            <version>2.2.3.BUILD-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>io.pivotal.cfenv.test</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
