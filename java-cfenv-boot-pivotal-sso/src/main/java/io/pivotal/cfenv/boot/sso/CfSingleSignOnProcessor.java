@@ -59,6 +59,8 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         properties.put(SSO_SERVICE, authDomain);
         properties.put(SPRING_SECURITY_CLIENT + ".provider." + PROVIDER_ID + ".issuer-uri", issuer + "/oauth/token");
         properties.put(SPRING_SECURITY_CLIENT + ".provider." + PROVIDER_ID + ".authorization-uri", authDomain + "/oauth/authorize");
+        properties.put("spring.security.oauth2.resourceserver.jwt.issuer-uri", issuer + "/oauth/token");
+
 
         ArrayList<String> grantTypes = (ArrayList<String>) cfCredentials.getMap().get("grant_types");
         if (grantTypes != null && isAuthCodeAndClientCreds(grantTypes)) {
