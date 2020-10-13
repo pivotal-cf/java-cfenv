@@ -103,7 +103,7 @@ For example, here is the value of `VCAP_SERVICES` for an application bound to th
 The keys in the JSON are not always identical across services, for example in the above JSON the mysql service has added the key named `hostname` to the credentials while the redis service has contributed the key named `host`.
 Most relational database services do not expose a key named `jdbcUrl` so the URL needs to be created by extracting individual fields and building up the URL string.  Since this is such a common case, the CfEnv library provides support to retrieve the URL string for several databases.
 
-To get access to a specific service's credentials, the keys `tag`, `name`, or `label` and be specified as a criteria for selecting one of the services in the array.
+To get access to a specific service's credentials, the keys `tag`, `name`, or `label` can be specified as a criteria for selecting one of the services in the array.
 
 == Basic usage
 Using the JSON from the previous section, here are some simple API calls to extract credential information.
@@ -113,7 +113,7 @@ Using the JSON from the previous section, here are some simple API calls to extr
 CfEnv cfEnv = new CfEnv();
 String redisHost = cfEnv.findCredentialsByTag("redis").getHost();
 String redisPort = cfEnv.findCredentialsByTag("redis").getPort();
-String redisPassword = cfEnv.findCredentailsByTag("redis").getPassword();
+String redisPassword = cfEnv.findCredentialsByTag("redis").getPassword();
 ----
 
 Multiple strings can be passed to match against more than one tag.
