@@ -6,3 +6,4 @@ updates:
       interval: "weekly"
     labels:
       - "review"
+    open-pull-requests-limit: 10
