@@ -3,7 +3,5 @@ updates:
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
-      interval: "weekly"
-    labels:
-      - "review"
+      interval: "daily"
     open-pull-requests-limit: 10
