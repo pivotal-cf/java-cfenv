@@ -45,7 +45,7 @@
         <!-- Plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
-        <surefire-maven-plugin.version>2.20</surefire-maven-plugin.version>
+        <surefire-maven-plugin.version>2.22.2</surefire-maven-plugin.version>
         <sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
         <javadoc.opts>-Xdoclint:none</javadoc.opts>
         <maven-javadoc-plugin.version>2.10.1</maven-javadoc-plugin.version>
