@@ -319,7 +319,7 @@ public class CfEnvTests {
 
 	@Test
 	public void testFindCredentialsByTag() {
-		//CfEnvTestUtils.mockSystemEnvironment(CfEnvTestUtils.resourceToString(""));
+		mockVcapEnvVars();
 		CfEnv cfEnv = new CfEnv();
 
 		CfCredentials cfCredentials = cfEnv.findCredentialsByTag("mysql");
