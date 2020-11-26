@@ -1,0 +1,30 @@
+{
+  "credentials": {
+    "address": "http://ae585ec6.ngrok.io/",
+    "auth": {
+      "accessor": "kMr3iCSlekSN2d1vpPjbjzUk",
+      "token": "s.qgVrPa3eKawwDDkeOSXUaWZq"
+    },
+    "backends": {
+      "generic": [
+        "cf/7f1a12a9-4a52-4151-bc96-874380d30182/secret",
+        "cf/c4073566-baee-48ae-88e9-7c7c7e0118eb/secret"
+      ],
+      "transit": [
+        "cf/7f1a12a9-4a52-4151-bc96-874380d30182/transit",
+        "cf/c4073566-baee-48ae-88e9-7c7c7e0118eb/transit"
+      ]
+    },
+    "backends_shared": {
+      "organization": "cf/8d4b992f-cca3-4876-94e0-e49170eafb67/secret",
+      "space": "cf/bdace353-e813-4efb-8122-58b9bd98e3ab/secret"
+    }
+  },
+  "label": "hashicorp-vault",
+  "name": "my-vault",
+  "plan": "shared",
+  "provider": null,
+  "syslog_drain_url": null,
+  "tags": [],
+  "volume_mounts": []
+}
