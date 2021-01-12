@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the original author or authors.
+ * Copyright 2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,5 +82,6 @@ public class CfSpringCloudConfigClientProcessorTest {
         assertThat(properties.get("spring.cloud.config.client.oauth2.clientId")).isEqualTo(CLIENT_ID);
         assertThat(properties.get("spring.cloud.config.client.oauth2.clientSecret")).isEqualTo(CLIENT_SECRET);
         assertThat(properties.get("spring.cloud.config.client.oauth2.accessTokenUri")).isEqualTo(ACCESS_TOKEN_URI);
+        assertThat(properties.get("spring.cloud.bootstrap.enabled")).isEqualTo(true);
     }
 }

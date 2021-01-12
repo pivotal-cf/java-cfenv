@@ -47,6 +47,7 @@ public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
 		properties.put("spring.cloud.config.client.oauth2.clientId", clientId);
 		properties.put("spring.cloud.config.client.oauth2.clientSecret", clientSecret);
 		properties.put("spring.cloud.config.client.oauth2.accessTokenUri", accessTokenUri);
+		properties.put("spring.cloud.bootstrap.enabled", true);
 	}
 
 	@Override
