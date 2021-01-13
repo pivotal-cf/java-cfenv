@@ -82,6 +82,5 @@ public class CfSpringCloudConfigClientProcessorTest {
         assertThat(properties.get("spring.cloud.config.client.oauth2.clientId")).isEqualTo(CLIENT_ID);
         assertThat(properties.get("spring.cloud.config.client.oauth2.clientSecret")).isEqualTo(CLIENT_SECRET);
         assertThat(properties.get("spring.cloud.config.client.oauth2.accessTokenUri")).isEqualTo(ACCESS_TOKEN_URI);
-        assertThat(properties.get("spring.cloud.bootstrap.enabled")).isEqualTo(true);
     }
 }
