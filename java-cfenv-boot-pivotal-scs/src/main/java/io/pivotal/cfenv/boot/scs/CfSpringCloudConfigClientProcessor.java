@@ -43,7 +43,7 @@ public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
 		String clientSecret = cfCredentials.getString("client_secret");
 		String accessTokenUri = cfCredentials.getString("access_token_uri");
 
-		properties.put("spring.config.import", "optional:configserver:" + uri);
+		properties.put("spring.cloud.config.uri", uri);
 		properties.put("spring.cloud.config.client.oauth2.clientId", clientId);
 		properties.put("spring.cloud.config.client.oauth2.clientSecret", clientSecret);
 		properties.put("spring.cloud.config.client.oauth2.accessTokenUri", accessTokenUri);
@@ -52,7 +52,7 @@ public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
 	@Override
 	public CfEnvProcessorProperties getProperties() {
 		return CfEnvProcessorProperties.builder()
-				.propertyPrefixes("spring.config.import,spring.cloud.config")
+				.propertyPrefixes("spring.cloud.config")
 				.serviceName("Spring Cloud Config").build();
 	}
 
