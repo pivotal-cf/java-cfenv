@@ -78,7 +78,7 @@ public class CfSpringCloudConfigClientProcessorTest {
 
         configClientProcessor.process(cfCredentials, properties);
 
-        assertThat(properties.get("spring.cloud.config.uri")).isEqualTo(URI);
+        assertThat(properties.get("spring.config.import")).isEqualTo("optional:configserver:" + URI);
         assertThat(properties.get("spring.cloud.config.client.oauth2.clientId")).isEqualTo(CLIENT_ID);
         assertThat(properties.get("spring.cloud.config.client.oauth2.clientSecret")).isEqualTo(CLIENT_SECRET);
         assertThat(properties.get("spring.cloud.config.client.oauth2.accessTokenUri")).isEqualTo(ACCESS_TOKEN_URI);
