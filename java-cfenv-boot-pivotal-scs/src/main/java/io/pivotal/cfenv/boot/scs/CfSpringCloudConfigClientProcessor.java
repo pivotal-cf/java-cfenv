@@ -44,6 +44,7 @@ public class CfSpringCloudConfigClientProcessor implements CfEnvProcessor {
 		String accessTokenUri = cfCredentials.getString("access_token_uri");
 
 		properties.put("spring.config.import", "optional:configserver:" + uri);
+		properties.put("spring.cloud.config.uri", uri);
 		properties.put("spring.cloud.config.client.oauth2.clientId", clientId);
 		properties.put("spring.cloud.config.client.oauth2.clientSecret", clientSecret);
 		properties.put("spring.cloud.config.client.oauth2.accessTokenUri", accessTokenUri);
