@@ -37,8 +37,8 @@ public class PostgresqlJdbcUrlCreator extends AbstractJdbcUrlCreator {
 		if (jdbcUrlMatchesScheme(cfService, POSTGRESQL_SCHEME, POSTGRES_JDBC_SCHEME)
 				|| cfService.existsByTagIgnoreCase(POSTGRESQL_TAG)
 				|| cfService.existsByLabelStartsWith(POSTGRESQL_LABEL)
-				|| cfService.existsByUriSchemeStartsWith(POSTGRESQL_SCHEME)
-				|| cfService.existsByCredentialsContainsUriField(POSTGRESQL_SCHEME)) {
+				|| cfService.existsByUriSchemeStartsWith(POSTGRESQL_SCHEME, POSTGRES_JDBC_SCHEME)
+				|| cfService.existsByCredentialsContainsUriField(POSTGRESQL_SCHEME, POSTGRES_JDBC_SCHEME)) {
 			return true;
 		}
 		return false;

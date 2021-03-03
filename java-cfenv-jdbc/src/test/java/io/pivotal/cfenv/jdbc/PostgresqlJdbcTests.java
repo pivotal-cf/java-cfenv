@@ -55,6 +55,30 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 	}
 
 	@Test
+	public void postgresqlServiceCreationAlternate() {
+		String name1 = "database-1";
+		String name2 = "database-2";
+
+		mockVcapServices(getServicesPayload(
+				getPostgresqlServicePayloadAlternate("postgresql-1", hostname, port, username, password, name1),
+				getPostgresqlServicePayloadAlternate("postgresql-2", hostname, port, username, password, name2)));
+
+		assertJdbcServiceValues(name1, name2);
+
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName("postgresql-1");
+		assertThat(cfJdbcService.getUsername()).isEqualTo(username);
+		assertThat(cfJdbcService.getPassword()).isEqualTo(password);
+		assertThat(cfJdbcService.getDriverClassName())
+				.isEqualTo("org.postgresql.Driver");
+
+		assertThatThrownBy(() -> {
+			cfJdbcEnv.findJdbcServiceByName("postgresql.*");
+		}).isInstanceOf(IllegalArgumentException.class).hasMessage(
+				"No unique database service matching by name [postgresql.*] was found.  Matching service names are [postgresql-1, postgresql-2]");
+	}
+
+	@Test
 	public void postgresqlWithSpecialCharsServiceCreation() {
 		String userWithSpecialChars = "u%u:u+";
 		String passwordWithSpecialChars = "p%p:p+";
@@ -157,6 +181,13 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 			String hostname, int port,
 			String user, String password, String name) {
 		return getTemplatedPayload("test-postgresql-info.json", serviceName,
+				hostname, port, user, password, name);
+	}
+
+	private String getPostgresqlServicePayloadAlternate(String serviceName,
+			String hostname, int port,
+			String user, String password, String name) {
+		return getTemplatedPayload("test-postgresql-info-alternate.json", serviceName,
 				hostname, port, user, password, name);
 	}
 
