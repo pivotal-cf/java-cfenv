@@ -40,7 +40,7 @@ public class CfJdbcService extends CfService {
 		return getCredentials().getPassword();
 	}
 
-	public Object getDriverClassName() {
+	public String getDriverClassName() {
 		return getCredentials().getDerivedCredentials().get("driver-class-name");
 	}
 

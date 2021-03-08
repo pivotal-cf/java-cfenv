@@ -157,8 +157,8 @@ There is additional support for getting the JDBC URL contained in the module `sp
  The method `findJdbcService` will heuristically look at all services for known tags, labels and names of common database services to create the URL.
 [source,java]
 ----
-CfEnvJdbc cfEnvJdbc = new CfEnvJdbc()
-CfJdbcService cfJdbcService = cfEnvJdbc.findJdbcService();
+CfJdbcEnv cfJdbcEnv = new CfJdbcEnv()
+CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcService();
 
 String jdbcUrl = cfJdbcService.getJdbcUrl();
 String username = cfJdbcService.getUsername();
@@ -170,8 +170,8 @@ If there is more than one database bound to the application, an exception will b
 
 [source,java]
 ----
-String jdbcUrl1 = cfEnvJdbc.findJdbcServiceByName("mysqlA").getUrl();
-String jdbcUrl2 = cfEnvJdbc.findJdbcServiceByName("mysqlB").getUrl();
+String jdbcUrl1 = cfJdbcEnv.findJdbcServiceByName("mysqlA").getUrl();
+String jdbcUrl2 = cfJdbcEnv.findJdbcServiceByName("mysqlB").getUrl();
 ----
 
 If you are creating a user-provided-service in order to connect to a database by jdbc, provide a `uri` property along with `username` and `password` in the credentials block.
@@ -202,7 +202,7 @@ public CfJdbcEnv cfJdbcEnv() {
 }
 ----
 
-Then in a property file imported by Spring, refer to the CfEnvJdbc bean using the following syntax.
+Then in a property file imported by Spring, refer to the CfJdbcEnv bean using the following syntax.
 
 [source]
 ----
