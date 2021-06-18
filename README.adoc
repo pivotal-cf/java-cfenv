@@ -277,7 +277,7 @@ cf set-env <APP> SPRING_PROFILES_ACTIVE cloud
 
 == Supporting other Services
 
-The interface https://github.com/pivotal-cf/java-cfenv/blob/master/java-cfenv-boot/src/main/java/io/pivotal/cfenv/spring/boot/CfEnvProcessor.java[`CfEnvProcesor`] simplifies what you need to write in most cases.
+The interface https://github.com/pivotal-cf/java-cfenv/blob/master/java-cfenv-boot/src/main/java/io/pivotal/cfenv/spring/boot/CfEnvProcessor.java[`CfEnvProcessor`] simplifies what you need to write in most cases.
 The environment post processor, https://github.com/pivotal-cf/java-cfenv/blob/master/java-cfenv-boot/src/main/java/io/pivotal/cfenv/spring/boot/CfEnvironmentPostProcessor.java[`CfEnvPostProcessor`] delegates to all CfEnvProcessors that are discovered using Spring's `SpringFactoriesLoader`.
 Here is the implementation for MongoDB
 
