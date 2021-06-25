@@ -1,0 +1,21 @@
+---
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: ((corporate-harbor-registry))/((docker-hub-organization))/java-cfenv-ci
+    username: ((corporate-harbor-robot-account.username))
+    password: ((corporate-harbor-robot-account.password))
+    tag: latest
+inputs:
+  - name: git-repo
+outputs:
+  - name: distribution-repository
+caches:
+  - path: maven
+  - path: gradle
+run:
+  path: git-repo/ci/scripts/build-project.sh
+params:
+  ARTIFACTORY_USERNAME: ((scs-artifactory-username))
+  ARTIFACTORY_PASSWORD: ((scs-artifactory-password))
