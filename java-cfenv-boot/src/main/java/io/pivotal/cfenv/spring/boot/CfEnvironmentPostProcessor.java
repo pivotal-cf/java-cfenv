@@ -36,7 +36,6 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.stereotype.Component;
 
 import io.pivotal.cfenv.core.CfEnv;
-import io.pivotal.cfenv.core.CfEnvSingleton;
 import io.pivotal.cfenv.core.CfService;
 
 /**
@@ -78,7 +77,7 @@ public class CfEnvironmentPostProcessor implements
 
 		increaseInvocationCount();
 		if (CloudPlatform.CLOUD_FOUNDRY.isActive(environment)) {
-			CfEnv cfEnv = CfEnvSingleton.getCfEnvInstance();
+			CfEnv cfEnv = new CfEnv();
 			List<CfService> allServices = cfEnv.findAllServices();
 
 			List<CfEnvProcessor> cfEnvProcessors = SpringFactoriesLoader

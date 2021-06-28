@@ -1,0 +1,22 @@
+plugins {
+    id 'io.pivotal.cfenv.java-conventions'
+}
+
+description = 'Java CF Env JDBC Support Library'
+
+dependencies {
+    api project(':java-cfenv')
+
+    testImplementation project(':java-cfenv-test-support')
+
+    testRuntimeOnly('org.junit.vintage:junit-vintage-engine') {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
+    testRuntimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes 'Automatic-Module-Name': 'io.pivotal.cfenv.jdbc'
+    }
+}

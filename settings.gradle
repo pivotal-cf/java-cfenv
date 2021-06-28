@@ -1,0 +1,24 @@
+pluginManagement {
+    plugins {
+        id "io.spring.nohttp" version "0.0.8"
+        id 'org.asciidoctor.jvm.pdf' version '3.1.0'
+        id 'org.asciidoctor.jvm.convert' version '3.1.0'
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/release" }
+    }
+}
+
+rootProject.name = 'java-cfenv'
+
+include "java-cfenv"
+include "java-cfenv-boot"
+include "java-cfenv-boot-pivotal-scs"
+include "java-cfenv-boot-pivotal-sso"
+//include "java-cfenv-docs"
+include "java-cfenv-jdbc"
+include "java-cfenv-test-support"

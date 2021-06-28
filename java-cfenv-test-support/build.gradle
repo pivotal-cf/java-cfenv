@@ -1,0 +1,19 @@
+plugins {
+    id 'io.pivotal.cfenv.java-conventions'
+}
+
+description = 'Java CF Env Test Support Library'
+
+dependencies {
+    api platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    api project(':java-cfenv')
+    api testFixtures(project(':java-cfenv'))
+    api 'org.springframework.boot:spring-boot-starter-test'
+    api "junit:junit"
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes 'Automatic-Module-Name': 'io.pivotal.cfenv.test'
+    }
+}

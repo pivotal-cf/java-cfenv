@@ -1,0 +1,9 @@
+plugins {
+    id "io.spring.nohttp"
+}
+
+description = 'Java Library for Accessing Cloud Foundry Environment Variables'
+
+wrapper {
+    gradleVersion = "7.1"
+}

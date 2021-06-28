@@ -94,7 +94,7 @@ public class CfCredentials {
 
 	/**
 	 * Return the username, under the keys 'username' and 'user' in the credential map. If
-	 * it is not found try to obtain the usernam from the uri field.
+	 * it is not found try to obtain the username from the uri field.
 	 * @return value of the username, null if not found.
 	 */
 	public String getUsername() {
