@@ -1,0 +1,79 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'checkstyle'
+    id 'jacoco'
+}
+
+ext.javadocLinks = [
+        "https://docs.oracle.com/javase/8/docs/api/",
+] as String[]
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+javadoc {
+    description = "Generates project-level javadoc for use in -javadoc jar"
+
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.author = true
+    options.header = project.name
+    options.links(project.ext.javadocLinks)
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+checkstyle {
+    configFile = file("${project.rootDir}/src/checkstyle/checkstyle.xml")
+}
+
+test {
+    test.useJUnitPlatform()
+}
+
+afterEvaluate { Project project ->
+    tasks.withType(Test).forEach { Test test ->
+        def jmockit = test.classpath.find { it.name.contains("jmockit") }
+        if (jmockit) {
+            test.jvmArgs "-javaagent:${jmockit.absolutePath}"
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            suppressAllPomMetadataWarnings()
+            from components.java
+
+            pom {
+                afterEvaluate {
+                    name = project.description
+                    description = project.description
+                }
+                withXml {
+                    def pomNode = asNode()
+                    def dependencyManagementNode = pomNode.get('dependencyManagement')
+                    if (dependencyManagementNode) pomNode.remove(dependencyManagementNode)
+                }
+            }
+
+            // Published pom will use fully-qualified dependency versions and no BOMs
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                    if (project.configurations.findByName('testFixturesRuntimeClasspath')) {
+                        fromResolutionOf('testFixturesRuntimeClasspath')
+                    }
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+        }
+    }
+}

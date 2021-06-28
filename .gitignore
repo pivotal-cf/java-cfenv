@@ -4,6 +4,7 @@
 *.sw*
 _site/
 .factorypath
+.gradle
 .gradletasknamecache
 .DS_Store
 .checkstyle

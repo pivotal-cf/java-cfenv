@@ -9,7 +9,7 @@ Mark Pollack
 :hide-uri-scheme:
 :docinfo: shared
 
-:github-repo: spring-projects-experimental/spring-cfenv
+:github-repo: pivotal-cf/java-cfenv
 :github-code: https://github.com/{github-repo}
 
 ifdef::backend-html5[]

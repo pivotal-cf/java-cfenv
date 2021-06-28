@@ -31,7 +31,6 @@ import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
@@ -156,9 +155,9 @@ public abstract class AbstractCfEnvTests {
 			builder.properties(properties);
 		}
 		builder.bannerMode(Banner.Mode.OFF);
-		ApplicationContext applicationContext = builder.run();
+		ConfigurableApplicationContext applicationContext = builder.run();
 		Environment environment = applicationContext.getEnvironment();
-		((ConfigurableApplicationContext) applicationContext).close();
+		applicationContext.close();
 		return environment;
 	}
 

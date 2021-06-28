@@ -1,0 +1,35 @@
+plugins {
+    id 'io.pivotal.cfenv.java-conventions'
+    id "java-test-fixtures"
+}
+
+description = 'Java CF Env Core Library'
+
+dependencies {
+    api platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    api 'com.fasterxml.jackson.core:jackson-core'
+    api 'com.fasterxml.jackson.core:jackson-databind'
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "junit:junit"
+    testImplementation "org.jmockit:jmockit:${jmockitVersion}"
+
+    testRuntimeOnly('org.junit.vintage:junit-vintage-engine') {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
+
+    testFixturesApi platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    testFixturesImplementation "org.springframework.boot:spring-boot-starter-test"
+    testFixturesImplementation "org.jmockit:jmockit:${jmockitVersion}"
+}
+
+testFixturesJar {
+    archiveClassifier.set "tests"
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes 'Automatic-Module-Name': 'io.pivotal.cfenv.core'
+    }
+}
+
