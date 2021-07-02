@@ -148,7 +148,8 @@ resource_types:
     type: registry-image
     source:
       repository: ((dockerhub-mirror-registry))/springio/artifactory-resource
-      tag: latest
+      tag: 0.0.14
+
   - name: slack-notification
     type: registry-image
     source:
