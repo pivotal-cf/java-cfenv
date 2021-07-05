@@ -1,7 +1,3 @@
-import org.gradle.api.tasks.testing.TestDescriptor
-import org.gradle.api.tasks.testing.TestOutputEvent
-import org.gradle.api.tasks.testing.TestResult
-
 import java.util.concurrent.ConcurrentHashMap
 
 plugins {
@@ -34,7 +30,7 @@ javadoc {
 }
 
 checkstyle {
-    configFile = file("${project.rootDir}/src/checkstyle/checkstyle.xml")
+    configDirectory = rootProject.file("src/checkstyle")
 }
 
 test {
