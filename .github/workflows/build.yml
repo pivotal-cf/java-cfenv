@@ -9,12 +9,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ '8', '11' ]
+    name: Java ${{ matrix.Java }} build
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 1.8
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: 8
+          java-version: ${{ matrix.java }}
           distribution: adopt
       - name: Cache Gradle packages
         uses: actions/cache@v2
