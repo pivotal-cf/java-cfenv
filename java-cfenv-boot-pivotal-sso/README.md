@@ -19,7 +19,7 @@ spring.security.oauth2.client.registration.sso.redirect-uri  | "{baseUrl}/login/
 spring.security.oauth2.client.provider.sso.issuer-uri        | issuer (from the .well_known endpoint) + "/oauth/token"
 spring.security.oauth2.client.provider.sso.authorization-uri | authDomain + "/oauth/authorize"
 
-Note: ssoServiceUrl refers to the service uri corresponding to a Pivotal Single Sign-On service plan. For more information on configuring a service plan please refer to http://docs.pivotal.io/p-identity/index.html#create-plan
+Note: ssoServiceUrl refers to the service uri corresponding to a Pivotal Single Sign-On service plan. For more information on configuring a service plan please refer to https://docs.pivotal.io/p-identity/index.html#create-plan
 
 ### Required Manual Configuration
 
