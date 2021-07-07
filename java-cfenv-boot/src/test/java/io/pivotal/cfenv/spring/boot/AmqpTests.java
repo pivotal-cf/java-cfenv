@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,7 +49,7 @@ public class AmqpTests extends AmqpTestSupport {
 			mockVcapServices(getServicesPayload(
 				getRabbitServicePayloadWithTags("rabbit-1", hostname, port, username, password, "q-1", "vhost1")));
 
-		String expectedManagementUri = "http://" + username + ":" + password + "@" + hostname + "/api";
+		String expectedManagementUri = "https://" + username + ":" + password + "@" + hostname + "/api";
 		Map<String, String> credentials = (Map)new CfEnv().findServiceByName("rabbit-1").getMap().get("credentials");
 		assertThat(credentials.get("http_api_uri")).isEqualTo(expectedManagementUri);
 	}
@@ -86,7 +86,7 @@ public class AmqpTests extends AmqpTestSupport {
 		assertThat(cfEnv.findServiceByName("rabbit-1").getCredentials().getUriInfo().getUriString())
 			.isEqualTo(String.format("amqp://%s:%s@%s/v/host1",username,password,hostname));
 
-		String expectedManagementUri = "http://" + username + ":" + password + "@" + hostname + "/api";
+		String expectedManagementUri = "https://" + username + ":" + password + "@" + hostname + "/api";
 		Map<String, ?> credentials = (Map)cfEnv.findServiceByName("rabbit-1").getMap().get("credentials");
 		assertThat(credentials.get("http_api_uri")).isEqualTo(expectedManagementUri);
 

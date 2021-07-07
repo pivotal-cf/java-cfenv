@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class VaultCfEnvProcessorTests extends AbstractCfEnvTests {
 
 	private static final String EXPECTED_TOKEN_FROM_JSON_FILE = "s.qgVrPa3eKawwDDkeOSXUaWZq";
-	private static final String EXPECTED_URI_FROM_JSON_FILE = "http://ae585ec6.ngrok.io/";
+	private static final String EXPECTED_URI_FROM_JSON_FILE = "https://ae585ec6.ngrok.io/";
 	private static final String TEST_VAULT_INFO_JSON = "test-vault-info.json";
 
 	@Test

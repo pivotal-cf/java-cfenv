@@ -9,6 +9,6 @@
 		"username":"$user",
 		"password":"$pass",
 		"hostname":"$hostname",
-		"http_api_uri":"http://$user:$pass@$hostname:15672/api/"
+		"http_api_uri":"https://$user:$pass@$hostname:15672/api/"
 	}
 }
