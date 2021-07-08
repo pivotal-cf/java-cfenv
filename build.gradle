@@ -6,5 +6,5 @@ plugins {
 description = 'Java Library for Accessing Cloud Foundry Environment Variables'
 
 wrapper {
-    gradleVersion = "7.1"
+    gradleVersion = "7.1.1"
 }
