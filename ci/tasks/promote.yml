@@ -13,7 +13,7 @@ inputs:
 outputs:
   - name: version
 params:
-  RELEASE_TYPE:
+  RELEASE_TYPE: ((release-type))
   ARTIFACTORY_SERVER: ((artifactory-server))
   ARTIFACTORY_USERNAME: ((scs-artifactory-username))
   ARTIFACTORY_PASSWORD: ((scs-artifactory-password))

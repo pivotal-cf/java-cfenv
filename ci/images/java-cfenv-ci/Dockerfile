@@ -1,6 +1,6 @@
 FROM harbor-repo.vmware.com/dockerhub-proxy-cache/library/ubuntu:bionic
 
-RUN apt-get update && apt-get install --no-install-recommends -y ca-certificates net-tools git curl
+RUN apt-get update && apt-get install --no-install-recommends -y ca-certificates net-tools git curl jq
 RUN rm -rf /var/lib/apt/lists/*
 
 ENV JAVA_HOME /opt/openjdk
