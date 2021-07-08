@@ -116,6 +116,12 @@ publishing {
                     def pomNode = asNode()
                     def dependencyManagementNode = pomNode.get('dependencyManagement')
                     if (dependencyManagementNode) pomNode.remove(dependencyManagementNode)
+
+                    if (project.name == 'java-cfenv-test-support') {
+                        def cfenvDependencies = pomNode.get('dependencies')[0].findAll { it.get('artifactId')[0].text() == 'java-cfenv' }
+                        assert cfenvDependencies.size() == 2
+                        cfenvDependencies[1].appendNode('type', "test-jar")
+                    }
                 }
             }
 
