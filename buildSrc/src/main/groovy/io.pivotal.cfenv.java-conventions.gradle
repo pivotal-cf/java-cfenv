@@ -111,6 +111,33 @@ publishing {
                 afterEvaluate {
                     name = project.description
                     description = project.description
+                    url = "https://github.com/pivotal-cf/java-cfenv/"
+                    organization {
+                        name = "Pivotal Software, Inc."
+                        url = "https://www.spring.io"
+                    }
+                    licenses {
+                        license {
+                            name = "The Apache Software License, Version 2.0"
+                            url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                        }
+                    }
+                    scm {
+                        url = "https://github.com/pivotal-cf/java-cfenv"
+                        connection = "scm:git:git://github.com/pivotal-cf/java-cfenv.git"
+                        developerConnection = "scm:git:ssh://git@github.com/pivotal-cf/java-cfenv.git"
+                    }
+                    developers {
+                        developer {
+                            id = "royclarkson"
+                            name = "Roy Clarkson"
+                            email = "rclarkson@pivotal.io"
+                        }
+                    }
+                    issueManagement {
+                        system = "GitHub"
+                        url = "https://github.com/pivotal-cf/java-cfenv/issues"
+                    }
                 }
                 withXml {
                     def pomNode = asNode()

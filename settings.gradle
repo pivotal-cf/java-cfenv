@@ -10,6 +10,12 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         maven { url "https://repo.spring.io/release" }
+        if (version =~ /((-M|-RC)[0-9]+|-SNAPSHOT)$/) {
+            maven { url "https://repo.spring.io/milestone" }
+        }
+        if (version.endsWith('-SNAPSHOT')) {
+            maven { url "https://repo.spring.io/snapshot" }
+        }
     }
 }
 
