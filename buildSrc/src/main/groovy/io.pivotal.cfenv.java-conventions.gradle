@@ -7,9 +7,17 @@ plugins {
     id 'jacoco'
 }
 
-ext.javadocLinks = [
-        "https://docs.oracle.com/javase/8/docs/api/",
-] as String[]
+ext {
+    springFrameworkVersion = "5.3.8"
+    javaApi = "https://docs.oracle.com/javase/8/docs/api/"
+    if (JavaVersion.current() >= JavaVersion.VERSION_11) {
+        javaApi = "https://docs.oracle.com/en/java/javase/11/docs/api"
+    }
+    javadocLinks = [
+            javaApi,
+            "https://docs.spring.io/spring-framework/docs/${springFrameworkVersion}/javadoc-api/"
+    ] as String[]
+}
 
 java {
     withJavadocJar()
