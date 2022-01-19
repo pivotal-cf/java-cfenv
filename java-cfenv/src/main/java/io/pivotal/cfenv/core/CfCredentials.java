@@ -15,11 +15,7 @@
  */
 package io.pivotal.cfenv.core;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Access service credentials.
@@ -173,7 +169,8 @@ public class CfCredentials {
 	public String getString(String... keys) {
 		if (this.credentialsData != null) {
 			for (String key : keys) {
-				if (this.credentialsData.containsKey(key)) {
+				if (this.credentialsData.containsKey(key)
+						&& Objects.nonNull(this.credentialsData.get(key))) {
 					return this.credentialsData.get(key).toString();
 				}
 			}
