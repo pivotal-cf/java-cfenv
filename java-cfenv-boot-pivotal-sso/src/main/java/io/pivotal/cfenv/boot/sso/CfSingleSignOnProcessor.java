@@ -49,6 +49,7 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         return SpringSecurityDetector.isSpringSecurityPresent() && service.existsByLabelStartsWith(PIVOTAL_SSO_LABEL);
     }
 
+
     @Override
     public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
         String clientId = cfCredentials.getString("client_id");
@@ -59,6 +60,9 @@ public class CfSingleSignOnProcessor implements CfEnvProcessor {
         properties.put(SSO_SERVICE, authDomain);
         properties.put(SPRING_SECURITY_CLIENT + ".provider." + PROVIDER_ID + ".issuer-uri", issuer + "/oauth/token");
         properties.put(SPRING_SECURITY_CLIENT + ".provider." + PROVIDER_ID + ".authorization-uri", authDomain + "/oauth/authorize");
+        if(SpringSecurityDetector.isSpringResourceServerPresent()) {
+            properties.put("spring.security.oauth2.resourceserver.jwt.issuer-uri", issuer + "/oauth/token");
+        }
 
         ArrayList<String> grantTypes = (ArrayList<String>) cfCredentials.getMap().get("grant_types");
         if (grantTypes != null && isAuthCodeAndClientCreds(grantTypes)) {

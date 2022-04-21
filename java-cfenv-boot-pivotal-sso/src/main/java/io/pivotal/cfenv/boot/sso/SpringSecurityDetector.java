@@ -23,11 +23,13 @@ import org.springframework.util.ClassUtils;
 public abstract class SpringSecurityDetector {
     private static boolean usingSpringSecurity;
     private static boolean usingLegacy;
+    private static boolean usingSpringResourceServer;
 
     static {
         ClassLoader classLoader = SpringSecurityDetector.class.getClassLoader();
         usingSpringSecurity = ClassUtils.isPresent("org.springframework.security.core.Authentication", classLoader);
         usingLegacy = ClassUtils.isPresent("org.springframework.security.oauth2.common.DefaultOAuth2AccessToken", classLoader);
+        usingSpringResourceServer = ClassUtils.isPresent("org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider", classLoader);
     }
 
     static boolean isSpringSecurityPresent() {
@@ -37,4 +39,7 @@ public abstract class SpringSecurityDetector {
     static boolean isLegacySpringSecurityPresent() {
         return usingLegacy;
     }
+    static boolean isSpringResourceServerPresent() { return usingSpringResourceServer; }
+
+
 }
