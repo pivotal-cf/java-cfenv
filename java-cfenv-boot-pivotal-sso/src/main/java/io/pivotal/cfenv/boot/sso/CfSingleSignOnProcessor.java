@@ -27,7 +27,6 @@ import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
 import io.pivotal.cfenv.spring.boot.CfEnvProcessorProperties;
-import org.springframework.util.ClassUtils;
 
 /**
  * @author Pivotal Application Single Sign-On
