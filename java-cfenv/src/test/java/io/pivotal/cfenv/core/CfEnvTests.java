@@ -16,11 +16,20 @@
 package io.pivotal.cfenv.core;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import org.springframework.core.io.ClassPathResource;
 
 import io.pivotal.cfenv.core.test.CfEnvMock;
 
@@ -32,12 +41,41 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author Paul Warren
  * @author David Turanski
  */
-public class CfEnvTests {
+public abstract class CfEnvTests {
+
+	public static final String DEFAULT_VCAP_SERVICES = "vcap-services.json";
+	public static final String DEFAULT_VCAP_APPLICATION = "test/vcap-application.json";
+	protected CfEnv cfEnv;
+
+	@Before
+	public void beforeEach() {
+		setupTest(DEFAULT_VCAP_SERVICES, DEFAULT_VCAP_APPLICATION);
+	}
+
+	protected abstract void setupTest(String vcapServicesResource, String vcapApplicationResource);
+
+	public static class CfEnvWithParametersTests extends CfEnvTests {
+		@Override
+		protected void setupTest(String vcapServicesResource, String vcapApplicationResource) {
+			String vcapServicesJson = readResource(vcapServicesResource);
+			String vcapApplicationJson = readResource(vcapApplicationResource);
+			cfEnv = new CfEnv(vcapApplicationJson, vcapServicesJson);
+		}
+	}
+
+	public static class CfEnvDefaultConstructorTests extends CfEnvTests {
+		@Override
+		protected void setupTest(String vcapServicesResource, String vcapApplicationResource) {
+			CfEnvMock.configure()
+					.vcapServicesResource(vcapServicesResource)
+					.vcapApplicationResource(vcapApplicationResource)
+					.mock();
+			cfEnv = new CfEnv();
+		}
+	}
 
 	@Test
 	public void testCfApplicationValues() {
-		mockVcapEnvVars();
-		CfEnv cfEnv = new CfEnv();
 		CfApplication cfApplication = cfEnv.getApp();
 		assertThat(cfApplication.getApplicationId())
 				.isEqualTo("fa05c1a9-0fc1-4fbd-bae1-139850dec7a3");
@@ -62,9 +100,6 @@ public class CfEnvTests {
 
 	@Test
 	public void testCfService() {
-		mockVcapEnvVars();
-		CfEnv cfEnv = new CfEnv();
-
 		List<CfService> cfServices = cfEnv.findAllServices();
 		assertThat(cfServices.size()).isEqualTo(3);
 
@@ -158,9 +193,6 @@ public class CfEnvTests {
 
 	@Test
 	public void testFindServiceByName() {
-		mockVcapEnvVars();
-		CfEnv cfEnv = new CfEnv();
-
 		CfService cfService = cfEnv.findServiceByTag("redis");
 		assertThat(cfService.getLabel()).isEqualTo("p-redis");
 		assertThat(cfService.getPlan()).isEqualTo("shared-vm");
@@ -191,9 +223,6 @@ public class CfEnvTests {
 
 	@Test
 	public void testFindServiceByLabel() {
-		mockVcapEnvVars();
-		CfEnv cfEnv = new CfEnv();
-
 		CfService cfService = cfEnv.findServiceByLabel("p-redis");
 		assertThat(cfService.getLabel()).isEqualTo("p-redis");
 		assertThat(cfService.getPlan()).isEqualTo("shared-vm");
@@ -226,9 +255,6 @@ public class CfEnvTests {
 
 	@Test
 	public void testFindServiceByTag() {
-		mockVcapEnvVars();
-		CfEnv cfEnv = new CfEnv();
-
 		CfService cfService = cfEnv.findServiceByTag("redis");
 		assertThat(cfService.getLabel()).isEqualTo("p-redis");
 		assertThat(cfService.getPlan()).isEqualTo("shared-vm");
@@ -258,9 +284,6 @@ public class CfEnvTests {
 
 	@Test
 	public void testFindCredentialsByName() {
-		mockVcapEnvVars();
-		CfEnv cfEnv = new CfEnv();
-
 		CfCredentials cfCredentials = cfEnv.findCredentialsByName("mysql");
 		assertMySqlCredentials(cfCredentials);
 
@@ -289,9 +312,6 @@ public class CfEnvTests {
 
 	@Test
 	public void testFindCredentialsByLabel() {
-		mockVcapEnvVars();
-		CfEnv cfEnv = new CfEnv();
-
 		CfCredentials cfCredentials = cfEnv.findCredentialsByLabel("p-mysql");
 		assertMySqlCredentials(cfCredentials);
 
@@ -319,9 +339,6 @@ public class CfEnvTests {
 
 	@Test
 	public void testFindCredentialsByTag() {
-		mockVcapEnvVars();
-		CfEnv cfEnv = new CfEnv();
-
 		CfCredentials cfCredentials = cfEnv.findCredentialsByTag("mysql");
 		assertMySqlCredentials(cfCredentials);
 
@@ -350,8 +367,8 @@ public class CfEnvTests {
 
 	@Test
 	public void testNullCredentials() {
-		CfEnvMock.configure().vcapServicesResource("vcap-null-credentials.json").mock();
-		CfEnv cfEnv = new CfEnv();
+		setupTest("vcap-null-credentials.json", DEFAULT_VCAP_APPLICATION);
+
 		CfService cfService = cfEnv.findServiceByTag("efs");
 		// should not throw exception
 		cfService.existsByCredentialsContainsUriField("foo");
@@ -378,8 +395,8 @@ public class CfEnvTests {
 
 	@Test
 	public void testMultipleMatchingServices() {
-		CfEnvMock.configure().vcapServicesResource("vcap-services-multiple-mysql.json").mock();
-		CfEnv cfEnv = new CfEnv();
+		setupTest("vcap-services-multiple-mysql.json", DEFAULT_VCAP_APPLICATION);
+
 		List<CfService> services = cfEnv.findAllServices();
 		assertThat(services.size()).isEqualTo(3);
 
@@ -409,8 +426,16 @@ public class CfEnvTests {
 
 	}
 
-	private void mockVcapEnvVars() {
-		CfEnvMock.configure().vcapServicesResource("vcap-services.json").mock();
+	protected String readResource(String resource) {
+		ClassPathResource classPathResource = new ClassPathResource(resource);
+		try (FileSystem ignored = FileSystems.newFileSystem(
+				classPathResource.getURI(),
+				Collections.emptyMap(),
+				ClassLoader.getSystemClassLoader())) {
+			byte[] resourceBytes = Files.readAllBytes(Paths.get(classPathResource.getURI()));
+			return new String(resourceBytes);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
-
 }

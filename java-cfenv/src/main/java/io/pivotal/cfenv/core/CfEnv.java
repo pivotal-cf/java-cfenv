@@ -39,27 +39,29 @@ public class CfEnv {
 	private CfApplication cfApplication;
 
 	public CfEnv() {
-		/* TODO pick small json parser and package as a shadowed jar */
-		ObjectMapper objectMapper = new ObjectMapper();
-		parseVcapServices(objectMapper);
-		parseVcapApplication(objectMapper);
+		this(System.getenv(VCAP_APPLICATION), System.getenv(VCAP_SERVICES));
 	}
 
-	private void parseVcapApplication(ObjectMapper objectMapper) {
+	public CfEnv(String vcapApplicationJson, String vcapServicesJson) {
+		/* TODO pick small json parser and package as a shadowed jar */
+		ObjectMapper objectMapper = new ObjectMapper();
+		parseVcapServices(objectMapper, vcapServicesJson);
+		parseVcapApplication(objectMapper, vcapApplicationJson);
+	}
+
+	private void parseVcapApplication(ObjectMapper objectMapper, String vcapApplicationJson) {
 		try {
-			String vcapApplicationJson = System.getenv(VCAP_APPLICATION);
 			if (vcapApplicationJson != null && vcapApplicationJson.length() > 0) {
 				Map<String, Object> applicationData = objectMapper.readValue(vcapApplicationJson, Map.class);
 				this.cfApplication = new CfApplication(applicationData);
 			}
 		} catch (Exception e) {
-			 throw new IllegalStateException("Could not access/parse " + VCAP_APPLICATION + "environment variable.", e);
+			 throw new IllegalStateException("Could not parse " + VCAP_APPLICATION + "environment variable.", e);
 		}
 	}
 
-	private void parseVcapServices(ObjectMapper objectMapper) {
+	private void parseVcapServices(ObjectMapper objectMapper, String vcapServicesJson) {
 		try {
-			String vcapServicesJson = System.getenv(VCAP_SERVICES);
 			if (vcapServicesJson != null && vcapServicesJson.length() > 0) {
 				Map<String, List<Map<String, Object>>> rawServicesMap = objectMapper.readValue(vcapServicesJson, Map.class);
 				rawServicesMap.values().stream()
@@ -67,7 +69,7 @@ public class CfEnv {
 						.forEach(serviceData -> cfServices.add(new CfService(serviceData)));
 			}
 		} catch (Exception e) {
-			throw new IllegalStateException("Could not access/parse " + VCAP_SERVICES + " environment variable.", e);
+			throw new IllegalStateException("Could not parse " + VCAP_SERVICES + " environment variable.", e);
 		}
 	}
 
