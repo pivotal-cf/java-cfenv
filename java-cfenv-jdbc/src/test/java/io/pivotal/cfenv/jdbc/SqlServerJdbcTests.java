@@ -34,6 +34,21 @@ public class SqlServerJdbcTests extends AbstractJdbcTests {
 	@Test
 	public void sqlServerServiceCreation() {
 		mockVcapServices(getServicesPayload(
+				getSqlserverServicePayload(SERVICE_NAME, hostname, port, username, password, INSTANCE_NAME)
+		));
+
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME);
+		assertThat(cfJdbcService.getDriverClassName()).isEqualTo("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME).getJdbcUrl();
+		String expectedJdbcUrl = getExpectedJdbcUrl(SqlServerJdbcUrlCreator.SQLSERVER_SCHEME, INSTANCE_NAME);
+		assertThat(jdbcUrl).isEqualTo(expectedJdbcUrl);
+	}
+
+	@Test
+	public void sqlServerServiceCreationUserProvided() {
+		mockVcapServices(getServicesPayload(
 				getSqlserverUserProvidedServicePayload(SERVICE_NAME, hostname, port, username, password, INSTANCE_NAME)
 		));
 
@@ -47,12 +62,27 @@ public class SqlServerJdbcTests extends AbstractJdbcTests {
 	}
 
 	@Test
+	public void sqlServerServiceCreationUserProvidedWithProps() {
+		mockVcapServices(getServicesPayload(
+				getSqlserverUserProvidedWithPropsServicePayload(SERVICE_NAME, hostname, port, username, password, INSTANCE_NAME)
+		));
+
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME);
+		assertThat(cfJdbcService.getDriverClassName()).isEqualTo("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+		String jdbcUrl = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME).getJdbcUrl();
+		String expectedJdbcUrl = getExpectedJdbcUrlWithProps(SqlServerJdbcUrlCreator.SQLSERVER_SCHEME, INSTANCE_NAME);
+		assertThat(jdbcUrl).isEqualTo(expectedJdbcUrl);
+	}
+
+	@Test
 	public void sqlServerServiceCreationWithSpecialChars() {
 		String userWithSpecialChars = "u%u:u+";
 		String passwordWithSpecialChars = "p%p:p+";
 
 		mockVcapServices(getServicesPayload(
-				getSqlserverUserProvidedServicePayload(SERVICE_NAME, hostname, port, userWithSpecialChars,
+				getSqlserverServicePayload(SERVICE_NAME, hostname, port, userWithSpecialChars,
 						passwordWithSpecialChars, INSTANCE_NAME)
 		));
 
@@ -71,6 +101,11 @@ public class SqlServerJdbcTests extends AbstractJdbcTests {
 				scheme, hostname, port, name, UriInfo.urlEncode(username), UriInfo.urlEncode(password));
 	}
 
+	protected String getExpectedJdbcUrlWithProps(String scheme, String name) {
+		return String.format("jdbc:%s://%s:%d;database=%s;user=%s;password=%s;prop1=prop1;prop2=prop2",
+				scheme, hostname, port, name, UriInfo.urlEncode(username), UriInfo.urlEncode(password));
+	}
+
 	protected String getExpectedJdbcUrl(String scheme, String name, String uname, String pwd) {
 		return String.format("jdbc:%s://%s:%d;database=%s;user=%s;password=%s",
 				scheme, hostname, port, name, UriInfo.urlEncode(uname), UriInfo.urlEncode(pwd));
@@ -78,6 +113,18 @@ public class SqlServerJdbcTests extends AbstractJdbcTests {
 
 	private String getSqlserverUserProvidedServicePayload(String serviceName, String hostname, int port,
 			String user, String password, String name) {
+		return getTemplatedPayload("test-sqlserver-user-provided-info.json", serviceName,
+				hostname, port, user, password, name);
+	}
+
+	private String getSqlserverUserProvidedWithPropsServicePayload(String serviceName, String hostname, int port,
+														  String user, String password, String name) {
+		return getTemplatedPayload("test-sqlserver-user-provided-info-with-props.json", serviceName,
+				hostname, port, user, password, name);
+	}
+
+	private String getSqlserverServicePayload(String serviceName, String hostname, int port,
+														  String user, String password, String name) {
 		return getTemplatedPayload("test-sqlserver-info.json", serviceName,
 				hostname, port, user, password, name);
 	}

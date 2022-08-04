@@ -1,0 +1,6 @@
+{
+	"name": "$serviceName",
+	"credentials": {
+		"uri": "sqlserver://$user:$password@$hostname:$port/$name"
+	}
+}
