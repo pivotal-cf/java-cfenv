@@ -38,24 +38,38 @@ public class SqlServerJdbcUrlCreator extends AbstractJdbcUrlCreator {
 
 	@Override
 	public String buildJdbcUrlFromUriField(CfCredentials cfCredentials) {
+		String jdbcURL = "";
 		UriInfo uriInfo = cfCredentials.getUriInfo(SQLSERVER_SCHEME);
-		Map<String, String> uriParameters = parseSqlServerUriParameters(uriInfo.getUriString());
-		String databaseName = getDatabaseName(uriParameters);
-		try {
-			URI uri = new URI(uriInfo.getUriString().substring(0, uriInfo.getUriString().indexOf(";")));
-			return String.format("jdbc:%s://%s%s%s%s%s%s",
-					SQLSERVER_SCHEME,
-					uri.getHost(),
-					uri.getPort() > 0 ? ":" + uri.getPort() : "",
-					uri.getPath() != null && !uri.getPath().isEmpty() ? "/" + uri.getPath() : "",
-					databaseName != null ? ";database=" + UriInfo.urlEncode(databaseName) : "",
-					uriParameters.containsKey("user") ? ";user=" +  UriInfo.urlEncode(uriParameters.get("user")) : "",
-					uriParameters.containsKey("password") ? ";password=" +  UriInfo.urlEncode(uriParameters.get("password")) : ""
+		String uriString = uriInfo.getUriString();
+		if (uriString.contains(";")) {
+			Map<String, String> uriParameters = parseSqlServerUriParameters(uriString);
+			String databaseName = getDatabaseName(uriParameters);
+			try {
+				uriString = uriString.substring(0, uriInfo.getUriString().indexOf(";"));
+				URI uri = new URI(uriString);
+				jdbcURL = String.format("jdbc:%s://%s%s%s%s%s%s",
+						SQLSERVER_SCHEME,
+						uri.getHost(),
+						uri.getPort() > 0 ? ":" + uri.getPort() : "",
+						uri.getPath() != null && !uri.getPath().isEmpty() ? "/" + uri.getPath() : "",
+						databaseName != null ? ";database=" + UriInfo.urlEncode(databaseName) : "",
+						uriParameters.containsKey("user") ? ";user=" +  UriInfo.urlEncode(uriParameters.get("user")) : "",
+						uriParameters.containsKey("password") ? ";password=" +  UriInfo.urlEncode(uriParameters.get("password")) : ""
+				);
+			}
+			catch (URISyntaxException e) {
+				throw new RuntimeException(e);
+			}
+		} else {  
+			String params = parseSqlServerUserProvidedUriParameters(uriInfo.getQuery());
+			jdbcURL = String.format("jdbc:%s://%s:%d;database=%s;user=%s;password=%s%s", SQLSERVER_SCHEME,
+					uriInfo.getHost(), uriInfo.getPort(), uriInfo.getPath(),
+					UriInfo.urlEncode(uriInfo.getUsername()),
+					UriInfo.urlEncode(uriInfo.getPassword()),
+					!("".equals(params)) ? ";" + params : ""
 			);
 		}
-		catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		}
+		return jdbcURL;
 	}
 
 	private String getDatabaseName(Map<String, String> uriParameters) {
@@ -74,6 +88,10 @@ public class SqlServerJdbcUrlCreator extends AbstractJdbcUrlCreator {
 					.map(s -> s.split("="))
 					.filter(t -> t.length == 2)
 					.collect(Collectors.toMap(parameterName(), parameterValue(), takeFirst()));
+	}
+
+	private String parseSqlServerUserProvidedUriParameters(String uriString) {
+		return uriString != null ? uriString.replaceAll("&", ";") : "";
 	}
 
 	private BinaryOperator<String> takeFirst() {
