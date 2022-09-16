@@ -1,5 +1,6 @@
 buildscript {
     ext {
+        jacksonVersion = "2.13.2.20220328"
         jmockitVersion = "1.49"
         springBootVersion = "2.6.6"
     }
