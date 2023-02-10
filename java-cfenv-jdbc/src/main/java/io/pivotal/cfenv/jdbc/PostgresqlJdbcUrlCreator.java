@@ -28,14 +28,14 @@ public class PostgresqlJdbcUrlCreator extends AbstractJdbcUrlCreator {
 
 	public static final String POSTGRES_JDBC_SCHEME = "postgresql";
 
-	public static final String POSTGRESQL_TAG = "postgresql";
+	public static final String[] POSTGRESQL_TAGS = new String[] {"postgres", "postgresql"};
 
 	public static final String POSTGRESQL_LABEL = "postgresql";
 
 	@Override
 	public boolean isDatabaseService(CfService cfService) {
 		if (jdbcUrlMatchesScheme(cfService, POSTGRESQL_SCHEME, POSTGRES_JDBC_SCHEME)
-				|| cfService.existsByTagIgnoreCase(POSTGRESQL_TAG)
+				|| cfService.existsByTagIgnoreCase(POSTGRESQL_TAGS)
 				|| cfService.existsByLabelStartsWith(POSTGRESQL_LABEL)
 				|| cfService.existsByUriSchemeStartsWith(POSTGRESQL_SCHEME, POSTGRES_JDBC_SCHEME)
 				|| cfService.existsByCredentialsContainsUriField(POSTGRESQL_SCHEME, POSTGRES_JDBC_SCHEME)) {
