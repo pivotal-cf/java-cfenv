@@ -324,7 +324,7 @@ io.pivotal.cfenv.spring.boot.CfEnvProcessor=com.example.MyCoolServiceCfEnvProces
 Clone the repo and type
 
 ----
-$ ./gradlew clean assemble
+$ ./gradlew clean build
 ----
 
 which will run the tests as well.
