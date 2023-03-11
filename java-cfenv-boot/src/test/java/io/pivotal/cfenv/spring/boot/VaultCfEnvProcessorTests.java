@@ -40,8 +40,8 @@ public class VaultCfEnvProcessorTests extends AbstractCfEnvTests {
 		assertThat(getEnvironment().getProperty("spring.cloud.vault.token")).isEqualTo(EXPECTED_TOKEN_FROM_JSON_FILE);
 	}
 
-	private MockUp<?> mockConnectorLibrary(boolean isUsingConnectorLibrary) {
-		return new MockUp<ConnectorLibraryDetector>() {
+	private void mockConnectorLibrary(boolean isUsingConnectorLibrary) {
+		new MockUp<ConnectorLibraryDetector>(ConnectorLibraryDetector.class) {
 			@Mock
 			public boolean isUsingConnectorLibrary() {
 				return isUsingConnectorLibrary;

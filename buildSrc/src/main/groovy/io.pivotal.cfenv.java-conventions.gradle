@@ -8,10 +8,10 @@ plugins {
 }
 
 ext {
-    springFrameworkVersion = "5.3.8"
-    javaApi = "https://docs.oracle.com/javase/8/docs/api/"
-    if (JavaVersion.current() >= JavaVersion.VERSION_11) {
-        javaApi = "https://docs.oracle.com/en/java/javase/11/docs/api"
+    springFrameworkVersion = "5.3.25"
+    javaApi = "https://docs.oracle.com/javase/17/docs/api/"
+    if (JavaVersion.current() >= JavaVersion.VERSION_17) {
+        javaApi = "https://docs.oracle.com/en/java/javase/17/docs/api"
     }
     javadocLinks = [
             javaApi,
@@ -19,11 +19,15 @@ ext {
     ] as String[]
 }
 
+jacoco {
+    toolVersion = "0.8.6"
+}
+
 java {
     withJavadocJar()
     withSourcesJar()
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
