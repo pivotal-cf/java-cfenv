@@ -41,7 +41,7 @@ public class VaultCfEnvProcessorTests extends AbstractCfEnvTests {
 	}
 
 	private void mockConnectorLibrary(boolean isUsingConnectorLibrary) {
-		new MockUp<ConnectorLibraryDetector>(ConnectorLibraryDetector.class) {
+		new MockUp<ConnectorLibraryDetector>() {
 			@Mock
 			public boolean isUsingConnectorLibrary() {
 				return isUsingConnectorLibrary;
