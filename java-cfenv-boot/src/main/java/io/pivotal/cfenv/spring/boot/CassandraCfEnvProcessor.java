@@ -26,10 +26,60 @@ import io.pivotal.cfenv.core.CfService;
 /**
  * @author Mark Pollack
  */
-public class CassandraCfEnvProcessor implements CfEnvProcessor {
+public class CassandraCfEnvProcessor {
 
-	@Override
-	public boolean accept(CfService service) {
+	public final static class Boot2 implements CfEnvProcessor {
+
+		private static final int BOOT_VERSION = 2;
+		private static final String PREFIX = "spring.data.cassandra";
+
+		@Override
+		public boolean accept(CfService service) {
+			if (!SpringBootVersionResolver.isBootMajorVersionEnabled(BOOT_VERSION)) {
+				return false;
+			}
+			return CassandraCfEnvProcessor.accept(service);
+		}
+
+		@Override
+		public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
+			CassandraCfEnvProcessor.process(cfCredentials, properties, PREFIX);
+		}
+
+		@Override
+		public CfEnvProcessorProperties getProperties() {
+			return CassandraCfEnvProcessor.getProperties(PREFIX);
+		}
+	}
+
+	/**
+	 * This is a special case for Boot 3.
+	 */
+	public final static class Boot3 extends SpringBootVersionResolver implements CfEnvProcessor {
+
+		private static final int BOOT_VERSION = 3;
+		private static final String PREFIX = "spring.cassandra";
+
+		@Override
+		public boolean accept(CfService service) {
+			if (!SpringBootVersionResolver.isBootMajorVersionEnabled(BOOT_VERSION)) {
+				return false;
+			}
+			return CassandraCfEnvProcessor.accept(service);
+		}
+
+		@Override
+		public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
+			CassandraCfEnvProcessor.process(cfCredentials, properties, PREFIX);
+		}
+
+		@Override
+		public CfEnvProcessorProperties getProperties() {
+			return CassandraCfEnvProcessor.getProperties(PREFIX);
+		}
+	}
+
+	static boolean accept(CfService service) {
 		boolean serviceIsBound = service.existsByTagIgnoreCase("cassandra") &&
 				cassandraCredentialsPresent(service.getCredentials().getMap());
 		if (serviceIsBound) {
@@ -38,26 +88,24 @@ public class CassandraCfEnvProcessor implements CfEnvProcessor {
 		return serviceIsBound;
 	}
 
-	@Override
-	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-		properties.put("spring.data.cassandra.username", cfCredentials.getUsername());
-		properties.put("spring.data.cassandra.password", cfCredentials.getPassword());
-		properties.put("spring.data.cassandra.port", cfCredentials.getMap().get("cqlsh_port"));
+	static void process(CfCredentials cfCredentials, Map<String, Object> properties, String prefix) {
+		properties.put(prefix + ".username", cfCredentials.getUsername());
+		properties.put(prefix + ".password", cfCredentials.getPassword());
+		properties.put(prefix + ".port", cfCredentials.getMap().get("cqlsh_port"));
 		ArrayList<String> contactPoints = (ArrayList<String>) cfCredentials.getMap().get("node_ips");
-		properties.put("spring.data.cassandra.contact-points",
+		properties.put(prefix + ".contact-points",
 				StringUtils.collectionToCommaDelimitedString(contactPoints));
 
 	}
 
-	private boolean cassandraCredentialsPresent(Map<String, Object> credentials) {
+	static boolean cassandraCredentialsPresent(Map<String, Object> credentials) {
 		return credentials != null &&
 				credentials.containsKey("cqlsh_port") &&
 				credentials.containsKey("node_ips");
 	}
 
-	@Override
-	public CfEnvProcessorProperties getProperties() {
-		return CfEnvProcessorProperties.builder().propertyPrefixes("spring.data.cassandra")
+	static CfEnvProcessorProperties getProperties(String prefix) {
+		return CfEnvProcessorProperties.builder().propertyPrefixes(prefix)
 				.serviceName("Cassandra").build();
 	}
 }

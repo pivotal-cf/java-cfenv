@@ -29,12 +29,62 @@ import io.pivotal.cfenv.core.UriInfo;
  * @author Mark Pollack
  * @author Scott Frederick
  */
-public class RedisCfEnvProcessor implements CfEnvProcessor {
+public class RedisCfEnvProcessor {
 
-	private static String[] redisSchemes = { "redis", "rediss" };
+	private final static String[] redisSchemes = { "redis", "rediss" };
 
-	@Override
-	public boolean accept(CfService service) {
+	public final static class Boot2 implements CfEnvProcessor {
+
+		private static final int BOOT_VERSION = 2;
+		private static final String PREFIX = "spring.redis";
+
+		@Override
+		public boolean accept(CfService service) {
+			if (!SpringBootVersionResolver.isBootMajorVersionEnabled(BOOT_VERSION)) {
+				return false;
+			}
+			return RedisCfEnvProcessor.accept(service);
+		}
+
+		@Override
+		public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
+			RedisCfEnvProcessor.process(cfCredentials, properties, PREFIX);
+		}
+
+		@Override
+		public CfEnvProcessorProperties getProperties() {
+			return RedisCfEnvProcessor.getProperties(PREFIX);
+		}
+	}
+
+	/**
+	 * This is a special case for Boot 3.
+	 */
+	public final static class Boot3 extends SpringBootVersionResolver implements CfEnvProcessor {
+
+		private static final int BOOT_VERSION = 3;
+		private static final String PREFIX = "spring.data.redis";
+
+		@Override
+		public boolean accept(CfService service) {
+			if (!SpringBootVersionResolver.isBootMajorVersionEnabled(BOOT_VERSION)) {
+				return false;
+			}
+			return RedisCfEnvProcessor.accept(service);
+		}
+
+		@Override
+		public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
+			RedisCfEnvProcessor.process(cfCredentials, properties, PREFIX);
+		}
+
+		@Override
+		public CfEnvProcessorProperties getProperties() {
+			return RedisCfEnvProcessor.getProperties(PREFIX);
+		}
+	}
+
+	public static boolean accept(CfService service) {
 		boolean serviceIsBound = service.existsByTagIgnoreCase("redis") ||
 				service.existsByLabelStartsWith("rediscloud") ||
 				service.existsByUriSchemeStartsWith(redisSchemes) ||
@@ -45,38 +95,36 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 		return serviceIsBound;
 	}
 
-	@Override
-	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
+	private static void process(CfCredentials cfCredentials, Map<String, Object> properties, String prefix) {
 		String uri = cfCredentials.getUri(redisSchemes);
 
 		if (uri == null) {
-			properties.put("spring.redis.host", cfCredentials.getHost());
-			properties.put("spring.redis.password", cfCredentials.getPassword());
+			properties.put(prefix + ".host", cfCredentials.getHost());
+			properties.put(prefix + ".password", cfCredentials.getPassword());
 
 			Optional<String> tlsPort = Optional.ofNullable(cfCredentials.getString("tls_port"));
 			if (tlsPort.isPresent()) {
-				properties.put("spring.redis.port", tlsPort.get());
-				properties.put("spring.redis.ssl", "true");
+				properties.put(prefix + ".port", tlsPort.get());
+				properties.put(prefix + ".ssl", "true");
 			}
 			else {
-				properties.put("spring.redis.port", cfCredentials.getPort());
+				properties.put(prefix + ".port", cfCredentials.getPort());
 			}
 		}
 		else {
 			UriInfo uriInfo = new UriInfo(uri);
-			properties.put("spring.redis.host", uriInfo.getHost());
-			properties.put("spring.redis.port", uriInfo.getPort());
-			properties.put("spring.redis.password", uriInfo.getPassword());
+			properties.put(prefix + ".host", uriInfo.getHost());
+			properties.put(prefix + ".port", uriInfo.getPort());
+			properties.put(prefix + ".password", uriInfo.getPassword());
 			if (uriInfo.getScheme().equals("rediss")) {
-				properties.put("spring.redis.ssl", "true");
+				properties.put(prefix + ".ssl", "true");
 			}
 		}
 	}
 
-	@Override
-	public CfEnvProcessorProperties getProperties() {
+	static CfEnvProcessorProperties getProperties(String prefix) {
 		return CfEnvProcessorProperties.builder()
-				.propertyPrefixes("spring.redis")
+				.propertyPrefixes(prefix)
 				.serviceName("Redis")
 				.build();
 	}
