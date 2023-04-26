@@ -32,7 +32,7 @@ public class CfCredentials {
 
 	private UriInfo uriInfo;
 
-	private Map<String, String> derivedCredentials = new HashMap<>();
+	private final Map<String, String> derivedCredentials = new HashMap<>();
 
 	public CfCredentials(Map<String, Object> credentialsData) {
 		this.credentialsData = credentialsData;
@@ -98,7 +98,7 @@ public class CfCredentials {
 	 * @return value of the username, null if not found.
 	 */
 	public String getUsername() {
-		String username = getString("username", "user");
+		String username = getString("username", "user", "Username");
 		if (username != null) {
 			return username;
 		}
@@ -112,7 +112,7 @@ public class CfCredentials {
 	 * @return value of the password, null if not found.
 	 */
 	public String getPassword() {
-		String password = getString("password");
+		String password = getString("password", "Password");
 		if (password != null) {
 			return password;
 		}
@@ -162,9 +162,11 @@ public class CfCredentials {
 			String username = getUsername();
 			String password = getPassword();
 			String databaseName = getName();
-			uriInfo = new UriInfo(uriScheme, hostname, Integer.valueOf(port), username,
+			uriInfo = new UriInfo(uriScheme, hostname, Integer.parseInt(port), username,
 					password, databaseName);
 		} else {
+			//	in the case the CF instance returned a URI starting with jdbc://, we need to remove it
+			uri = uri.startsWith("jdbc:") ? uri.split("jdbc:")[1] : uri;
 			uriInfo = new UriInfo(uri);
 		}
 		return uriInfo;

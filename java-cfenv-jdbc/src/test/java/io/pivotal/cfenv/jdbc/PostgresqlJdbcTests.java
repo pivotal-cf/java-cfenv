@@ -79,6 +79,32 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 	}
 
 	@Test
+	public void postgresqlServiceCreationGoogleCloud() {
+		String name1 = "database-1";
+		String name2 = "database-2";
+
+		mockVcapServices(getServicesPayload(
+				getPostgresqlServicePayloadGoogleCloudSql("postgresql-1", hostname, port, username, password, name1),
+				getPostgresqlServicePayloadGoogleCloudSql("postgresql-2", hostname, port, username, password, name2)));
+
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName("postgresql-1");
+		assertThat(cfJdbcService.getUsername()).isEqualTo(username);
+		assertThat(cfJdbcService.getPassword()).isEqualTo(password);
+		assertThat(cfJdbcService.getDriverClassName())
+				.isEqualTo("org.postgresql.Driver");
+
+		assertThat(cfJdbcService.getJdbcUrl()).isEqualTo(
+				"jdbc:postgresql://10.20.30.40/database-1?user=myuser&password=mypass&sslmode=require&sslcert=REDACTED&sslkey=REDACTED&sslrootcert=REDACTED"
+		);
+
+		assertThatThrownBy(() -> {
+			cfJdbcEnv.findJdbcServiceByName("postgresql.*");
+		}).isInstanceOf(IllegalArgumentException.class).hasMessage(
+				"No unique database service matching by name [postgresql.*] was found.  Matching service names are [postgresql-1, postgresql-2]");
+	}
+
+	@Test
 	public void postgresqlWithSpecialCharsServiceCreation() {
 		String userWithSpecialChars = "u%u:u+";
 		String passwordWithSpecialChars = "p%p:p+";
@@ -188,6 +214,13 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 			String hostname, int port,
 			String user, String password, String name) {
 		return getTemplatedPayload("test-postgresql-info-alternate.json", serviceName,
+				hostname, port, user, password, name);
+	}
+
+	private String getPostgresqlServicePayloadGoogleCloudSql(String serviceName,
+															 String hostname, int port,
+															 String user, String password, String name) {
+		return getTemplatedPayload("test-postgresql-info-google-cloudsql.json", serviceName,
 				hostname, port, user, password, name);
 	}
 
