@@ -1,0 +1,19 @@
+{
+  "name": "$serviceName",
+  "credentials": {
+    "CaCert": "REDACTED",
+    "ClientCert": "REDACTED",
+    "ClientKey": "REDACTED",
+    "UriPrefix": "jdbc:",
+    "Username": "$user",
+    "Password": "$password",
+    "instance_name": "INSTANCE_NAME",
+    "uri": "jdbc:postgres://$user:$password@$hostname/$name?sslmode=require&sslcert=REDACTED&sslkey=REDACTED&sslrootcert=REDACTED"
+  },
+  "label": "google-cloudsql-postgres",
+  "tags": [
+    "gcp",
+    "cloudsql",
+    "postgres"
+  ]
+}
