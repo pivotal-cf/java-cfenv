@@ -2,30 +2,6 @@
 Type: `redis`
 Disable Property: `cfenv.service.redis.enabled`
 
-==== Spring Boot 2 properties
-
-| Property                             | Value                     |
-| ------------------------------------ | ------------------------- |
-| `spring.redis.host`                  | `{host}`                  |
-| `spring.redis.password`              | `{password}`              |
-| `spring.redis.port`                  | `{port}`                  |
-| `spring.redis.ssl`                   | `{ssl}`                   |
-
-
-Not supported, compared to `spring-cloud-bindings`:
-
-| Property                             | Value                     |
-| ------------------------------------ | ------------------------- |
-| `spring.redis.client-name`           | `{client-name}`           |
-| `spring.redis.cluster.max-redirects` | `{cluster.max-redirects}` |
-| `spring.redis.cluster.nodes`         | `{cluster.nodes}`         |
-| `spring.redis.database`              | `{database}`              |
-| `spring.redis.sentinel.master`       | `{sentinel.master}`       |
-| `spring.redis.sentinel.nodes`        | `{sentinel.nodes}`        |
-| `spring.redis.url`                   | `{url}`                   |
-
-
-
 ==== Spring Boot 3 properties
 
 | Property                                  | Value                     |

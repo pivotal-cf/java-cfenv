@@ -14,8 +14,8 @@ java {
 dependencies {
     testImplementation project(':java-cfenv-boot')
 
-    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBoot3Version}"
-    testImplementation "org.springframework.boot:spring-boot-starter-data-redis:${springBoot3Version}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testImplementation "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}"
     testImplementation 'com.github.kstyrc:embedded-redis:0.6'
 
     testImplementation "junit:junit"
