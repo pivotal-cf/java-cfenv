@@ -23,8 +23,7 @@ rootProject.name = 'java-cfenv'
 
 include "java-cfenv"
 include "java-cfenv-boot"
-include "java-cfenv-tests-boot-2"
-include "java-cfenv-tests-boot-3"
+include "java-cfenv-tests-boot"
 include "java-cfenv-boot-pivotal-scs"
 include "java-cfenv-boot-pivotal-sso"
 //include "java-cfenv-docs"

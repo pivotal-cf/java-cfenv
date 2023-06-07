@@ -1,48 +1,68 @@
-=== Redis
-Type: `redis`
-Disable Property: `cfenv.service.redis.enabled`
+= Using Spring Boot
 
-==== Spring Boot 2 properties
+The module `java-cfenv-boot` provides several `EnvironmentPostProcessor` implementations that set well known Boot properties so that Boot's auto-configuration can kick in.
+For example, the `CfDataSourceEnvironmentPostProcessor` sets the Boot property `spring.datasource.url`.
+Just add a dependency on `java-cfenv-boot`.
 
-| Property                             | Value                     |
-| ------------------------------------ | ------------------------- |
-| `spring.redis.host`                  | `{host}`                  |
-| `spring.redis.password`              | `{password}`              |
-| `spring.redis.port`                  | `{port}`                  |
-| `spring.redis.ssl`                   | `{ssl}`                   |
+The list of supported services are:
+
+== Databases - DB2, MySQL, Oracle, Postgresl, SqlServer
+Properties that could be populated:
+
+* `spring.datasource.url`
+* `spring.datasource.username`
+* `spring.datasource.password`
+* `spring.datasource.driver-class-name`
+
+== RabbitMQ
+Properties that could be populated:
+
+* `spring.rabbitmq.host`
+* `spring.rabbitmq.username`
+* `spring.rabbitmq.password`
+* `spring.rabbitmq.ssl.enabled`
+* `spring.rabbitmq.port`
+* `spring.rabbitmq.virtualHost`
+* `spring.rabbitmq.addresses`
+
+== Cassandra
+Properties that could be populated:
+
+* `spring.data.cassandra.username`
+* `spring.data.cassandra.password`
+* `spring.data.cassandra.port`
+* `spring.data.cassandra.contact-points`
+
+== MongoDB
+Properties that could be populated:
+
+* `spring.data.mongodb.uri`
+
+== Redis
+
+* `spring.redis.host`
+* `spring.redis.password`
+* `spring.redis.port`
+* `spring.redis.ssl`
+
+== CredHub
+Properties that could be populated:
+
+* `spring.credhub.url`
+* `spring.credhub.oauth2`
 
 
-Not supported, compared to `spring-cloud-bindings`:
+== Hashicorp Vault
+Properties that could be populated:
 
-| Property                             | Value                     |
-| ------------------------------------ | ------------------------- |
-| `spring.redis.client-name`           | `{client-name}`           |
-| `spring.redis.cluster.max-redirects` | `{cluster.max-redirects}` |
-| `spring.redis.cluster.nodes`         | `{cluster.nodes}`         |
-| `spring.redis.database`              | `{database}`              |
-| `spring.redis.sentinel.master`       | `{sentinel.master}`       |
-| `spring.redis.sentinel.nodes`        | `{sentinel.nodes}`        |
-| `spring.redis.url`                   | `{url}`                   |
+* `spring.cloud.vault.uri`
+* `spring.cloud.vault.token`
 
+== Notes
 
+If, for any reason, you need to disable processing of a specific service instance, you can do so by setting the following flag in your application properties:
+[source]
+----
+cfenv.service.{serviceName}.enabled=false
+----
 
-==== Spring Boot 3 properties
-
-| Property                                  | Value                     |
-|-------------------------------------------|---------------------------|
-| `spring.data.redis.host`                  | `{host}`                  |
-| `spring.data.redis.password`              | `{password}`              |
-| `spring.data.redis.port`                  | `{port}`                  |
-| `spring.data.redis.ssl`                   | `{ssl}`                   |
-
-Not supported, compared to `spring-cloud-bindings`:
-
-| Property                                  | Value                     |
-|-------------------------------------------|---------------------------|
-| `spring.data.redis.client-name`           | `{client-name}`           |
-| `spring.data.redis.cluster.max-redirects` | `{cluster.max-redirects}` |
-| `spring.data.redis.cluster.nodes`         | `{cluster.nodes}`         |
-| `spring.data.redis.database`              | `{database}`              |
-| `spring.data.redis.sentinel.master`       | `{sentinel.master}`       |
-| `spring.data.redis.sentinel.nodes`        | `{sentinel.nodes}`        |
-| `spring.data.redis.url`                   | `{url}`                   |

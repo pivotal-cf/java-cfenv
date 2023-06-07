@@ -1,9 +1,3 @@
-buildscript {
-    ext {
-        springBootVersion = "2.6.14"
-    }
-}
-
 plugins {
     id 'io.pivotal.cfenv.java-conventions'
 }

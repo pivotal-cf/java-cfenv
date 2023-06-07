@@ -29,62 +29,14 @@ import io.pivotal.cfenv.core.UriInfo;
  * @author Mark Pollack
  * @author Scott Frederick
  */
-public class RedisCfEnvProcessor {
+public class RedisCfEnvProcessor implements CfEnvProcessor {
 
 	private final static String[] redisSchemes = { "redis", "rediss" };
 
-	public final static class Boot2 implements CfEnvProcessor {
+	private static final String PREFIX = "spring.redis";
 
-		private static final int BOOT_VERSION = 2;
-		private static final String PREFIX = "spring.redis";
-
-		@Override
-		public boolean accept(CfService service) {
-			if (!SpringBootVersionResolver.isBootMajorVersionEnabled(BOOT_VERSION)) {
-				return false;
-			}
-			return RedisCfEnvProcessor.accept(service);
-		}
-
-		@Override
-		public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-			RedisCfEnvProcessor.process(cfCredentials, properties, PREFIX);
-		}
-
-		@Override
-		public CfEnvProcessorProperties getProperties() {
-			return RedisCfEnvProcessor.getProperties(PREFIX);
-		}
-	}
-
-	/**
-	 * This is a special case for Boot 3.
-	 */
-	public final static class Boot3 extends SpringBootVersionResolver implements CfEnvProcessor {
-
-		private static final int BOOT_VERSION = 3;
-		private static final String PREFIX = "spring.data.redis";
-
-		@Override
-		public boolean accept(CfService service) {
-			if (!SpringBootVersionResolver.isBootMajorVersionEnabled(BOOT_VERSION)) {
-				return false;
-			}
-			return RedisCfEnvProcessor.accept(service);
-		}
-
-		@Override
-		public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-			RedisCfEnvProcessor.process(cfCredentials, properties, PREFIX);
-		}
-
-		@Override
-		public CfEnvProcessorProperties getProperties() {
-			return RedisCfEnvProcessor.getProperties(PREFIX);
-		}
-	}
-
-	public static boolean accept(CfService service) {
+	@Override
+	public boolean accept(CfService service) {
 		boolean serviceIsBound = service.existsByTagIgnoreCase("redis") ||
 				service.existsByLabelStartsWith("rediscloud") ||
 				service.existsByUriSchemeStartsWith(redisSchemes) ||
@@ -95,36 +47,38 @@ public class RedisCfEnvProcessor {
 		return serviceIsBound;
 	}
 
-	private static void process(CfCredentials cfCredentials, Map<String, Object> properties, String prefix) {
+	@Override
+	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
 		String uri = cfCredentials.getUri(redisSchemes);
 
 		if (uri == null) {
-			properties.put(prefix + ".host", cfCredentials.getHost());
-			properties.put(prefix + ".password", cfCredentials.getPassword());
+			properties.put(PREFIX + ".host", cfCredentials.getHost());
+			properties.put(PREFIX + ".password", cfCredentials.getPassword());
 
 			Optional<String> tlsPort = Optional.ofNullable(cfCredentials.getString("tls_port"));
 			if (tlsPort.isPresent()) {
-				properties.put(prefix + ".port", tlsPort.get());
-				properties.put(prefix + ".ssl", "true");
+				properties.put(PREFIX + ".port", tlsPort.get());
+				properties.put(PREFIX + ".ssl", "true");
 			}
 			else {
-				properties.put(prefix + ".port", cfCredentials.getPort());
+				properties.put(PREFIX + ".port", cfCredentials.getPort());
 			}
 		}
 		else {
 			UriInfo uriInfo = new UriInfo(uri);
-			properties.put(prefix + ".host", uriInfo.getHost());
-			properties.put(prefix + ".port", uriInfo.getPort());
-			properties.put(prefix + ".password", uriInfo.getPassword());
+			properties.put(PREFIX + ".host", uriInfo.getHost());
+			properties.put(PREFIX + ".port", uriInfo.getPort());
+			properties.put(PREFIX + ".password", uriInfo.getPassword());
 			if (uriInfo.getScheme().equals("rediss")) {
-				properties.put(prefix + ".ssl", "true");
+				properties.put(PREFIX + ".ssl", "true");
 			}
 		}
 	}
 
-	static CfEnvProcessorProperties getProperties(String prefix) {
+	@Override
+	public CfEnvProcessorProperties getProperties() {
 		return CfEnvProcessorProperties.builder()
-				.propertyPrefixes(prefix)
+				.propertyPrefixes(PREFIX)
 				.serviceName("Redis")
 				.build();
 	}

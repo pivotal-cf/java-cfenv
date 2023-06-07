@@ -8,13 +8,11 @@ org.springframework.context.ApplicationListener=\
   io.pivotal.cfenv.spring.boot.CfEnvironmentPostProcessor
 # CfEnvironmentPostProcessor delegates to these CfEnvProcessors for each CF service
 io.pivotal.cfenv.spring.boot.CfEnvProcessor=\
-  io.pivotal.cfenv.spring.boot.RedisCfEnvProcessor.Boot2,\
-  io.pivotal.cfenv.spring.boot.RedisCfEnvProcessor.Boot3,\
+  io.pivotal.cfenv.spring.boot.RedisCfEnvProcessor,\
   io.pivotal.cfenv.spring.boot.MongoCfEnvProcessor,\
   io.pivotal.cfenv.spring.boot.AmqpCfEnvProcessor,\
   io.pivotal.cfenv.spring.boot.CredHubCfEnvProcessor,\
-  io.pivotal.cfenv.spring.boot.CassandraCfEnvProcessor.Boot2,\
-  io.pivotal.cfenv.spring.boot.CassandraCfEnvProcessor.Boot3,\
+  io.pivotal.cfenv.spring.boot.CassandraCfEnvProcessor,\
   io.pivotal.cfenv.spring.boot.VaultCfEnvProcessor
 
 
