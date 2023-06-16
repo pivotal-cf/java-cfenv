@@ -185,4 +185,16 @@ public class CfService {
 		return false;
 	}
 
+	/**
+	 * @param label string to search for as a presence in the service label
+	 * @return whether the label contains with the provided string
+	 */
+	public boolean existsByLabelContains(String label) {
+		String cfLabel = this.getLabel();
+		if (cfLabel != null && cfLabel.length() > 0) {
+			return cfLabel.contains(label);
+		}
+		return false;
+	}
+
 }

@@ -39,6 +39,7 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
     public boolean accept(CfService service) {
         boolean serviceIsBound = service.existsByTagIgnoreCase("redis") ||
                 service.existsByLabelStartsWith("rediscloud") ||
+                service.existsByLabelContains("redis") ||
                 service.existsByUriSchemeStartsWith(redisSchemes) ||
                 service.existsByCredentialsContainsUriField(redisSchemes);
         if (serviceIsBound) {
