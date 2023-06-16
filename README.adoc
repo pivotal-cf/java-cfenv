@@ -1,4 +1,4 @@
-== Java CFEnv image:https://build.spring.io/plugins/servlet/wittified/build-status/CFENV-BMASTER[Build Status, link=https://build.spring.io/browse/CFENV-BMASTER]
+= Java CFEnv image:https://build.spring.io/plugins/servlet/wittified/build-status/CFENV-BMASTER[Build Status, link=https://build.spring.io/browse/CFENV-BMASTER]
 
 Java CFEnv is a library for easily accessing the environment variables set when deploying an application to Cloud Foundry.
 It is modeled after the design of the node library https://github.com/cloudfoundry-community/node-cfenv/[node-cfenv] and other `-cfenv` libraries in the Cloud Foundry ecosystem.
@@ -8,6 +8,20 @@ In a Spring application, you can use the https://docs.spring.io/spring/docs/curr
 CFEnv's Boot support sets https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties[common application properties] so that Java objects such as the `DataSource` or the `RabbitConnectionFactory` are created using Spring Boot autoconfiguration.
 
 The https://spring.io/blog/2019/02/15/introducing-java-cfenv-a-new-library-for-accessing-cloud-foundry-services[1.0 M1 blog] provides some additional background information.
+
+== Compatibility
+=== https://github.com/pivotal-cf/java-cfenv/tree/main[3.x]
+
+* https://projects.spring.io/spring-framework/[Spring Framework] 6.x
+
+* https://projects.spring.io/spring-boot/[Spring Boot] 3.x
+
+
+=== https://github.com/pivotal-cf/java-cfenv/tree/2.5.x[2.x]
+
+* https://projects.spring.io/spring-framework/[Spring Framework] 5.3+
+
+* https://projects.spring.io/spring-boot/[Spring Boot] 2.5+
 
 == Dependency Info
 

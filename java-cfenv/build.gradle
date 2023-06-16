@@ -12,7 +12,7 @@ dependencies {
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "junit:junit"
-    testImplementation "com.github.hazendaz.jmockit:jmockit:${jmockitVersion}"
+    testImplementation "org.jmockit:jmockit:${jmockitVersion}"
 
     testRuntimeOnly('org.junit.vintage:junit-vintage-engine') {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
@@ -20,7 +20,7 @@ dependencies {
 
     testFixturesApi platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
     testFixturesImplementation "org.springframework.boot:spring-boot-starter-test"
-    testFixturesImplementation "com.github.hazendaz.jmockit:jmockit:${jmockitVersion}"
+    testFixturesImplementation "org.jmockit:jmockit:${jmockitVersion}"
 }
 
 testFixturesJar {

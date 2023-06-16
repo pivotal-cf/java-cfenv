@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 	private final static int TLS_PORT = 11111;
-	public static final String SPRING_DATA_REDIS = "spring.data.redis";
+	private static final String SPRING_DATA_REDIS = "spring.data.redis";
 
 	public static void commonAssertions(Environment environment, String SPRING_DATA_REDIS) {
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".host")).isEqualTo(hostname);
@@ -64,10 +64,10 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 
 		Environment environment = getEnvironment();
 
-		assertThat(environment.getProperty(SPRING_DATA_REDIS+".host")).isEqualTo(hostname);
-		assertThat(environment.getProperty(SPRING_DATA_REDIS+".port")).isEqualTo(String.valueOf(TLS_PORT));
-		assertThat(environment.getProperty(SPRING_DATA_REDIS+".password")).isEqualTo(password);
-		assertThat(environment.getProperty(SPRING_DATA_REDIS+".ssl")).isEqualTo("true");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".host")).isEqualTo(hostname);
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".port")).isEqualTo(String.valueOf(TLS_PORT));
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".password")).isEqualTo(password);
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".ssl")).isEqualTo("true");
 	}
 
 	@Test
@@ -87,10 +87,10 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 
 		Environment environment = getEnvironment();
 
-		assertThat(environment.getProperty(SPRING_DATA_REDIS+".host")).isNull();
-		assertThat(environment.getProperty(SPRING_DATA_REDIS+".port")).isNull();
-		assertThat(environment.getProperty(SPRING_DATA_REDIS+".password")).isNull();
-		assertThat(environment.getProperty(SPRING_DATA_REDIS+".ssl")).isNull();
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".host")).isNull();
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".port")).isNull();
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".password")).isNull();
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".ssl")).isNull();
 	}
 
 	@Test

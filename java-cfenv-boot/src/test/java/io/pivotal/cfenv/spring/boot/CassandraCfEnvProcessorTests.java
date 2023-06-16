@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class CassandraCfEnvProcessorTests extends AbstractCfEnvTests {
 
-	public static final String SPRING_CASSANDRA = "spring.cassandra";
+	private static final String SPRING_CASSANDRA = "spring.cassandra";
 
 	@Test
 	public void simpleService() {
