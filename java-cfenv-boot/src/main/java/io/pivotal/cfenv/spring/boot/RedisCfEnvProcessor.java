@@ -31,54 +31,55 @@ import io.pivotal.cfenv.core.UriInfo;
  */
 public class RedisCfEnvProcessor implements CfEnvProcessor {
 
-	private static String[] redisSchemes = { "redis", "rediss" };
+    private final static String[] redisSchemes = {"redis", "rediss"};
 
-	@Override
-	public boolean accept(CfService service) {
-		boolean serviceIsBound = service.existsByTagIgnoreCase("redis") ||
-				service.existsByLabelStartsWith("rediscloud") ||
-				service.existsByUriSchemeStartsWith(redisSchemes) ||
-				service.existsByCredentialsContainsUriField(redisSchemes);
-		if (serviceIsBound) {
-			ConnectorLibraryDetector.assertNoConnectorLibrary();
-		}
-		return serviceIsBound;
-	}
+    private static final String PREFIX = "spring.data.redis";
 
-	@Override
-	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-		String uri = cfCredentials.getUri(redisSchemes);
+    @Override
+    public boolean accept(CfService service) {
+        boolean serviceIsBound = service.existsByTagIgnoreCase("redis") ||
+                service.existsByLabelStartsWith("rediscloud") ||
+                service.existsByLabelContains("redis") ||
+                service.existsByUriSchemeStartsWith(redisSchemes) ||
+                service.existsByCredentialsContainsUriField(redisSchemes);
+        if (serviceIsBound) {
+            ConnectorLibraryDetector.assertNoConnectorLibrary();
+        }
+        return serviceIsBound;
+    }
 
-		if (uri == null) {
-			properties.put("spring.redis.host", cfCredentials.getHost());
-			properties.put("spring.redis.password", cfCredentials.getPassword());
+    @Override
+    public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
+        String uri = cfCredentials.getUri(redisSchemes);
 
-			Optional<String> tlsPort = Optional.ofNullable(cfCredentials.getString("tls_port"));
-			if (tlsPort.isPresent()) {
-				properties.put("spring.redis.port", tlsPort.get());
-				properties.put("spring.redis.ssl", "true");
-			}
-			else {
-				properties.put("spring.redis.port", cfCredentials.getPort());
-			}
-		}
-		else {
-			UriInfo uriInfo = new UriInfo(uri);
-			properties.put("spring.redis.host", uriInfo.getHost());
-			properties.put("spring.redis.port", uriInfo.getPort());
-			properties.put("spring.redis.password", uriInfo.getPassword());
-			if (uriInfo.getScheme().equals("rediss")) {
-				properties.put("spring.redis.ssl", "true");
-			}
-		}
-	}
+        if (uri == null) {
+            properties.put(PREFIX + ".host", cfCredentials.getHost());
+            properties.put(PREFIX + ".password", cfCredentials.getPassword());
 
-	@Override
-	public CfEnvProcessorProperties getProperties() {
-		return CfEnvProcessorProperties.builder()
-				.propertyPrefixes("spring.redis")
-				.serviceName("Redis")
-				.build();
-	}
+            Optional<String> tlsPort = Optional.ofNullable(cfCredentials.getString("tls_port"));
+            if (tlsPort.isPresent()) {
+                properties.put(PREFIX + ".port", tlsPort.get());
+                properties.put(PREFIX + ".ssl", "true");
+            } else {
+                properties.put(PREFIX + ".port", cfCredentials.getPort());
+            }
+        } else {
+            UriInfo uriInfo = new UriInfo(uri);
+            properties.put(PREFIX + ".host", uriInfo.getHost());
+            properties.put(PREFIX + ".port", uriInfo.getPort());
+            properties.put(PREFIX + ".password", uriInfo.getPassword());
+            if (uriInfo.getScheme().equals("rediss")) {
+                properties.put(PREFIX + ".ssl", "true");
+            }
+        }
+    }
+
+    @Override
+    public CfEnvProcessorProperties getProperties() {
+        return CfEnvProcessorProperties.builder()
+                .propertyPrefixes(PREFIX)
+                .serviceName("Redis")
+                .build();
+    }
 
 }

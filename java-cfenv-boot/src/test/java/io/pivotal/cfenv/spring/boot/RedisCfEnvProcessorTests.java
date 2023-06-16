@@ -15,7 +15,11 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.junit.Test;
+import org.junit.runners.Parameterized.Parameters;
 
 import org.springframework.core.env.Environment;
 
@@ -29,11 +33,18 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 	private final static int TLS_PORT = 11111;
+	public static final String SPRING_DATA_REDIS = "spring.data.redis";
 
-	public static void commonAssertions(Environment environment) {
-		assertThat(environment.getProperty("spring.redis.host")).isEqualTo(hostname);
-		assertThat(environment.getProperty("spring.redis.port")).isEqualTo(String.valueOf(port));
-		assertThat(environment.getProperty("spring.redis.password")).isEqualTo(password);
+	public static void commonAssertions(Environment environment, String SPRING_DATA_REDIS) {
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".host")).isEqualTo(hostname);
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".port")).isEqualTo(String.valueOf(port));
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".password")).isEqualTo(password);
+	}
+
+	@Parameters(name = "SpringBoot{0}")
+	public static Collection<Object[]> data() {
+		return Arrays.asList(new Object[][] {{ 3, SPRING_DATA_REDIS, new RedisCfEnvProcessor()}
+		});
 	}
 
 	@Test
@@ -41,7 +52,7 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 		String payload = payloadBuilder("test-redis-info.json").payload();
 		mockVcapServices(getServicesPayload(payload));
 
-		commonAssertions(getEnvironment());
+        commonAssertions(getEnvironment(), SPRING_DATA_REDIS);
 	}
 
 	@Test
@@ -53,10 +64,10 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 
 		Environment environment = getEnvironment();
 
-		assertThat(environment.getProperty("spring.redis.host")).isEqualTo(hostname);
-		assertThat(environment.getProperty("spring.redis.port")).isEqualTo(String.valueOf(TLS_PORT));
-		assertThat(environment.getProperty("spring.redis.password")).isEqualTo(password);
-		assertThat(environment.getProperty("spring.redis.ssl")).isEqualTo("true");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS+".host")).isEqualTo(hostname);
+		assertThat(environment.getProperty(SPRING_DATA_REDIS+".port")).isEqualTo(String.valueOf(TLS_PORT));
+		assertThat(environment.getProperty(SPRING_DATA_REDIS+".password")).isEqualTo(password);
+		assertThat(environment.getProperty(SPRING_DATA_REDIS+".ssl")).isEqualTo("true");
 	}
 
 	@Test
@@ -65,8 +76,8 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 		mockVcapServices(getServicesPayload(payload));
 
 		Environment environment = getEnvironment();
-		commonAssertions(environment);
-		assertThat(environment.getProperty("spring.redis.ssl")).isEqualTo("true");
+		commonAssertions(getEnvironment(), SPRING_DATA_REDIS);
+		assertThat(environment.getProperty(SPRING_DATA_REDIS+".ssl")).isEqualTo("true");
 	}
 
 	@Test
@@ -76,10 +87,16 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 
 		Environment environment = getEnvironment();
 
-		assertThat(environment.getProperty("spring.redis.host")).isNull();
-		assertThat(environment.getProperty("spring.redis.port")).isNull();
-		assertThat(environment.getProperty("spring.redis.password")).isNull();
-		assertThat(environment.getProperty("spring.redis.ssl")).isNull();
+		assertThat(environment.getProperty(SPRING_DATA_REDIS+".host")).isNull();
+		assertThat(environment.getProperty(SPRING_DATA_REDIS+".port")).isNull();
+		assertThat(environment.getProperty(SPRING_DATA_REDIS+".password")).isNull();
+		assertThat(environment.getProperty(SPRING_DATA_REDIS+".ssl")).isNull();
+	}
+
+	@Test
+	public void testGetProperties() {
+		assertThat(new RedisCfEnvProcessor().getProperties().getPropertyPrefixes()).isEqualTo(SPRING_DATA_REDIS);
+		assertThat(new RedisCfEnvProcessor().getProperties().getServiceName()).isEqualTo("Redis");
 	}
 
 	private RedisFilePayloadBuilder payloadBuilder(String filename) {

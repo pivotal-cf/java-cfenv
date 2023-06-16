@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.cloud.CloudPlatform;
-import org.springframework.boot.context.config.ConfigFileApplicationListener;
+import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -47,7 +47,7 @@ public class CfDataSourceEnvironmentPostProcessor implements CfServiceEnablingEn
 	private static int invocationCount;
 
 	// After ConfigFileApplicationListener so values from files can be used here
-	private int order = ConfigFileApplicationListener.DEFAULT_ORDER + 1;
+	private int order = ConfigDataEnvironmentPostProcessor.ORDER + 1;
 
 	@Override
 	public int getOrder() {
@@ -64,7 +64,7 @@ public class CfDataSourceEnvironmentPostProcessor implements CfServiceEnablingEn
 		increaseInvocationCount();
 		if (CloudPlatform.CLOUD_FOUNDRY.isActive(environment)) {
 			CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
-			CfJdbcService cfJdbcService = null;
+			CfJdbcService cfJdbcService;
 			try {
 				cfJdbcService = cfJdbcEnv.findJdbcService();
 				cfJdbcService = this.isEnabled(cfJdbcService, environment) ? cfJdbcService : null;

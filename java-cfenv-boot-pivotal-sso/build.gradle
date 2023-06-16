@@ -9,7 +9,7 @@ dependencies {
 
     testImplementation project(':java-cfenv-test-support')
     testImplementation "junit:junit"
-    testImplementation "org.jmockit:jmockit:${jmockitVersion}"
+    testImplementation "com.github.hazendaz.jmockit:jmockit:${jmockitVersion}"
 
     testRuntimeOnly('org.junit.vintage:junit-vintage-engine') {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
