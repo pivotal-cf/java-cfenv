@@ -4,7 +4,6 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'checkstyle'
-    id 'jacoco'
 }
 
 ext {
@@ -14,14 +13,6 @@ ext {
             javaApi,
             "https://docs.spring.io/spring-framework/docs/${springFrameworkVersion}/javadoc-api/"
     ] as String[]
-}
-
-// we can not use latest Jacoco because of an issue with Java 17 and JMockit
-//https://github.com/jmockit/jmockit1/issues/615
-// Eventually, we need to remove Jmockit dependency since it's barely maintained anymore
-//https://github.com/jmockit/jmockit1
-jacoco {
-    toolVersion = "0.8.6"
 }
 
 java {
