@@ -30,38 +30,45 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class CassandraCfEnvProcessorTests extends AbstractCfEnvTests {
 
+	private static final String SPRING_CASSANDRA = "spring.cassandra";
+
 	@Test
 	public void simpleService() {
 		mockVcapServicesWithNames("io/pivotal/cfenv/spring/boot/test-cassandra-service.json");
 		Environment environment = getEnvironment();
-		assertThat(environment.getProperty("spring.data.cassandra.username")).isNull();
-		assertThat(environment.getProperty("spring.data.cassandra.password")).isNull();
-		assertThat(environment.getProperty("spring.data.cassandra.port")).isEqualTo("9042");
-		assertThat(environment.getProperty("spring.data.cassandra.contact-points")).contains("1.2.3.4","5.6.7.8");
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".username")).isNull();
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".password")).isNull();
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".port")).isEqualTo("9042");
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".contact-points")).contains("1.2.3.4","5.6.7.8");
 	}
 
 	@Test
 	public void simpleServiceUserNamePassword() {
 		mockVcapServicesWithNames("io/pivotal/cfenv/spring/boot/test-cassandra-with-credentials.json");
 		Environment environment = getEnvironment();
-		assertThat(environment.getProperty("spring.data.cassandra.username")).isEqualTo("user");
-		assertThat(environment.getProperty("spring.data.cassandra.password")).isEqualTo("pass");
-		assertThat(environment.getProperty("spring.data.cassandra.port")).isEqualTo("9042");
-		assertThat(environment.getProperty("spring.data.cassandra.contact-points")).contains("1.2.3.4");
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".username")).isEqualTo("user");
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".password")).isEqualTo("pass");
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".port")).isEqualTo("9042");
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".contact-points")).contains("1.2.3.4");
 	}
 
 	@Test
 	public void serviceNotValid() {
 		mockVcapServicesWithNames("io/pivotal/cfenv/spring/boot/test-cassandra-missing-required-fields.json");
 		Environment environment = getEnvironment();
-		assertThat(environment.getProperty("spring.data.cassandra.username")).isNull();
-		assertThat(environment.getProperty("spring.data.cassandra.password")).isNull();
-		assertThat(environment.getProperty("spring.data.cassandra.port")).isNull();
-		assertThat(environment.getProperty("spring.data.cassandra.contact-points")).isNull();
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".username")).isNull();
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".password")).isNull();
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".port")).isNull();
+		assertThat(environment.getProperty(SPRING_CASSANDRA + ".contact-points")).isNull();
+	}
+
+	@Test
+	public void testGetProperties() {
+		assertThat(new CassandraCfEnvProcessor().getProperties().getPropertyPrefixes()).isEqualTo(SPRING_CASSANDRA);
+		assertThat(new CassandraCfEnvProcessor().getProperties().getServiceName()).isEqualTo("Cassandra");
 	}
 
 	private void mockVcapServicesWithNames(String fileName) {
 		CfEnvMock.configure().vcapServicesResource(fileName).mock();
-
 	}
 }

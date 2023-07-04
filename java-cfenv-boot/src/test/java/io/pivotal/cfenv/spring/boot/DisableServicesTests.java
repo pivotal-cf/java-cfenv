@@ -37,7 +37,7 @@ public class DisableServicesTests extends AbstractCfEnvTests {
 	public void defaultEnabled() {
 		CfEnvMock.configure().vcapServicesResource("vcap-services.json").mock();
 		Environment environment = getEnvironment();
-		assertThat(environment.containsProperty("spring.redis.host")).isTrue();
+		assertThat(environment.containsProperty("spring.data.redis.host")).isTrue();
 		assertThat(environment.containsProperty("spring.datasource.url")).isTrue();
 
 	}
@@ -60,7 +60,7 @@ public class DisableServicesTests extends AbstractCfEnvTests {
 		Environment environment = getEnvironment(Collections.singletonMap("cfenv.service.mysql.enabled",
 			"false"));
 
-		assertThat(environment.containsProperty("spring.redis.host")).isTrue();
+		assertThat(environment.containsProperty("spring.data.redis.host")).isTrue();
 		assertThat(environment.containsProperty("spring.datasource.url")).isFalse();
 
 	}
@@ -87,7 +87,7 @@ public class DisableServicesTests extends AbstractCfEnvTests {
 		properties.put("cfenv.service.redis.enabled","false");
 		Environment environment = getEnvironment(properties);
 
-		assertThat(environment.getProperty("spring.redis.host")).isEqualTo("another-host");
+		assertThat(environment.getProperty("spring.data.redis.host")).isEqualTo("another-host");
 
 	}
 

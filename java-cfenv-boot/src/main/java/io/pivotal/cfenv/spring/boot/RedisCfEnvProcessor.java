@@ -31,7 +31,9 @@ import io.pivotal.cfenv.core.UriInfo;
  */
 public class RedisCfEnvProcessor implements CfEnvProcessor {
 
-	private static String[] redisSchemes = { "redis", "rediss" };
+	private final static String[] redisSchemes = {"redis", "rediss"};
+
+	private static final String PREFIX = "spring.data.redis";
 
 	@Override
 	public boolean accept(CfService service) {
@@ -50,25 +52,23 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 		String uri = cfCredentials.getUri(redisSchemes);
 
 		if (uri == null) {
-			properties.put("spring.redis.host", cfCredentials.getHost());
-			properties.put("spring.redis.password", cfCredentials.getPassword());
+			properties.put(PREFIX + ".host", cfCredentials.getHost());
+			properties.put(PREFIX + ".password", cfCredentials.getPassword());
 
 			Optional<String> tlsPort = Optional.ofNullable(cfCredentials.getString("tls_port"));
 			if (tlsPort.isPresent()) {
-				properties.put("spring.redis.port", tlsPort.get());
-				properties.put("spring.redis.ssl", "true");
+				properties.put(PREFIX + ".port", tlsPort.get());
+				properties.put(PREFIX + ".ssl", "true");
+			} else {
+				properties.put(PREFIX + ".port", cfCredentials.getPort());
 			}
-			else {
-				properties.put("spring.redis.port", cfCredentials.getPort());
-			}
-		}
-		else {
+		} else {
 			UriInfo uriInfo = new UriInfo(uri);
-			properties.put("spring.redis.host", uriInfo.getHost());
-			properties.put("spring.redis.port", uriInfo.getPort());
-			properties.put("spring.redis.password", uriInfo.getPassword());
+			properties.put(PREFIX + ".host", uriInfo.getHost());
+			properties.put(PREFIX + ".port", uriInfo.getPort());
+			properties.put(PREFIX + ".password", uriInfo.getPassword());
 			if (uriInfo.getScheme().equals("rediss")) {
-				properties.put("spring.redis.ssl", "true");
+				properties.put(PREFIX + ".ssl", "true");
 			}
 		}
 	}
@@ -76,7 +76,7 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 	@Override
 	public CfEnvProcessorProperties getProperties() {
 		return CfEnvProcessorProperties.builder()
-				.propertyPrefixes("spring.redis")
+				.propertyPrefixes(PREFIX)
 				.serviceName("Redis")
 				.build();
 	}

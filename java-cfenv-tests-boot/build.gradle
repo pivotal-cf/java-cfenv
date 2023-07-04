@@ -1,0 +1,52 @@
+import groovy.json.JsonOutput
+
+plugins {
+    id 'io.pivotal.cfenv.java-conventions'
+}
+
+publishMavenJavaPublicationToMavenRepository.enabled = false
+
+description = 'Java CF Env Spring Boot 3 specific tests'
+
+dependencies {
+    testImplementation project(':java-cfenv-boot')
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testImplementation "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}"
+    testImplementation 'com.github.kstyrc:embedded-redis:0.6'
+
+    testImplementation "junit:junit"
+
+    testRuntimeOnly('org.junit.vintage:junit-vintage-engine') {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
+}
+
+tasks.withType(Test) {
+    def vcapServicesAsJson = JsonOutput.toJson(
+            ["p-redis": [
+                    [
+                            "label"           : "p-redis",
+                            "provider"        : null,
+                            "plan"            : "shared-vm",
+                            "name"            : "my-redis-service",
+                            "tags"            : [
+                                    "pivotal",
+                                    "redis"
+                            ],
+                            "instance_guid"   : "cde54916-a366-4028-a2ec-1d5dc9657c68",
+                            "instance_name"   : "my-redis-service",
+                            "binding_guid"    : "8f81d232-25f3-4002-a012-1f734b464bc6",
+                            "binding_name"    : null,
+                            "credentials"     : [
+                                    "host"    : "localhost",
+                                    "password": "",
+                                    "port"    : 46084
+                            ],
+                            "syslog_drain_url": null,
+                            "volume_mounts"   : []
+                    ]
+            ]]
+    )
+    environment 'VCAP_SERVICES', vcapServicesAsJson
+}
