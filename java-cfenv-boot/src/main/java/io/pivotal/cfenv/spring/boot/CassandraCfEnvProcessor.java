@@ -28,37 +28,37 @@ import io.pivotal.cfenv.core.CfService;
  */
 public class CassandraCfEnvProcessor implements CfEnvProcessor {
 
-    private static final String PREFIX = "spring.cassandra";
+	private static final String PREFIX = "spring.cassandra";
 
-    @Override
-    public boolean accept(CfService service) {
-        boolean serviceIsBound = service.existsByTagIgnoreCase("cassandra") &&
-                cassandraCredentialsPresent(service.getCredentials().getMap());
-        if (serviceIsBound) {
-            ConnectorLibraryDetector.assertNoConnectorLibrary();
-        }
-        return serviceIsBound;
-    }
+	@Override
+	public boolean accept(CfService service) {
+		boolean serviceIsBound = service.existsByTagIgnoreCase("cassandra") &&
+				cassandraCredentialsPresent(service.getCredentials().getMap());
+		if (serviceIsBound) {
+			ConnectorLibraryDetector.assertNoConnectorLibrary();
+		}
+		return serviceIsBound;
+	}
 
-    @Override
-    public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-        properties.put(PREFIX + ".username", cfCredentials.getUsername());
-        properties.put(PREFIX + ".password", cfCredentials.getPassword());
-        properties.put(PREFIX + ".port", cfCredentials.getMap().get("cqlsh_port"));
-        ArrayList<String> contactPoints = (ArrayList<String>) cfCredentials.getMap().get("node_ips");
-        properties.put(PREFIX + ".contact-points",
-                StringUtils.collectionToCommaDelimitedString(contactPoints));
-    }
+	@Override
+	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
+		properties.put(PREFIX + ".username", cfCredentials.getUsername());
+		properties.put(PREFIX + ".password", cfCredentials.getPassword());
+		properties.put(PREFIX + ".port", cfCredentials.getMap().get("cqlsh_port"));
+		ArrayList<String> contactPoints = (ArrayList<String>) cfCredentials.getMap().get("node_ips");
+		properties.put(PREFIX + ".contact-points",
+				StringUtils.collectionToCommaDelimitedString(contactPoints));
+	}
 
-    @Override
-    public CfEnvProcessorProperties getProperties() {
-        return CfEnvProcessorProperties.builder().propertyPrefixes(PREFIX)
-                .serviceName("Cassandra").build();
-    }
+	@Override
+	public CfEnvProcessorProperties getProperties() {
+		return CfEnvProcessorProperties.builder().propertyPrefixes(PREFIX)
+				.serviceName("Cassandra").build();
+	}
 
-    static boolean cassandraCredentialsPresent(Map<String, Object> credentials) {
-        return credentials != null &&
-                credentials.containsKey("cqlsh_port") &&
-                credentials.containsKey("node_ips");
-    }
+	static boolean cassandraCredentialsPresent(Map<String, Object> credentials) {
+		return credentials != null &&
+				credentials.containsKey("cqlsh_port") &&
+				credentials.containsKey("node_ips");
+	}
 }

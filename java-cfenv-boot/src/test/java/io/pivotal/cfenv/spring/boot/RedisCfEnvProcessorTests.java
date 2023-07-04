@@ -15,11 +15,7 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.junit.Test;
-import org.junit.runners.Parameterized.Parameters;
 
 import org.springframework.core.env.Environment;
 
@@ -41,18 +37,12 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".password")).isEqualTo(password);
 	}
 
-	@Parameters(name = "SpringBoot{0}")
-	public static Collection<Object[]> data() {
-		return Arrays.asList(new Object[][] {{ 3, SPRING_DATA_REDIS, new RedisCfEnvProcessor()}
-		});
-	}
-
 	@Test
 	public void testRedisBootPropertiesWithoutUriInCredentials() {
 		String payload = payloadBuilder("test-redis-info.json").payload();
 		mockVcapServices(getServicesPayload(payload));
 
-        commonAssertions(getEnvironment(), SPRING_DATA_REDIS);
+		commonAssertions(getEnvironment(), SPRING_DATA_REDIS);
 	}
 
 	@Test

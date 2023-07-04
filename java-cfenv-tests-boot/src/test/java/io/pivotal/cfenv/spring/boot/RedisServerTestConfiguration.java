@@ -27,22 +27,22 @@ import org.springframework.boot.test.context.TestConfiguration;
 @TestConfiguration
 public class RedisServerTestConfiguration {
 
-    private final RedisServer redisServer;
+	private final RedisServer redisServer;
 
-    // this port needs to match the on found in VCAP_SERVICES in build.gradle
-    private final static int PORT = 46084;
+	// this port needs to match the on found in VCAP_SERVICES in build.gradle
+	private final static int PORT = 46084;
 
-    public RedisServerTestConfiguration() throws IOException {
-        this.redisServer = new RedisServer(PORT);
-    }
+	public RedisServerTestConfiguration() throws IOException {
+		this.redisServer = new RedisServer(PORT);
+	}
 
-    @PostConstruct
-    public void postConstruct() {
-        redisServer.start();
-    }
+	@PostConstruct
+	public void postConstruct() {
+		redisServer.start();
+	}
 
-    @PreDestroy
-    public void preDestroy() {
-        redisServer.stop();
-    }
+	@PreDestroy
+	public void preDestroy() {
+		redisServer.stop();
+	}
 }
