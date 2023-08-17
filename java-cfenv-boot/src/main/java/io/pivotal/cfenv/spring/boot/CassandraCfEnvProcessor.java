@@ -26,7 +26,9 @@ import io.pivotal.cfenv.core.CfService;
 /**
  * @author Mark Pollack
  */
-public class CassandraCfEnvProcessor implements CfEnvProcessor {
+public class CassandraCfEnvProcessor implements CfEnvProcessor{
+
+	private static final String PREFIX = "spring.data.cassandra";
 
 	@Override
 	public boolean accept(CfService service) {
@@ -40,24 +42,24 @@ public class CassandraCfEnvProcessor implements CfEnvProcessor {
 
 	@Override
 	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-		properties.put("spring.data.cassandra.username", cfCredentials.getUsername());
-		properties.put("spring.data.cassandra.password", cfCredentials.getPassword());
-		properties.put("spring.data.cassandra.port", cfCredentials.getMap().get("cqlsh_port"));
+		properties.put(PREFIX + ".username", cfCredentials.getUsername());
+		properties.put(PREFIX + ".password", cfCredentials.getPassword());
+		properties.put(PREFIX + ".port", cfCredentials.getMap().get("cqlsh_port"));
 		ArrayList<String> contactPoints = (ArrayList<String>) cfCredentials.getMap().get("node_ips");
-		properties.put("spring.data.cassandra.contact-points",
+		properties.put(PREFIX + ".contact-points",
 				StringUtils.collectionToCommaDelimitedString(contactPoints));
-
 	}
 
-	private boolean cassandraCredentialsPresent(Map<String, Object> credentials) {
+	@Override
+	public CfEnvProcessorProperties getProperties() {
+		return CfEnvProcessorProperties.builder().propertyPrefixes(PREFIX)
+				.serviceName("Cassandra").build();
+	}
+
+	static boolean cassandraCredentialsPresent(Map<String, Object> credentials) {
 		return credentials != null &&
 				credentials.containsKey("cqlsh_port") &&
 				credentials.containsKey("node_ips");
 	}
 
-	@Override
-	public CfEnvProcessorProperties getProperties() {
-		return CfEnvProcessorProperties.builder().propertyPrefixes("spring.data.cassandra")
-				.serviceName("Cassandra").build();
-	}
 }

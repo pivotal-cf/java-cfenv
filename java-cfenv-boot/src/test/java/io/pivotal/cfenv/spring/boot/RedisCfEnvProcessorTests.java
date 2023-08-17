@@ -29,19 +29,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 	private final static int TLS_PORT = 11111;
+	public static final String SPRING_REDIS = "spring.redis";
 
-	public static void commonAssertions(Environment environment) {
-		assertThat(environment.getProperty("spring.redis.host")).isEqualTo(hostname);
-		assertThat(environment.getProperty("spring.redis.port")).isEqualTo(String.valueOf(port));
-		assertThat(environment.getProperty("spring.redis.password")).isEqualTo(password);
+	public static void commonAssertions(Environment environment, String configurationPrefix) {
+		assertThat(environment.getProperty(configurationPrefix + ".host")).isEqualTo(hostname);
+		assertThat(environment.getProperty(configurationPrefix + ".port")).isEqualTo(String.valueOf(port));
+		assertThat(environment.getProperty(configurationPrefix + ".password")).isEqualTo(password);
 	}
 
 	@Test
 	public void testRedisBootPropertiesWithoutUriInCredentials() {
 		String payload = payloadBuilder("test-redis-info.json").payload();
 		mockVcapServices(getServicesPayload(payload));
-
-		commonAssertions(getEnvironment());
+		commonAssertions(getEnvironment(), SPRING_REDIS);
 	}
 
 	@Test
@@ -53,10 +53,10 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 
 		Environment environment = getEnvironment();
 
-		assertThat(environment.getProperty("spring.redis.host")).isEqualTo(hostname);
-		assertThat(environment.getProperty("spring.redis.port")).isEqualTo(String.valueOf(TLS_PORT));
-		assertThat(environment.getProperty("spring.redis.password")).isEqualTo(password);
-		assertThat(environment.getProperty("spring.redis.ssl")).isEqualTo("true");
+		assertThat(environment.getProperty(SPRING_REDIS+".host")).isEqualTo(hostname);
+		assertThat(environment.getProperty(SPRING_REDIS+".port")).isEqualTo(String.valueOf(TLS_PORT));
+		assertThat(environment.getProperty(SPRING_REDIS+".password")).isEqualTo(password);
+		assertThat(environment.getProperty(SPRING_REDIS+".ssl")).isEqualTo("true");
 	}
 
 	@Test
@@ -65,8 +65,8 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 		mockVcapServices(getServicesPayload(payload));
 
 		Environment environment = getEnvironment();
-		commonAssertions(environment);
-		assertThat(environment.getProperty("spring.redis.ssl")).isEqualTo("true");
+		commonAssertions(getEnvironment(), SPRING_REDIS);
+		assertThat(environment.getProperty(SPRING_REDIS+".ssl")).isEqualTo("true");
 	}
 
 	@Test
@@ -76,10 +76,17 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 
 		Environment environment = getEnvironment();
 
-		assertThat(environment.getProperty("spring.redis.host")).isNull();
-		assertThat(environment.getProperty("spring.redis.port")).isNull();
-		assertThat(environment.getProperty("spring.redis.password")).isNull();
-		assertThat(environment.getProperty("spring.redis.ssl")).isNull();
+		assertThat(environment.getProperty(SPRING_REDIS+".host")).isNull();
+		assertThat(environment.getProperty(SPRING_REDIS+".port")).isNull();
+		assertThat(environment.getProperty(SPRING_REDIS+".password")).isNull();
+		assertThat(environment.getProperty(SPRING_REDIS+".ssl")).isNull();
+	}
+
+	@Test
+	public void testGetProperties() {
+		assertThat(new RedisCfEnvProcessor().getProperties().getPropertyPrefixes()).isEqualTo(SPRING_REDIS);
+		assertThat(new RedisCfEnvProcessor().getProperties().getServiceName()).isEqualTo("Redis");
+
 	}
 
 	private RedisFilePayloadBuilder payloadBuilder(String filename) {

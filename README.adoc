@@ -235,25 +235,7 @@ myapp.config.path=#{ cfEnv.findServiceByName("nfs1").getVolumes().get(0).getPath
 
 === Using Spring Boot
 
-The module `java-cfenv-boot` provides several `EnvironmentPostProcessor` implementations that set well known Boot properties so that Boot's auto-configuration can kick in.
-For example, the `CfDataSourceEnvironmentPostProcessor` sets the Boot property `spring.datasource.url`.
-Just add a dependency on `java-cfenv-boot`.
-
-The list of supported services are:
-
-* Databases - DB2, MySQL, Oracle, Postgresl, SqlServer
-* RabbitMQ
-* Cassandara
-* MongoDB
-* Redis
-* CredHub
-* Hashicorp Vault
-
-If, for any reason, you need to disable processing of a specific service instance, you can do so by setting the following flag in your application properties:
-[source]
-----
-cfenv.service.{serviceName}.enabled=false
-----
+Please check the dedicated README for link:java-cfenv-boot/README.adoc[Spring Boot].
 
 === Connecting Multiple Instances of a Single Service Type
 

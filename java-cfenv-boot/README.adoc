@@ -1,0 +1,68 @@
+= Using Spring Boot
+
+The module `java-cfenv-boot` provides several `EnvironmentPostProcessor` implementations that set well known Boot properties so that Boot's auto-configuration can kick in.
+For example, the `CfDataSourceEnvironmentPostProcessor` sets the Boot property `spring.datasource.url`.
+Just add a dependency on `java-cfenv-boot`.
+
+The list of supported services are:
+
+== Databases - DB2, MySQL, Oracle, Postgresl, SqlServer
+Properties that could be populated:
+
+* `spring.datasource.url`
+* `spring.datasource.username`
+* `spring.datasource.password`
+* `spring.datasource.driver-class-name`
+
+== RabbitMQ
+Properties that could be populated:
+
+* `spring.rabbitmq.host`
+* `spring.rabbitmq.username`
+* `spring.rabbitmq.password`
+* `spring.rabbitmq.ssl.enabled`
+* `spring.rabbitmq.port`
+* `spring.rabbitmq.virtualHost`
+* `spring.rabbitmq.addresses`
+
+== Cassandra
+Properties that could be populated:
+
+* `spring.data.cassandra.username`
+* `spring.data.cassandra.password`
+* `spring.data.cassandra.port`
+* `spring.data.cassandra.contact-points`
+
+== MongoDB
+Properties that could be populated:
+
+* `spring.data.mongodb.uri`
+
+== Redis
+
+* `spring.redis.host`
+* `spring.redis.password`
+* `spring.redis.port`
+* `spring.redis.ssl`
+
+== CredHub
+Properties that could be populated:
+
+* `spring.credhub.url`
+* `spring.credhub.oauth2`
+
+
+== Hashicorp Vault
+Properties that could be populated:
+
+* `spring.cloud.vault.uri`
+* `spring.cloud.vault.token`
+
+== Notes
+
+If, for any reason, you need to disable processing of a specific service instance, you can do so by setting the following flag in your application properties:
+[source]
+----
+cfenv.service.{serviceName}.enabled=false
+----
+
