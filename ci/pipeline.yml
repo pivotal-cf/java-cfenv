@@ -160,9 +160,7 @@ resources:
   - name: git-repo
     type: git
     source:
-      uri: ((github-repo))
-      username: ((github-username))
-      password: ((github-password))
+      uri: ((java-cfenv-github-uri))
       branch: ((branch))
       ignore_paths: ["ci/images/*"]
       fetch_tags: true
@@ -170,9 +168,7 @@ resources:
   - name: git-repo-staging
     type: git
     source:
-      uri: ((github-repo))
-      username: ((github-username))
-      password: ((github-password))
+      uri: ((java-cfenv-github-uri))
       branch: ((github-username))/staging
 
   - name: ci-images-git-repo
