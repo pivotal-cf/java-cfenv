@@ -1,4 +1,4 @@
-package com.cedarsoftware.util.io;
+package io.pivotal.cfenv.com.cedarsoftware.util.io;
 
 import java.io.Closeable;
 import java.io.IOException;

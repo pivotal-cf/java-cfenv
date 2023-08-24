@@ -1,13 +1,13 @@
-package com.cedarsoftware.util.io;
+package io.pivotal.cfenv.com.cedarsoftware.util.io;
 
-import com.cedarsoftware.util.io.JsonReader.MissingFieldHandler;
+import io.pivotal.cfenv.com.cedarsoftware.util.io.JsonReader.MissingFieldHandler;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static com.cedarsoftware.util.io.JsonObject.ITEMS;
-import static com.cedarsoftware.util.io.JsonObject.KEYS;
+import static io.pivotal.cfenv.com.cedarsoftware.util.io.JsonObject.ITEMS;
+import static io.pivotal.cfenv.com.cedarsoftware.util.io.JsonObject.KEYS;
 
 /**
  * This class is used to convert a source of Java Maps that were created from
@@ -26,7 +26,7 @@ import static com.cedarsoftware.util.io.JsonObject.KEYS;
  *         you may not use this file except in compliance with the License.
  *         You may obtain a copy of the License at
  *         <br><br>
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *         https://www.apache.org/licenses/LICENSE-2.0
  *         <br><br>
  *         Unless required by applicable law or agreed to in writing, software
  *         distributed under the License is distributed on an "AS IS" BASIS,

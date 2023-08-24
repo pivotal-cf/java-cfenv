@@ -1,4 +1,4 @@
-package com.cedarsoftware.util.io;
+package io.pivotal.cfenv.com.cedarsoftware.util.io;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -12,8 +12,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-
-import static com.cedarsoftware.util.io.JsonObject.ITEMS;
 
 /**
  * Output a Java object graph in JSON format.  This code handles cyclic
@@ -47,7 +45,7 @@ import static com.cedarsoftware.util.io.JsonObject.ITEMS;
  *         you may not use this file except in compliance with the License.
  *         You may obtain a copy of the License at
  *         <br><br>
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *         https://www.apache.org/licenses/LICENSE-2.0
  *         <br><br>
  *         Unless required by applicable law or agreed to in writing, software
  *         distributed under the License is distributed on an "AS IS" BASIS,
@@ -1664,7 +1662,7 @@ public class JsonWriter implements Closeable, Flushable
         }
         tabIn();
 
-        Object[] items = (Object[]) jObj.get(ITEMS);
+        Object[] items = (Object[]) jObj.get(JsonObject.ITEMS);
         final int lenMinus1 = len - 1;
 
         for (int i = 0; i < len; i++)
@@ -1759,7 +1757,7 @@ public class JsonWriter implements Closeable, Flushable
 
         beginCollection(showType, referenced);
 
-        Object[] items = (Object[]) jObj.get(ITEMS);
+        Object[] items = (Object[]) jObj.get(JsonObject.ITEMS);
         final int itemsLen = items.length;
         final int itemsLenMinus1 = itemsLen - 1;
 

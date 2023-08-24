@@ -29,3 +29,7 @@ tasks.named('jar') {
     }
 }
 
+tasks.named("checkstyleMain", Checkstyle) {
+    exclude("**/io/pivotal/cfenv/com/cedarsoftware/util/io/*.java")
+}
+

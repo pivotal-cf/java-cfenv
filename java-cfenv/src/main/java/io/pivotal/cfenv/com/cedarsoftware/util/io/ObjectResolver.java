@@ -1,4 +1,4 @@
-package com.cedarsoftware.util.io;
+package io.pivotal.cfenv.com.cedarsoftware.util.io;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -12,9 +12,6 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static com.cedarsoftware.util.io.JsonObject.ITEMS;
-import static com.cedarsoftware.util.io.JsonObject.KEYS;
 
 /**
  * <p>The ObjectResolver converts the raw Maps created from the JsonParser to Java
@@ -49,7 +46,7 @@ import static com.cedarsoftware.util.io.JsonObject.KEYS;
  *         you may not use this file except in compliance with the License.
  *         You may obtain a copy of the License at
  *         <br><br>
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *         https://www.apache.org/licenses/LICENSE-2.0
  *         <br><br>
  *         Unless required by applicable law or agreed to in writing, software
  *         distributed under the License is distributed on an "AS IS" BASIS,
@@ -200,7 +197,7 @@ public class ObjectResolver extends Resolver
                 }
                 else
                 {
-                    jsonArray.put(ITEMS, elements);
+                    jsonArray.put(JsonObject.ITEMS, elements);
                     createJavaObjectInstance(fieldType, jsonArray);
                     field.set(target, jsonArray.target);
                     stack.addFirst(jsonArray);
@@ -421,7 +418,7 @@ public class ObjectResolver extends Resolver
             else if (element.getClass().isArray())
             {
                 final JsonObject jObj = new JsonObject();
-                jObj.put(ITEMS, element);
+                jObj.put(JsonObject.ITEMS, element);
                 createJavaObjectInstance(Object.class, jObj);
                 col.add(jObj.target);
                 convertMapsToObjects(jObj);
@@ -462,7 +459,7 @@ public class ObjectResolver extends Resolver
             idx++;
         }
 
-        jsonObj.remove(ITEMS);   // Reduce memory required during processing
+        jsonObj.remove(JsonObject.ITEMS);   // Reduce memory required during processing
     }
 
     /**
@@ -547,7 +544,7 @@ public class ObjectResolver extends Resolver
                 else
                 {
                     JsonObject<String, Object> jsonObject = new JsonObject<String, Object>();
-                    jsonObject.put(ITEMS, element);
+                    jsonObject.put(JsonObject.ITEMS, element);
                     Array.set(array, i, createJavaObjectInstance(compType, jsonObject));
                     stack.addFirst(jsonObject);
                 }
@@ -728,15 +725,15 @@ public class ObjectResolver extends Resolver
                 if (Map.class.isAssignableFrom(clazz))
                 {
                     Map map = (Map) instance;
-                    if (!map.containsKey(KEYS) && !map.containsKey(ITEMS) && map instanceof JsonObject)
+                    if (!map.containsKey(JsonObject.KEYS) && !map.containsKey(JsonObject.ITEMS) && map instanceof JsonObject)
                     {   // Maps created in Javascript will come over without @keys / @items.
                         convertMapToKeysItems((JsonObject) map);
                     }
 
-                    Object[] keys = (Object[])map.get(KEYS);
+                    Object[] keys = (Object[])map.get(JsonObject.KEYS);
                     getTemplateTraverseWorkItem(stack, keys, typeArgs[0]);
 
-                    Object[] items = (Object[])map.get(ITEMS);
+                    Object[] items = (Object[])map.get(JsonObject.ITEMS);
                     getTemplateTraverseWorkItem(stack, items, typeArgs[1]);
                 }
                 else if (Collection.class.isAssignableFrom(clazz))
@@ -758,7 +755,7 @@ public class ObjectResolver extends Resolver
                                 JsonObject coll = new JsonObject();
                                 coll.type = clazz.getName();
                                 List items = Arrays.asList((Object[]) vals);
-                                coll.put(ITEMS, items.toArray());
+                                coll.put(JsonObject.ITEMS, items.toArray());
                                 stack.addFirst(new Object[]{t, items});
                                 array[i] = coll;
                             }

@@ -1,12 +1,10 @@
-package com.cedarsoftware.util.io;
+package io.pivotal.cfenv.com.cedarsoftware.util.io;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.cedarsoftware.util.io.JsonObject.*;
 
 /**
  * Parse the JSON input stream supplied by the FastPushbackReader to the constructor.
@@ -31,7 +29,7 @@ import static com.cedarsoftware.util.io.JsonObject.*;
  *         you may not use this file except in compliance with the License.
  *         You may obtain a copy of the License at
  *         <br><br>
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *         https://www.apache.org/licenses/LICENSE-2.0
  *         <br><br>
  *         Unless required by applicable law or agreed to in writing, software
  *         distributed under the License is distributed on an "AS IS" BASIS,
@@ -84,11 +82,11 @@ class JsonParser
         stringCache.put("off", "off");
         stringCache.put("Off", "Off");
         stringCache.put("OFF", "OFF");
-        stringCache.put(ID, ID);
-        stringCache.put(REF, REF);
+        stringCache.put(JsonObject.ID, JsonObject.ID);
+        stringCache.put(JsonObject.REF, JsonObject.REF);
         stringCache.put(JsonObject.ITEMS, JsonObject.ITEMS);
-        stringCache.put(TYPE, TYPE);
-        stringCache.put(KEYS, KEYS);
+        stringCache.put(JsonObject.TYPE, JsonObject.TYPE);
+        stringCache.put(JsonObject.KEYS, JsonObject.KEYS);
         stringCache.put("0", "0");
         stringCache.put("1", "1");
         stringCache.put("2", "2");
@@ -164,23 +162,23 @@ class JsonParser
                         {   // Expand short-hand meta keys
                             if (field.equals("@t"))
                             {
-                                field = stringCache.get(TYPE);
+                                field = stringCache.get(JsonObject.TYPE);
                             }
                             else if (field.equals("@i"))
                             {
-                                field = stringCache.get(ID);
+                                field = stringCache.get(JsonObject.ID);
                             }
                             else if (field.equals("@r"))
                             {
-                                field = stringCache.get(REF);
+                                field = stringCache.get(JsonObject.REF);
                             }
                             else if (field.equals("@k"))
                             {
-                                field = stringCache.get(KEYS);
+                                field = stringCache.get(JsonObject.KEYS);
                             }
                             else if (field.equals("@e"))
                             {
-                                field = stringCache.get(ITEMS);
+                                field = stringCache.get(JsonObject.ITEMS);
                             }
                         }
                         state = STATE_READ_VALUE;
@@ -195,11 +193,11 @@ class JsonParser
                     if (field == null)
                     {	// field is null when you have an untyped Object[], so we place
                         // the JsonArray on the @items field.
-                        field = ITEMS;
+                        field = JsonObject.ITEMS;
                     }
 
                     Object value = readValue(object);
-                    if (TYPE.equals(field) && typeNameMap != null)
+                    if (JsonObject.TYPE.equals(field) && typeNameMap != null)
                     {
                         final String substitute = typeNameMap.get(value);
                         if (substitute != null)
@@ -210,7 +208,7 @@ class JsonParser
                     object.put(field, value);
 
                     // If object is referenced (has @id), then put it in the _objsRead table.
-                    if (ID.equals(field))
+                    if (JsonObject.ID.equals(field))
                     {
                         objsRead.put((Long) value, object);
                     }
