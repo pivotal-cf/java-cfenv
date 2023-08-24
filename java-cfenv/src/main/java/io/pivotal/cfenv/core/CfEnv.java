@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * Provides access to Cloud Foundry environment variables.
  *
@@ -43,16 +41,14 @@ public class CfEnv {
 	}
 
 	public CfEnv(String vcapApplicationJson, String vcapServicesJson) {
-		/* TODO pick small json parser and package as a shadowed jar */
-		ObjectMapper objectMapper = new ObjectMapper();
-		parseVcapServices(objectMapper, vcapServicesJson);
-		parseVcapApplication(objectMapper, vcapApplicationJson);
+		parseVcapServices(vcapServicesJson);
+		parseVcapApplication(vcapApplicationJson);
 	}
 
-	private void parseVcapApplication(ObjectMapper objectMapper, String vcapApplicationJson) {
+	private void parseVcapApplication(String vcapApplicationJson) {
 		try {
 			if (vcapApplicationJson != null && vcapApplicationJson.length() > 0) {
-				Map<String, Object> applicationData = objectMapper.readValue(vcapApplicationJson, Map.class);
+				Map<String, Object> applicationData = JsonIoConverter.jsonToJavaWithListsAndInts(vcapApplicationJson);
 				this.cfApplication = new CfApplication(applicationData);
 			}
 		} catch (Exception e) {
@@ -60,10 +56,10 @@ public class CfEnv {
 		}
 	}
 
-	private void parseVcapServices(ObjectMapper objectMapper, String vcapServicesJson) {
+	private void parseVcapServices(String vcapServicesJson) {
 		try {
 			if (vcapServicesJson != null && vcapServicesJson.length() > 0) {
-				Map<String, List<Map<String, Object>>> rawServicesMap = objectMapper.readValue(vcapServicesJson, Map.class);
+				Map<String, List<Map<String, Object>>> rawServicesMap = JsonIoConverter.jsonToJavaWithListsAndInts(vcapServicesJson);
 				rawServicesMap.values().stream()
 						.flatMap(Collection::stream)
 						.forEach(serviceData -> cfServices.add(new CfService(serviceData)));

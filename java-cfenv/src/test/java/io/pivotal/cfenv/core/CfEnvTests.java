@@ -179,8 +179,6 @@ public abstract class CfEnvTests {
 		assertUriInfo(uriInfo);
 		uriInfo = cfCredentials.getUriInfo();
 		assertUriInfo(uriInfo);
-		// assertThat(cfCredentials.findJdbcUrl()).isEqualTo(
-		// "jdbc:mysql://10.0.4.35:3306/cf_2e23d10a_8738_8c3c_66cf_13e44422698c?user=mysql_username&password=mysql_password");
 
 	}
 
