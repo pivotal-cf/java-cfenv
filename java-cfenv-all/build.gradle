@@ -1,0 +1,54 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'com.github.johnrengelman:shadow:8.1.1'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+
+description = 'Java CF Env Boot All, contains all java-cfenv modules in a convenient uberjar'
+
+dependencies {
+    api project(':java-cfenv-boot-pivotal-scs')
+    api project(':java-cfenv-boot-pivotal-sso')
+}
+
+import com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTransformer
+
+shadowJar {
+    archiveClassifier.set('')
+    mergeServiceFiles()
+    transform(PropertiesFileTransformer) {
+        paths = ['META-INF/spring.factories']
+        mergeStrategy = "append"
+    }
+    dependencies {
+        exclude(dependency('org.springframework.boot::'))
+        exclude(dependency('org.springframework::'))
+    }
+    relocate 'com.cedarsoftware.util.io', 'io.pivotal.cfenv.shaded.com.cedarsoftware.util.io'
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+        }
+    }
+
+    repositories {
+        maven {
+            url = project.properties.getOrDefault('publicationRepository', "${System.getenv('HOME')}/.m2/repository")
+        }
+    }
+
+}
+
+assemble.dependsOn shadowJar
+build.dependsOn shadowJar
+publishShadowPublicationToMavenRepository.dependsOn jar

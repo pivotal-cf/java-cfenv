@@ -21,16 +21,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.pivotal.cfenv.com.cedarsoftware.util.io.JsonObject;
-import io.pivotal.cfenv.com.cedarsoftware.util.io.JsonReader;
+import com.cedarsoftware.util.io.JsonObject;
+import com.cedarsoftware.util.io.JsonReader;
 
 public class JsonIoConverter {
 
 	/**
-	 * Conveniently takes a Json String as input and uses JsonIO to unserliaze it.
+	 * Conveniently takes a Json String as input and uses json-io to unserialize it.
 	 * Then, converts all the Object[] into List; and all the longs that could have just been ints into ints
 	 *
-	 * @param jsonInput
+	 * @param jsonInput the string with the Json content
 	 * @return a serialized version of the input in a Map
 	 */
 	public static Map jsonToJavaWithListsAndInts(String jsonInput) {
@@ -60,9 +60,9 @@ public class JsonIoConverter {
 	}
 
 	static Number tryAndConvertToInt(Long longValue) {
-		int potentialInteger = 0;
+		int potentialInteger;
 		if (longValue.toString().length() <= 9) {
-			potentialInteger = Integer.valueOf(longValue.intValue());
+			potentialInteger = longValue.intValue();
 			return potentialInteger;
 		} else {
 			return longValue;

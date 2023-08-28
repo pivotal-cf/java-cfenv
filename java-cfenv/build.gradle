@@ -6,6 +6,8 @@ plugins {
 description = 'Java CF Env Core Library'
 
 dependencies {
+    api 'com.cedarsoftware:json-io:4.14.0'
+
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "junit:junit"
     testImplementation "org.jmockit:jmockit:${jmockitVersion}"
@@ -28,8 +30,3 @@ tasks.named('jar') {
         attributes 'Automatic-Module-Name': 'io.pivotal.cfenv.core'
     }
 }
-
-tasks.named("checkstyleMain", Checkstyle) {
-    exclude("**/io/pivotal/cfenv/com/cedarsoftware/util/io/*.java")
-}
-
