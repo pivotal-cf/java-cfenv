@@ -6,9 +6,7 @@ plugins {
 description = 'Java CF Env Core Library'
 
 dependencies {
-    api platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-    api 'com.fasterxml.jackson.core:jackson-core'
-    api 'com.fasterxml.jackson.core:jackson-databind'
+    api 'com.cedarsoftware:json-io:4.14.0'
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "junit:junit"
@@ -32,4 +30,3 @@ tasks.named('jar') {
         attributes 'Automatic-Module-Name': 'io.pivotal.cfenv.core'
     }
 }
-

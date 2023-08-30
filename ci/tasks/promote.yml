@@ -1,12 +1,10 @@
 ---
 platform: linux
 image_resource:
-  type: registry-image
+  type: dockerhub-image
   source:
-    repository: ((corporate-harbor-registry))/((docker-hub-organization))/java-cfenv-ci
-    username: ((corporate-harbor-robot-account.username))
-    password: ((corporate-harbor-robot-account.password))
-    tag: latest
+    repository: springio/concourse-release-scripts
+    tag: 0.3.4
 inputs:
   - name: git-repo
   - name: artifactory-repo

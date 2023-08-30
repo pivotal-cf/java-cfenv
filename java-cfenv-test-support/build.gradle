@@ -10,6 +10,8 @@ dependencies {
     api testFixtures(project(':java-cfenv'))
     api 'org.springframework.boot:spring-boot-starter-test'
     api "junit:junit"
+    api 'com.fasterxml.jackson.core:jackson-core'
+    api 'com.fasterxml.jackson.core:jackson-databind'
 }
 
 tasks.named('jar') {

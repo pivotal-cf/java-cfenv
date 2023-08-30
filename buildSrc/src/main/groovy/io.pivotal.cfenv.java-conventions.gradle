@@ -7,7 +7,7 @@ plugins {
 }
 
 ext {
-    springFrameworkVersion = "6.0.9"
+    springFrameworkVersion = "6.0.11"
     javaApi = "https://docs.oracle.com/javase/17/docs/api/"
     javadocLinks = [
             javaApi,
@@ -137,6 +137,15 @@ publishing {
                             id = "royclarkson"
                             name = "Roy Clarkson"
                             email = "rclarkson@pivotal.io"
+                        }
+                        developer {
+                            id = "anthonydahanne"
+                            name = "Anthony Dahanne"
+                            email = "anthonyd2@vmware.com"
+                        }
+                        developer {
+                            id = "pivotal-david-osullivan"
+                            name = "David O'Sullivan"
                         }
                     }
                     issueManagement {
