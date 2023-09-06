@@ -146,6 +146,7 @@ publishing {
                         developer {
                             id = "pivotal-david-osullivan"
                             name = "David O'Sullivan"
+                            email = "davidos@vmware.com"
                         }
                     }
                     issueManagement {

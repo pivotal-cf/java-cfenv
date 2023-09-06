@@ -1,9 +1,9 @@
 ---
 platform: linux
 image_resource:
-  type: dockerhub-image
+  type: registry-image
   source:
-    repository: springio/concourse-release-scripts
+    repository: harbor-repo.vmware.com/dockerhub-proxy-cache/springio/concourse-release-scripts
     tag: 0.3.4
 inputs:
   - name: git-repo
