@@ -7,9 +7,12 @@ buildscript {
     }
 }
 
+plugins {
+    id 'io.pivotal.cfenv.java-conventions'
+}
+
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java-library'
-apply plugin: 'maven-publish'
 
 description = 'Java CF Env Boot All, contains all java-cfenv modules in a convenient uberjar'
 
@@ -51,4 +54,5 @@ publishing {
 
 assemble.dependsOn shadowJar
 build.dependsOn shadowJar
-publishShadowPublicationToMavenRepository.dependsOn jar
+publishShadowPublicationToMavenRepository.onlyIf { false }
+publishShadowPublicationToMaven2Repository.onlyIf { false }
