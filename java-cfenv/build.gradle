@@ -17,7 +17,7 @@ dependencies {
     }
 
     testFixturesApi platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-    testFixturesImplementation "org.springframework.boot:spring-boot-starter-test"
+    testFixturesImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     testFixturesImplementation "org.jmockit:jmockit:${jmockitVersion}"
 }
 
