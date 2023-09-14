@@ -14,11 +14,13 @@ plugins {
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java-library'
 
-description = 'Java CF Env Boot All, contains all java-cfenv modules in a convenient uberjar'
+description = 'java-cfenv-all, contains all java-cfenv modules in a convenient uberjar - to be used with CF Java Buildpack'
 
 dependencies {
+    api 'org.springframework.boot:spring-boot'
     api project(':java-cfenv-boot-pivotal-scs')
     api project(':java-cfenv-boot-pivotal-sso')
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 import com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTransformer
