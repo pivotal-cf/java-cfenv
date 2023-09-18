@@ -235,10 +235,10 @@ public CfEnv cfEnv() {
 
 [source]
 ----
-cassandra.contact-points=#{ cfEnv.findCredentialsByTag('cassandra').get('node_ips') }
+cassandra.contact-points=#{ cfEnv.findCredentialsByTag('cassandra').getString('node_ips') }
 cassandra.username=#{ cfEnv.findCredentialsByTag('cassandra').getUserName() }
 cassandra.password=#{ cfEnv.findCredentialsByTag('cassandra').getPassword() }
-cassandra.port=#{ cfEnv.findCredentialsByTag('cassandra').get('cqlsh_port') }
+cassandra.port=#{ cfEnv.findCredentialsByTag('cassandra').getString('cqlsh_port') }
 ----
 
 Similar for setting a custom application property to access the disk mounted by Volume Services.
