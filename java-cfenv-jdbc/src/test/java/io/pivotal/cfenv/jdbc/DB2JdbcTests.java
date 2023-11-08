@@ -123,6 +123,6 @@ public class DB2JdbcTests extends AbstractJdbcTests {
 
 	protected String getExpectedJdbcUrl(String scheme, String name, String uname, String pwd) {
 		return String.format("jdbc:%s://%s:%d/%s:user=%s;password=%s;",
-				DB2JdbcUrlCreator.DB2_SCHEME, hostname, port, name, UriInfo.urlEncode(uname), UriInfo.urlEncode(pwd));
+				DB2JdbcUrlCreator.DB2_SCHEME, hostname, port, name, uname, pwd);
 	}
 }

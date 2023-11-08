@@ -47,7 +47,7 @@ public class DB2JdbcUrlCreator extends AbstractJdbcUrlCreator  {
 		UriInfo uriInfo = cfCredentials.getUriInfo(DB2_SCHEME);
 		return String.format("jdbc:%s://%s:%d/%s:user=%s;password=%s;",
 				DB2_SCHEME, uriInfo.getHost(), uriInfo.getPort(), uriInfo.getPath(),
-				UriInfo.urlEncode(uriInfo.getUsername()), UriInfo.urlEncode(uriInfo.getPassword()));
+				uriInfo.getUsername(), uriInfo.getPassword());
 	}
 
 
