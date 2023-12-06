@@ -54,6 +54,17 @@ public class AmqpCfEnvProcessorTests extends AmqpTestSupport {
 	}
 
 	@Test
+	public void testAmqpSSlBootPropertiesCustomPort() {
+		mockVcapServices(getServicesPayload(
+				getRabbitServicePayloadNoLabelNoTagsSecureCustomPort("rabbit-1", hostname, 4343, username, password, "q-1","vhost1")
+		));
+		Environment environment = getEnvironment();
+		commonAssertions(environment);
+		assertThat(environment.getProperty("spring.rabbitmq.ssl.enabled")).isEqualTo("true");
+		assertThat(environment.getProperty("spring.rabbitmq.port")).isEqualTo("4343");
+	}
+
+	@Test
 	public void testAmqpBootMultipleUris() {
 		mockVcapServices(getServicesPayload(
 			getRabbitServicePayloadMultipleUris("rabbit-1", "host1", "host2", port, username, password, "q-1","vhost1")

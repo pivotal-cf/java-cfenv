@@ -34,7 +34,7 @@ import io.pivotal.cfenv.core.UriInfo;
  **/
 public class AmqpCfEnvProcessor implements CfEnvProcessor {
 
-	private static String[] amqpSchemes = new String[] { "amqp", "amqps" };
+	private final static String[] amqpSchemes = new String[] { "amqp", "amqps" };
 
 	@Override
 	public boolean accept(CfService service) {
@@ -65,7 +65,7 @@ public class AmqpCfEnvProcessor implements CfEnvProcessor {
 			properties.put("spring.rabbitmq.username", cfCredentials.getUsername());
 			if (uriInfo.getScheme().equals("amqps")) {
 				properties.put("spring.rabbitmq.ssl.enabled", "true");
-				properties.put("spring.rabbitmq.port", "5671");
+				properties.put("spring.rabbitmq.port", uriInfo.getPort() != -1 ? Integer.toString(uriInfo.getPort()) : "5671");
 			} else {
 				populateAddress(cfCredentials, properties, uri);
 			}
