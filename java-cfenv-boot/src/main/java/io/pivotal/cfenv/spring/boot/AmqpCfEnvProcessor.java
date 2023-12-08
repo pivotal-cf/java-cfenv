@@ -66,6 +66,7 @@ public class AmqpCfEnvProcessor implements CfEnvProcessor {
 			if (uriInfo.getScheme().equals("amqps")) {
 				properties.put("spring.rabbitmq.ssl.enabled", "true");
 				properties.put("spring.rabbitmq.port", uriInfo.getPort() != -1 ? Integer.toString(uriInfo.getPort()) : "5671");
+				properties.put("spring.rabbitmq.virtualHost", uriInfo.getPath());
 			} else {
 				populateAddress(cfCredentials, properties, uri);
 			}
