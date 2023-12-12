@@ -38,6 +38,14 @@ public class AmqpTestSupport extends AbstractCfEnvTests {
 			hostname, port, user, password, name, vHost);
 	}
 
+	protected String getRabbitServicePayloadNoLabelNoTagsSecureCustomPort(String serviceName,
+		String hostname, int port,
+		String user, String password, String name,
+		String vHost) {
+		return getAmqpServicePayload("test-rabbit-info-no-label-no-tags-secure-custom-port.json", serviceName,
+				hostname, port, user, password, name, vHost);
+	}
+
 	protected String getRabbitServicePayloadNoLabelNoTags(String serviceName,
 		String hostname, int port,
 		String user, String password, String name,
