@@ -1,0 +1,32 @@
+{
+  "binding_guid": "555e7193-aaaa-4fad-a174-8e89ab6aa3c3",
+  "binding_name": null,
+  "credentials": {
+    "schema": "DB2SADM",
+    "permissionId": "a2fe7240-aaaa-4332-8065-7f33ed392fef",
+    "MaskedODBCConnectionString": "Database=TESTDB0T;currentSchema=DB2SADM;UID=MYUSER;PWD=********",
+    "credHubInstance": "AppUser",
+    "serviceInstanceId": "f29b05f2-aaaa-48bb-8966-60c0baf2684a",
+    "ssid": "DB0T",
+    "sslConnection": "false",
+    "password": "MYPASSWORD#",
+    "port": "34120",
+    "host": "host.de",
+    "name": "TEST_DB0T",
+    "location": "TEST_DB0T",
+    "planId": "15d2a305-aaaa-46bd-9a34-538e3771bd6a",
+    "user": "MYUSER",
+    "ODBCConnectionString": "Database=TESTDB0T;currentSchema=DB2SADM;UID=MYUSER;PWD=MYPASSWORD#"
+  },
+  "instance_guid": "f29b05f2-aaaa-48bb-8966-60c0baf2684a",
+  "instance_name": "DS001",
+  "label": "db2-service",
+  "name": "db2-ups",
+  "plan": "DB0T",
+  "provider": null,
+  "syslog_drain_url": null,
+  "tags": [
+    "static"
+  ],
+  "volume_mounts": []
+}

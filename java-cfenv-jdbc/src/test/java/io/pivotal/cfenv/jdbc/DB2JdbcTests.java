@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the original author or authors.
+ * Copyright 2019-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package io.pivotal.cfenv.jdbc;
+
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -108,6 +110,58 @@ public class DB2JdbcTests extends AbstractJdbcTests {
 		UriInfo uriInfo = cfJdbcService.getCredentials().getUriInfo();
 		assertUriInfo(uriInfo, DB2JdbcUrlCreator.DB2_SCHEME, INSTANCE_NAME);
 	}
+
+	@Test
+	public void buildJdbcUrlFromUriField_jdbcStartingValue() {
+		mockVcapServices(getServicesPayload(
+				readTestDataFile("test-db2-realistic-payload.json")
+		));
+
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		CfJdbcService jdbcService = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME);
+		assertThat(jdbcService.getJdbcUrl()).isEqualTo("jdbc:db2://host.de:34120/TEST_DB0T:user=MYUSER;password=MYPASSWORD#;currentSchema=DB2SADM;enableSysplexWLB=true;useClientSideLicenseFirst=1;");
+		assertThat(jdbcService.getUsername()).isNull();
+		assertThat(jdbcService.getPassword()).isNull();
+	}
+
+	@Test
+	public void buildJdbcUrlFromUriField_uriInfo() {
+		mockVcapServices(getServicesPayload(
+				readTestDataFile("test-db2-realistic-payload-no-jdbc.json")
+		));
+
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		CfJdbcService jdbcService = cfJdbcEnv.findJdbcServiceByName(SERVICE_NAME);
+		assertThat(jdbcService.getJdbcUrl()).isEqualTo("jdbc:db2://host.de:34120/TEST_DB0T:user=MYUSER;password=MYPASSWORD#;");
+		assertThat(jdbcService.getUsername()).isNull();
+		assertThat(jdbcService.getPassword()).isNull();
+	}
+
+	@Test
+	public void searchFieldWithJdbcStartingValue_ok() {
+		DB2JdbcUrlCreator db2JdbcUrlCreator = new DB2JdbcUrlCreator();
+		CfCredentials cfCredentials = new CfCredentials(
+				Map.of(
+						"MaskedJDBCType4ConnectionString", "jdbc:db2://host.de:34120/TEST_DB0T:user=MYUSER;password=********;currentSchema=DB2SADM;enableSysplexWLB=true;useClientSideLicenseFirst=1;",
+						"JDBCType4ConnectionString", "jdbc:db2://host.de:34120/TEST_DB0T:user=MYUSER;password=MYPASSWORD#;currentSchema=DB2SADM;enableSysplexWLB=true;useClientSideLicenseFirst=1;"
+				)
+		);
+		String jdbcStartingValue = db2JdbcUrlCreator.searchFieldWithJdbcStartingValue(cfCredentials);
+		assertThat(jdbcStartingValue).isEqualTo("jdbc:db2://host.de:34120/TEST_DB0T:user=MYUSER;password=MYPASSWORD#;currentSchema=DB2SADM;enableSysplexWLB=true;useClientSideLicenseFirst=1;");
+	}
+
+	@Test
+	public void searchFieldWithJdbcStartingValue_no_value() {
+		DB2JdbcUrlCreator db2JdbcUrlCreator = new DB2JdbcUrlCreator();
+		CfCredentials cfCredentials = new CfCredentials(
+				Map.of(
+						"JDBCType4ConnectionString", "jdbc://db2://host.de:34120/TEST_DB0T:user=MYUSER;password=MYPASSWORD#;currentSchema=DB2SADM;enableSysplexWLB=true;useClientSideLicenseFirst=1;"
+				)
+		);
+		String jdbcStartingValue = db2JdbcUrlCreator.searchFieldWithJdbcStartingValue(cfCredentials);
+		assertThat(jdbcStartingValue).isNull();
+	}
+
 
 	protected String getDB2ServicePayloadWithJdbcurl(String serviceName, String hostname, int port,
 													 String user, String password, String name, String scheme) {
