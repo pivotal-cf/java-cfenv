@@ -58,7 +58,7 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 			Optional<String> tlsPort = Optional.ofNullable(cfCredentials.getString("tls_port"));
 			if (tlsPort.isPresent()) {
 				properties.put(PREFIX + ".port", tlsPort.get());
-				properties.put(PREFIX + ".ssl", "true");
+				properties.put(PREFIX + ".ssl.enabled", "true");
 			} else {
 				properties.put(PREFIX + ".port", cfCredentials.getPort());
 			}
@@ -68,7 +68,7 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 			properties.put(PREFIX + ".port", uriInfo.getPort());
 			properties.put(PREFIX + ".password", uriInfo.getPassword());
 			if (uriInfo.getScheme().equals("rediss")) {
-				properties.put(PREFIX + ".ssl", "true");
+				properties.put(PREFIX + ".ssl.enabled", "true");
 			}
 		}
 	}
