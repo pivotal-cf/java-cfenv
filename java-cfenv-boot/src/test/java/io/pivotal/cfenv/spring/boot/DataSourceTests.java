@@ -72,7 +72,7 @@ public class DataSourceTests extends AbstractCfEnvTests {
 				this.context.getEnvironment().getProperty("spring.r2dbc.username"))
 				.isEqualTo("mysql_username");
 			assertThat(
-					this.context.getEnvironment().getProperty("spring.r2dbc.password"))
+				this.context.getEnvironment().getProperty("spring.r2dbc.password"))
 				.isEqualTo("mysql_password");		
 
 		} finally {
@@ -110,31 +110,31 @@ public class DataSourceTests extends AbstractCfEnvTests {
 				this.context.getEnvironment().getProperty("spring.r2dbc.username"))
 				.isEqualTo("mysql_username");
 			assertThat(
-					this.context.getEnvironment().getProperty("spring.r2dbc.password"))
+				this.context.getEnvironment().getProperty("spring.r2dbc.password"))
 				.isEqualTo("mysql_password");		
 			assertThat(
-					this.context.getEnvironment().getProperty("spring.r2dbc.properties.user"))
+				this.context.getEnvironment().getProperty("spring.r2dbc.properties.user"))
 				.isEqualTo("mysql_username");		
 			assertThat(
-					this.context.getEnvironment().getProperty("spring.r2dbc.properties.password"))
+				this.context.getEnvironment().getProperty("spring.r2dbc.properties.password"))
 				.isEqualTo("mysql_password");	
 			assertThat(
-					this.context.getEnvironment().getProperty("spring.r2dbc.properties.sslMode"))
+				this.context.getEnvironment().getProperty("spring.r2dbc.properties.sslMode"))
 				.isEqualTo("VERIFY_IDENTITY");				
 			assertThat(
-					this.context.getEnvironment().getProperty("spring.r2dbc.properties.useSSL"))
+				this.context.getEnvironment().getProperty("spring.r2dbc.properties.useSSL"))
 				.isEqualTo("true");				
 			assertThat(
-					this.context.getEnvironment().getProperty("spring.r2dbc.properties.requireSSL"))
+				this.context.getEnvironment().getProperty("spring.r2dbc.properties.requireSSL"))
 				.isEqualTo("true");		
 			assertThat(
-					this.context.getEnvironment().getProperty("spring.r2dbc.properties.tlsVersion"))
+				this.context.getEnvironment().getProperty("spring.r2dbc.properties.tlsVersion"))
 				.isEqualTo("TLSv1.2");				
 			assertThat(
-					this.context.getEnvironment().getProperty("spring.r2dbc.properties.serverSslCert"))
+				this.context.getEnvironment().getProperty("spring.r2dbc.properties.serverSslCert"))
 				.isEqualTo("/etc/ssl/certs/ca-certificates.crt");
 			assertThat(
-					this.context.getEnvironment().getProperty("spring.r2dbc.properties.serverSslCert"))
+				this.context.getEnvironment().getProperty("spring.r2dbc.properties.serverSslCert"))
 				.isEqualTo("/etc/ssl/certs/ca-certificates.crt");			
 			
 		} finally {
