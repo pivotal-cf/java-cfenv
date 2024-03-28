@@ -1,0 +1,25 @@
+{
+  "p-mysql": [
+    {
+      "credentials": {
+        "hostname": "10.0.4.35",
+        "port": 3306,
+        "name": "mysql_name",
+        "username": "mysql_username",
+        "password": "mysql_password",
+        "uri": "mysql://mysql_username:mysql_password@10.0.4.35:3306/service_instance_db?reconnect=true",
+        "jdbcUrl": "jdbc:mysql://10.0.4.35:3306/service_instance_db?permitMysqlScheme&user=mysql_username&password=mysql_password&sslMode=VERIFY_IDENTITY&useSSL=true&requireSSL=true&enabledTLSProtocols=TLSv1.2&serverSslCert=/etc/ssl/certs/ca-certificates.crt"
+      },
+      "syslog_drain_url": null,
+      "volume_mounts": [],
+      "label": "p-mysql",
+      "provider": null,
+      "plan": "100mb",
+      "name": "mysql",
+      "tags": [
+        "mysql",
+        "relational"
+      ]
+    }
+  ]
+}
