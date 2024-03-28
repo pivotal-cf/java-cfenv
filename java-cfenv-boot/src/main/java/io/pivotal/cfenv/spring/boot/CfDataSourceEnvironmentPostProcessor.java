@@ -49,15 +49,15 @@ public class CfDataSourceEnvironmentPostProcessor implements CfServiceEnablingEn
 
 	private static int invocationCount;
 
-    /**
-     * MySQL connection protocol constant.
-     */
-    private static final String MYSQL_PROTOCOL = "mysql";
+	/**
+	* MySQL connection protocol constant.
+	*/
+	private static final String MYSQL_PROTOCOL = "mysql";
     
-    /**
-     *  MariaDB connection protocol constant. 
-     */
-    private static final String MARIADB_PROTOCOL = "mariadb";
+	/**
+ 	*  MariaDB connection protocol constant. 
+ 	*/
+	private static final String MARIADB_PROTOCOL = "mariadb";
 	
 	// After ConfigFileApplicationListener so values from files can be used here
 	private int order = ConfigDataEnvironmentPostProcessor.ORDER + 1;
@@ -169,27 +169,27 @@ public class CfDataSourceEnvironmentPostProcessor implements CfServiceEnablingEn
 		}
 	}
 
-    private String evalMySQLProtocol()
-    {
-    	// Default to "mysql"
-    	String connectionProtocol = MYSQL_PROTOCOL;
+	private String evalMySQLProtocol()
+	{
+		// Default to "mysql"
+    		String connectionProtocol = MYSQL_PROTOCOL;
     	
-    	/* In Spring Boot 2.7.0, the previous MySQL r2dbc driver is no longer supported and 
-    	 * documentation suggests using the MariaDB R2DBC driver as an alternative.  Some versions
-    	 * of the MariaDB R2DBC driver do not support "mysql" as part of the connection
-    	 * protocol; "mariadb" should be used instead when the MariaDB R2DBC driver class is on
-    	 * the classpath.
-    	 */
+ 		/* In Spring Boot 2.7.0, the previous MySQL r2dbc driver is no longer supported and 
+		* documentation suggests using the MariaDB R2DBC driver as an alternative.  Some versions
+		* of the MariaDB R2DBC driver do not support "mysql" as part of the connection
+		* protocol; "mariadb" should be used instead when the MariaDB R2DBC driver class is on
+		* the classpath.
+		*/
     	
-    	try {
-    		Class.forName("org.mariadb.r2dbc.MariadbConnection");
-    		connectionProtocol = MARIADB_PROTOCOL;
-    	}
-    	catch (ClassNotFoundException ignored) {
-        }
+		try {
+			Class.forName("org.mariadb.r2dbc.MariadbConnection");
+			connectionProtocol = MARIADB_PROTOCOL;
+		}
+		catch (ClassNotFoundException ignored) {
+ 		}
     	
-    	return connectionProtocol; 
-    }	
+		return connectionProtocol; 
+	}	
 	
 	private Map<String, String> parseQueryString(String queryParams) {
 		
@@ -202,11 +202,11 @@ public class CfDataSourceEnvironmentPostProcessor implements CfServiceEnablingEn
 		for (String option : options) {
 			
 			String[] keyval = option.split("=");
-            if (keyval.length != 2 || keyval[0].length() == 0 || keyval[1].length() == 0) {
-                continue;
-            }
+			if (keyval.length != 2 || keyval[0].length() == 0 || keyval[1].length() == 0) {
+				continue;
+			}
             
-            retVal.put(keyval[0], keyval[1]);
+ 			retVal.put(keyval[0], keyval[1]);
 		}
 		
 		return retVal;
