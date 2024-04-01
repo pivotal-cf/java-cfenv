@@ -172,15 +172,14 @@ public class CfDataSourceEnvironmentPostProcessor implements CfServiceEnablingEn
 	private String evalMySQLProtocol()
 	{
 		// Default to "mysql"
-    		String connectionProtocol = MYSQL_PROTOCOL;
+		String connectionProtocol = MYSQL_PROTOCOL;
     	
- 		/* In Spring Boot 2.7.0, the previous MySQL r2dbc driver is no longer supported and 
-		* documentation suggests using the MariaDB R2DBC driver as an alternative.  Some versions
-		* of the MariaDB R2DBC driver do not support "mysql" as part of the connection
-		* protocol; "mariadb" should be used instead when the MariaDB R2DBC driver class is on
-		* the classpath.
-		*/
-    	
+		/* In Spring Boot 2.7.0, the previous MySQL r2dbc driver is no longer supported and 
+		 * documentation suggests using the MariaDB R2DBC driver as an alternative.  Some versions
+		 * of the MariaDB R2DBC driver do not support "mysql" as part of the connection
+		 * protocol; "mariadb" should be used instead when the MariaDB R2DBC driver class is on the classpath.
+    	 */
+		
 		try {
 			Class.forName("org.mariadb.r2dbc.MariadbConnection");
 			connectionProtocol = MARIADB_PROTOCOL;
