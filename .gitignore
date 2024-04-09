@@ -39,3 +39,4 @@ rebel.xml
 
 # VSCode artifacts
 .vscode/
+.history/

@@ -36,7 +36,7 @@ shadowJar {
         exclude(dependency('org.springframework.boot::'))
         exclude(dependency('org.springframework::'))
     }
-    relocate 'com.cedarsoftware.util.io', 'io.pivotal.cfenv.shaded.com.cedarsoftware.util.io'
+    relocate 'com.cedarsoftware.io', 'io.pivotal.cfenv.shaded.com.cedarsoftware.io'
 }
 
 publishing {
