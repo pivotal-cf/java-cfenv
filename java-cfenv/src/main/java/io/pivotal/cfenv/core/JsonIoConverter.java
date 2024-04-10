@@ -21,8 +21,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cedarsoftware.io.JsonIo;
 import com.cedarsoftware.io.JsonObject;
-import com.cedarsoftware.io.JsonReader;
+
 
 public class JsonIoConverter {
 
@@ -35,7 +36,8 @@ public class JsonIoConverter {
 	 */
 	public static Map jsonToJavaWithListsAndInts(String jsonInput) {
 		Map args = new HashMap();
-		JsonObject rawServicesMap = (JsonObject) JsonReader.jsonToMaps(jsonInput);
+		args.put(JsonIo.USE_MAPS, true);
+		JsonObject rawServicesMap = JsonIo.toObjects(jsonInput, JsonIo.getReadOptionsBuilder(args).build(), JsonObject.class);
 		return convertArraysAndLongs(rawServicesMap);
 	}
 
