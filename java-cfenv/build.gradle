@@ -6,7 +6,7 @@ plugins {
 description = 'Java CF Env Core Library'
 
 dependencies {
-    api 'com.cedarsoftware:json-io:4.22.0'
+    api 'com.cedarsoftware:json-io:4.24.0'
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "junit:junit"
