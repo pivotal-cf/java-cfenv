@@ -10,7 +10,7 @@ configurations {
 }
 
 dependencies {
-    docs "io.spring.docresources:spring-doc-resources:0.2.1.RELEASE@zip"
+    docs "io.spring.docresources:spring-doc-resources:0.2.5@zip"
 }
 
 task prepareAsciidocBuild(type: Sync) {
