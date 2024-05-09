@@ -1,0 +1,12 @@
+{
+  "name": "$serviceName",
+  "label": "cleardb",
+  "tags": [
+    "mariadb",
+    "mysql"
+  ],
+  "plan": "free",
+  "credentials": {
+    "uri": "mysql://$user:$password@$hostname:$port/$name"
+  }
+}

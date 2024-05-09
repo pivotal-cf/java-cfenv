@@ -1,0 +1,6 @@
+{
+  "name": "$serviceName",
+  "credentials": {
+    "jdbcUrl": "jdbc:mariadb://$hostname:$port/$name?user=$user&password=$password"
+  }
+}
