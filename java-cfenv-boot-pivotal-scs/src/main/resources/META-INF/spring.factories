@@ -1,2 +1,3 @@
 io.pivotal.cfenv.spring.boot.CfEnvProcessor=\
-io.pivotal.cfenv.boot.scs.CfEurekaClientProcessor
+  io.pivotal.cfenv.boot.scs.CfEurekaClientProcessor, \
+  io.pivotal.cfenv.boot.scs.CfConfigClientProcessor
