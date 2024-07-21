@@ -1,7 +1,7 @@
 buildscript {
     ext {
         jmockitVersion = "1.49"
-        springBootVersion = "3.2.5"
+        springBootVersion = "3.3.1"
     }
 }
 
@@ -15,3 +15,4 @@ description = 'Java Library for Accessing Cloud Foundry Environment Variables'
 wrapper {
     gradleVersion = "8.7"
 }
+
