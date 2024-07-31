@@ -1,0 +1,17 @@
+{
+    "credentials": {
+      "api_base": "https://genai-proxy.tpcf.io",
+      "api_key": "sk-KW5kiNOKDd_1dFxsAjpVa"
+    },
+    "instance_name": "genai",
+    "label": "genai",
+    "name": "genai",
+    "plan": "shared",
+    "provider": null,
+    "syslog_drain_url": null,
+    "tags": [
+       "genai",
+       "llm"
+    ],
+    "volume_mounts": []
+  }
