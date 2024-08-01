@@ -162,7 +162,12 @@ publishing {
                     if (project.name == 'java-cfenv-test-support') {
                         def cfenvDependencies = pomNode.get('dependencies')[0].findAll { it.get('artifactId')[0].text() == 'java-cfenv' }
                         assert cfenvDependencies.size() == 1
+                        def clone = cfenvDependencies[0].clone()
+                        // see https://github.com/pivotal-cf/java-cfenv/pull/264#issuecomment-2105127180
                         cfenvDependencies[0].appendNode('type', "test-jar")
+                        pomNode.get('dependencies')[0].children().add(0, clone)
+                        cfenvDependencies = pomNode.get('dependencies')[0].findAll { it.get('artifactId')[0].text() == 'java-cfenv' }
+                        assert cfenvDependencies.size() == 2
                     }
                 }
             }
