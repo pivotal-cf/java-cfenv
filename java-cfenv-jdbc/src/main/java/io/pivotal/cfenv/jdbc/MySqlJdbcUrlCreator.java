@@ -47,7 +47,7 @@ public class MySqlJdbcUrlCreator extends AbstractJdbcUrlCreator {
 	private boolean isMariaDbService(CfService cfService) {
 		return jdbcUrlMatchesScheme(cfService, MARIADB_SCHEME)
 				|| cfService.existsByTagIgnoreCase(MARIADB_TAG)
-				|| cfService.existsByLabelStartsWith(MARIADB_LABEL)
+				|| cfService.existsByLabelContains(MARIADB_LABEL)
 				|| cfService.existsByUriSchemeStartsWith(MARIADB_SCHEME)
 				|| cfService.existsByCredentialsContainsUriField(MARIADB_SCHEME);
 	}

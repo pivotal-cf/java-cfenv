@@ -1,6 +1,6 @@
 {
   "name": "$serviceName",
-  "label": "mariadb-10.11",
+  "label": "a9s-mariadb106",
   "tags": [],
   "plan": "free",
   "credentials": {
