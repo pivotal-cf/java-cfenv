@@ -1,12 +1,20 @@
 {
     "credentials": {
       "api_base": "https://genai-proxy.tpcf.io",
-      "api_key": "sk-KW5kiNOKDd_1dFxsAjpVa"
+      "api_key": "sk-KW5kiNOKDd_1dFxsAjpVa",
+      "model_name": "meta-llama/Meta-Llama-3-8B",
+      "model_aliases": [
+        "llama3"
+      ],
+      "model_capabilities": [
+        "chat",
+        "tools"
+      ]
     },
     "instance_name": "genai",
     "label": "genai",
     "name": "genai",
-    "plan": "shared",
+    "plan": "meta-llama/Meta-Llama-3-8B",
     "provider": null,
     "syslog_drain_url": null,
     "tags": [
@@ -14,4 +22,4 @@
        "llm"
     ],
     "volume_mounts": []
-  }
+}

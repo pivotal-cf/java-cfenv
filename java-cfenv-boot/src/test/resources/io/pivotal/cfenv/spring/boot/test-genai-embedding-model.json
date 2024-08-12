@@ -1,0 +1,24 @@
+{
+    "credentials": {
+      "api_base": "https://genai-proxy.tpcf.io",
+      "api_key": "sk-KW5kiNOKDd_1dFxsAjpVa",
+      "model_name": "mixedbread-ai/mxbai-embed-large-v1",
+      "model_aliases": [
+        "mxbai"
+      ],
+      "model_capabilities": [
+        "embedding"
+      ]
+    },
+    "instance_name": "genai",
+    "label": "genai",
+    "name": "genai",
+    "plan": "mixedbread-ai/mxbai-embed-large-v1",
+    "provider": null,
+    "syslog_drain_url": null,
+    "tags": [
+       "genai",
+       "llm"
+    ],
+    "volume_mounts": []
+}
