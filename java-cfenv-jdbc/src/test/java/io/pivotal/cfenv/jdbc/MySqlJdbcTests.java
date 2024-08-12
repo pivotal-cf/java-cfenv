@@ -48,7 +48,7 @@ public class MySqlJdbcTests extends AbstractJdbcTests {
 		assertThat(cfJdbcService.getUsername()).isEqualTo(username);
 		assertThat(cfJdbcService.getPassword()).isEqualTo(password);
 		assertThat(cfJdbcService.getDriverClassName())
-				.isEqualTo("org.mariadb.jdbc.Driver");
+				.isEqualTo(MySqlJdbcUrlCreator.MARIADB_DRIVER_CLASS_NAME);
 
 		assertThatThrownBy(() -> {
 			cfJdbcEnv.findJdbcServiceByName("mysql.*");
@@ -160,7 +160,7 @@ public class MySqlJdbcTests extends AbstractJdbcTests {
 		assertThat(cfJdbcService.getUsername()).isNull();
 		assertThat(cfJdbcService.getPassword()).isNull();
 		assertThat(cfJdbcService.getDriverClassName())
-				.isEqualTo("org.mariadb.jdbc.Driver");
+				.isEqualTo(MySqlJdbcUrlCreator.MARIADB_DRIVER_CLASS_NAME);
 	}
 
 	@Test
@@ -176,6 +176,91 @@ public class MySqlJdbcTests extends AbstractJdbcTests {
 		String jdbcUrlMysql = cfJdbcService.getJdbcUrl();
 		assertThat(getExpectedMysqlJdbcUrl(hostname, port, name, userWithSpecialChars,
 				passwordWithSpecialChars)).isEqualTo(jdbcUrlMysql);
+	}
+
+
+	@Test
+	public void mariaDbServiceCreation() {
+		String name1 = "database-1";
+		String name2 = "database-2";
+
+		mockVcapServices(getServicesPayload(
+				getMariaDbServicePayload("mariadb-1", hostname, port, username, password,
+						name1),
+				getMariaDbServicePayload("mariadb-2", hostname, port, username, password,
+						name2)));
+
+		assertJdbcServiceValuesMariaDb(name1, name2);
+
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName("mariadb-1");
+		assertThat(cfJdbcService.getUsername()).isEqualTo(username);
+		assertThat(cfJdbcService.getPassword()).isEqualTo(password);
+		assertThat(cfJdbcService.getDriverClassName())
+				.isEqualTo(MySqlJdbcUrlCreator.MARIADB_DRIVER_CLASS_NAME);
+	}
+	@Test
+	public void mariaDbServiceCreationWithJdbcUrl() {
+		String name1 = "database-1";
+		String name2 = "database-2";
+		mockVcapServices(getServicesPayload(
+				getMariaDbServicePayloadWithJdbcUrl("mariadb-1", hostname, port, username,
+						password, name1),
+				getMariaDbServicePayloadWithJdbcUrl("mariadb-2", hostname, port, username,
+						password, name2)));
+
+		assertJdbcServiceValuesMariaDb(name1, name2);
+	}
+
+	@Test
+	public void mariaDbServiceCreationWithLabelNoTags() {
+		String name1 = "database-1";
+		String name2 = "database-2";
+		mockVcapServices(getServicesPayload(
+				getMariaDbServicePayloadWithLabelNoTags("mariadb-1", hostname, port, username,
+						password, name1),
+				getMariaDbServicePayloadWithLabelNoTags("mariadb-2", hostname, port, username,
+						password, name2)));
+		assertJdbcServiceValuesMariaDb(name1, name2);
+
+	}
+
+	@Test
+	public void mariaDbServiceCreationWithUriOnly() {
+		String name1 = "database-1";
+		String name2 = "database-2";
+		mockVcapServices(getServicesPayload(
+				getMariaDbServicePayloadUri("mariadb-1", hostname, port, username,
+						password, name1),
+				getMariaDbServicePayloadUri("mariadb-2", hostname, port, username,
+						password, name2)));
+
+		assertJdbcServiceValuesMariaDb(name1, name2);
+
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName("mariadb-1");
+		assertThat(cfJdbcService.getDriverClassName())
+				.isEqualTo(MySqlJdbcUrlCreator.MARIADB_DRIVER_CLASS_NAME);
+	}
+
+	@Test
+	public void mariaDbServiceCreationWithJdbcUrlOnly() {
+		String name1 = "database-1";
+		String name2 = "database-2";
+		mockVcapServices(getServicesPayload(
+				getMariaDbServicePayloadWithJdbcUrlOnly("mariadb-1", hostname, port, username,
+						password, name1),
+				getMariaDbServicePayloadWithJdbcUrlOnly("mariadb-2", hostname, port, username,
+						password, name2)));
+
+		assertJdbcServiceValuesMariaDb(name1, name2);
+
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName("mariadb-1");
+		assertThat(cfJdbcService.getUsername()).isNull();
+		assertThat(cfJdbcService.getPassword()).isNull();
+		assertThat(cfJdbcService.getDriverClassName())
+				.isEqualTo(MySqlJdbcUrlCreator.MARIADB_DRIVER_CLASS_NAME);
 	}
 
 	// Utility methods
@@ -209,7 +294,40 @@ public class MySqlJdbcTests extends AbstractJdbcTests {
 
 		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName("mysql-1");
 		assertThat(cfJdbcService.getDriverClassName())
-				.isEqualTo("org.mariadb.jdbc.Driver");
+				.isEqualTo(MySqlJdbcUrlCreator.MARIADB_DRIVER_CLASS_NAME);
+
+	}
+
+	private void assertJdbcServiceValuesMariaDb(String name1, String name2) {
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		String jdbcUrlMysql1 = cfJdbcEnv.findJdbcServiceByName("mariadb-1").getJdbcUrl();
+		String jdbcUrlMysql2 = cfJdbcEnv.findJdbcServiceByName("mariadb-2").getJdbcUrl();
+
+		assertThat(getExpectedJdbcUrl(MySqlJdbcUrlCreator.MARIADB_SCHEME, name1))
+				.isEqualTo(jdbcUrlMysql1);
+		assertThat(getExpectedJdbcUrl(MySqlJdbcUrlCreator.MARIADB_SCHEME, name2))
+				.isEqualTo(jdbcUrlMysql2);
+
+		CfJdbcService cfJdbcService1 = cfJdbcEnv.findJdbcServiceByName("mariadb-1");
+		CfJdbcService cfJdbcService2 = cfJdbcEnv.findJdbcServiceByName("mariadb-2");
+		jdbcUrlMysql1 = cfJdbcService1.getJdbcUrl();
+		jdbcUrlMysql2 = cfJdbcService2.getJdbcUrl();
+		assertThat(getExpectedJdbcUrl(MySqlJdbcUrlCreator.MARIADB_SCHEME, name1))
+				.isEqualTo(jdbcUrlMysql1);
+		assertThat(getExpectedJdbcUrl(MySqlJdbcUrlCreator.MARIADB_SCHEME, name2))
+				.isEqualTo(jdbcUrlMysql2);
+
+		List<CfJdbcService> cfJdbcServices = cfJdbcEnv.findJdbcServices();
+		assertThat(cfJdbcServices.size()).isEqualTo(2);
+
+		assertThatThrownBy(() -> {
+			cfJdbcEnv.findJdbcService().getJdbcUrl();
+		}).isInstanceOf(IllegalArgumentException.class).hasMessage(
+				"No unique database service found. Found database service names [mariadb-1, mariadb-2]");
+
+		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName("mariadb-1");
+		assertThat(cfJdbcService.getDriverClassName())
+				.isEqualTo(MySqlJdbcUrlCreator.MARIADB_DRIVER_CLASS_NAME);
 
 	}
 
@@ -252,6 +370,32 @@ public class MySqlJdbcTests extends AbstractJdbcTests {
 	private String getMysqlServicePayloadWithJdbcUrlOnly(String serviceName,
 			String hostname, int port, String user, String password, String name) {
 		return getTemplatedPayload("test-mysql-info-jdbc-url-only.json", serviceName,
+				hostname, port, user, password, name);
+	}
+
+	private String getMariaDbServicePayloadWithJdbcUrl(String serviceName, String hostname, int port, String user, String password, String name) {
+		//Test by MariaDB JDBC url with DB uri
+		return getTemplatedPayload("test-mariadb-info-jdbc-url.json", serviceName, hostname, port, user, password, name);
+	}
+
+	private String getMariaDbServicePayloadWithLabelNoTags(String serviceName, String hostname, int port, String user, String password, String name) {
+		//Test by presence of mariadb string in beginning of service label
+		return getTemplatedPayload("test-mariadb-info-with-label-no-tags.json", serviceName, hostname, port, user, password, name);
+	}
+
+	private String getMariaDbServicePayload(String serviceName, String hostname, int port, String user, String password, String name) {
+		//Test by MariaDB tag (alongside mysql)
+		return getTemplatedPayload("test-mariadb-info.json", serviceName, hostname, port, user, password, name);
+	}
+
+	private String getMariaDbServicePayloadUri(String serviceName, String hostname, int port, String user, String password, String name) {
+		//Test by MariaDB uri
+		return getTemplatedPayload("test-mariadb-info-uri.json", serviceName, hostname, port, user, password, name);
+	}
+
+	private String getMariaDbServicePayloadWithJdbcUrlOnly(String serviceName, String hostname, int port, String user, String password, String name) {
+		//Test by MariaDB jdbc url
+		return getTemplatedPayload("test-mariadb-info-jdbc-url-only.json", serviceName,
 				hostname, port, user, password, name);
 	}
 

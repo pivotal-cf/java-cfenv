@@ -1,0 +1,8 @@
+{
+  "name": "$serviceName",
+  "label": "cleardb",
+  "plan": "free",
+  "credentials": {
+    "uri": "mariadb://$user:$password@$hostname:$port/$name"
+  }
+}

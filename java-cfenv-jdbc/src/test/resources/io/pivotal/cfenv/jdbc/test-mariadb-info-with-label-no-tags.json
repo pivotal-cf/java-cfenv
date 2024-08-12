@@ -1,0 +1,9 @@
+{
+  "name": "$serviceName",
+  "label": "a9s-mariadb106",
+  "tags": [],
+  "plan": "free",
+  "credentials": {
+    "uri": "mysql://$user:$password@$hostname:$port/$name"
+  }
+}

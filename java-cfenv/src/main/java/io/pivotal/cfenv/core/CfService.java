@@ -185,4 +185,32 @@ public class CfService {
 		return false;
 	}
 
+	/**
+	 * @param label string to search for in the service label
+	 * @return whether the label includes the provided string
+	 */
+	public boolean existsByLabelContains(String label) {
+		String cfLabel = this.getLabel();
+		if (cfLabel != null && cfLabel.length() > 0) {
+			return cfLabel.contains(label);
+		}
+		return false;
+	}
+
+	/**
+	 * @param labels Strings to search for as a prefix in the service label
+	 * @return whether any of the provided labels starts with the service label
+	 */
+	public boolean existsByLabelStartsWith(String... labels) {
+		String cfLabel = this.getLabel();
+		if (labels != null && cfLabel != null && !cfLabel.isEmpty()){
+			for (String labelToMatch : labels){
+				if (labelToMatch.startsWith(cfLabel)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }
