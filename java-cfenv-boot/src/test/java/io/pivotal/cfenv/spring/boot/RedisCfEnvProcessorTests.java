@@ -57,7 +57,7 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".host")).isEqualTo(hostname);
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".port")).isEqualTo(String.valueOf(TLS_PORT));
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".password")).isEqualTo(password);
-		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".ssl")).isEqualTo("true");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".ssl.enabled")).isEqualTo("true");
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 
 		Environment environment = getEnvironment();
 		commonAssertions(getEnvironment(), SPRING_DATA_REDIS);
-		assertThat(environment.getProperty(SPRING_DATA_REDIS+".ssl")).isEqualTo("true");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS+".ssl.enabled")).isEqualTo("true");
 	}
 
 	@Test
