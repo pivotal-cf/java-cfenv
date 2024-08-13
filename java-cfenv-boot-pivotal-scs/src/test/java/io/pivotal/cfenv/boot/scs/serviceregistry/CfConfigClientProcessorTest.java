@@ -25,36 +25,33 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.pivotal.cfenv.boot.scs.CfEurekaClientProcessor;
+import io.pivotal.cfenv.boot.scs.CfConfigClientProcessor;
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Dylan Roberts
- */
 @RunWith(MockitoJUnitRunner.class)
-public class CfEurekaClientProcessorTest {
+public class CfConfigClientProcessorTest {
     private static final String URI = "uri";
     private static final String CLIENT_ID = "clientId";
     private static final String CLIENT_SECRET = "clientSecret";
     private static final String ACCESS_TOKEN_URI = "accessTokenUri";
 
     @Mock
-    private CfService eurekaService;
+    private CfService configService;
     @Mock
     private CfService otherService;
     @Mock
     private CfCredentials cfCredentials;
 
     @InjectMocks
-    private CfEurekaClientProcessor eurekaClientProcessor;
+    private CfConfigClientProcessor configClientProcessor;
 
     @Before
     public void setUp() {
-        when(eurekaService.existsByTagIgnoreCase("eureka")).thenReturn(true);
+        when(configService.existsByTagIgnoreCase("configuration")).thenReturn(true);
 
         when(cfCredentials.getUri()).thenReturn(URI);
         when(cfCredentials.getString("client_id")).thenReturn(CLIENT_ID);
@@ -63,15 +60,15 @@ public class CfEurekaClientProcessorTest {
     }
 
     @Test
-    public void shouldAcceptEureka() {
-        boolean actual = eurekaClientProcessor.accept(eurekaService);
+    public void shouldAcceptConfigService() {
+        boolean actual = configClientProcessor.accept(configService);
 
         assertThat(actual).isTrue();
     }
 
     @Test
     public void shouldNotAcceptOtherService() {
-        boolean actual = eurekaClientProcessor.accept(otherService);
+        boolean actual = configClientProcessor.accept(otherService);
 
         assertThat(actual).isFalse();
     }
@@ -80,13 +77,22 @@ public class CfEurekaClientProcessorTest {
     public void shouldProcessCfCredentials() {
         Map<String, Object> properties = new HashMap<>();
 
-        eurekaClientProcessor.process(cfCredentials, properties);
+        configClientProcessor.process(cfCredentials, properties);
 
-        assertThat(properties.get("eureka.client.serviceUrl.defaultZone")).isEqualTo(URI + "/eureka/");
-        assertThat(properties.get("eureka.client.region")).isEqualTo("default");
-        assertThat(properties.get("eureka.client.oauth2.client-id")).isEqualTo(CLIENT_ID);
-        assertThat(properties.get("eureka.client.oauth2.client-secret")).isEqualTo(CLIENT_SECRET);
-        assertThat(properties.get("eureka.client.oauth2.access-token-uri")).isEqualTo(ACCESS_TOKEN_URI);
+        assertThat(properties.get("spring.cloud.config.uri")).isEqualTo( URI);
+        assertThat(properties.get("spring.cloud.config.client.oauth2.client-id")).isEqualTo(CLIENT_ID);
+        assertThat(properties.get("spring.cloud.config.client.oauth2.client-secret")).isEqualTo(CLIENT_SECRET);
+        assertThat(properties.get("spring.cloud.config.client.oauth2.access-token-uri")).isEqualTo(ACCESS_TOKEN_URI);
+        assertThat(properties.get("spring.cloud.config.client.oauth2.scope")).isEqualTo("");
     }
 
+    @Test
+    public void shouldRetainThePropertiesDuringRefresh() {
+        Map<String, Object> properties = new HashMap<>();
+
+        configClientProcessor.process(cfCredentials, properties);
+
+        assertThat(properties.get("spring.cloud.refresh.additional-property-sources-to-retain"))
+                .isEqualTo("CfConfigClientProcessor");
+    }
 }
