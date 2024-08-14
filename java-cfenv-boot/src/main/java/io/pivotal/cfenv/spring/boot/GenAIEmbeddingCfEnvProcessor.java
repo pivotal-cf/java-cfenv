@@ -37,9 +37,9 @@ public class GenAIEmbeddingCfEnvProcessor implements CfEnvProcessor {
 		if (isGenAIService) {
 			ArrayList<String> modelCapabilities = (ArrayList<String>) service.getCredentials().getMap().get("model_capabilities");
 			return modelCapabilities.contains("embedding");
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	@Override

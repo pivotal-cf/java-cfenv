@@ -37,9 +37,9 @@ public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
 		if (isGenAIService) {
 			ArrayList<String> modelCapabilities = (ArrayList<String>) service.getCredentials().getMap().get("model_capabilities");
 			return modelCapabilities.contains("chat");
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	@Override
