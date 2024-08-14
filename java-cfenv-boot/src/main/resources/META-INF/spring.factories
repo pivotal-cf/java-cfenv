@@ -13,7 +13,6 @@ io.pivotal.cfenv.spring.boot.CfEnvProcessor=\
   io.pivotal.cfenv.spring.boot.AmqpCfEnvProcessor,\
   io.pivotal.cfenv.spring.boot.CredHubCfEnvProcessor,\
   io.pivotal.cfenv.spring.boot.CassandraCfEnvProcessor,\
-  io.pivotal.cfenv.spring.boot.GenAICfEnvProcessor,\
+  io.pivotal.cfenv.spring.boot.GenAIChatCfEnvProcessor,\
+  io.pivotal.cfenv.spring.boot.GenAIEmbeddingCfEnvProcessor,\
   io.pivotal.cfenv.spring.boot.VaultCfEnvProcessor
-
-
