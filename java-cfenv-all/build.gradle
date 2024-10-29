@@ -1,9 +1,16 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTransformer
+import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext
+import org.apache.tools.zip.ZipEntry
+import org.apache.tools.zip.ZipOutputStream
+import org.codehaus.plexus.util.IOUtil
+
 buildscript {
     repositories {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'com.github.johnrengelman:shadow:8.1.1'
+        // groupId changed from com.github.johnrengelman to com.gradleup.shadow
+        classpath 'com.gradleup.shadow:shadow-gradle-plugin:8.3.3'
     }
 }
 
@@ -11,7 +18,7 @@ plugins {
     id 'io.pivotal.cfenv.java-conventions'
 }
 
-apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.gradleup.shadow'
 apply plugin: 'java-library'
 
 description = 'java-cfenv-all, contains all java-cfenv modules in a convenient uberjar - to be used with CF Java Buildpack'
@@ -23,8 +30,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-import com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTransformer
-
 shadowJar {
     archiveClassifier.set('')
     mergeServiceFiles()
@@ -32,6 +37,56 @@ shadowJar {
         paths = ['META-INF/spring.factories']
         mergeStrategy = "append"
     }
+    // Fix #275: json-io uses text config file with packages names; those names need to be updated, with values we gave to the relocator
+    transform(new com.github.jengelman.gradle.plugins.shadow.transformers.Transformer() {
+
+        private Map<String, String> configTextFiles = new HashMap<>()
+
+        @Override
+        boolean canTransformResource(FileTreeElement fileTreeElement) {
+            var isConfigFileText = fileTreeElement.getName().startsWith("config/") && fileTreeElement.getName().endsWith(".txt")
+            return isConfigFileText
+        }
+
+        @Override
+        void transform(TransformerContext transformerContext) {
+            def originalPackageName = transformerContext.relocators.get(0).pattern
+            def relocatedPackageName = transformerContext.relocators.get(0).shadedPattern
+
+            String originalFileContent = transformerContext.is.getText("UTF-8")
+            if (originalFileContent.contains(originalPackageName)) {
+                println "transforming " + transformerContext.path
+                def modifiedFileContent = originalFileContent.replaceAll(originalPackageName, relocatedPackageName)
+                configTextFiles.put(transformerContext.path, modifiedFileContent)
+            } else {
+                configTextFiles.put(transformerContext.path, originalFileContent)
+            }
+        }
+
+        @Override
+        boolean hasTransformedResource() {
+            return true
+        }
+
+        @Override
+        void modifyOutputStream(ZipOutputStream zipOutputStream, boolean preserveFileTimestamps) {
+            // cannot close the writer as the OutputStream needs to remain open
+            def zipWriter = new OutputStreamWriter(zipOutputStream, 'UTF-8')
+            configTextFiles.each { String path, String fileContent ->
+                ZipEntry entry = new ZipEntry(path)
+                entry.time = TransformerContext.getEntryTimestamp(preserveFileTimestamps, entry.time)
+                zipOutputStream.putNextEntry(entry)
+                IOUtil.copy(new ByteArrayInputStream(fileContent.getBytes('UTF-8')), zipWriter)
+                zipWriter.flush()
+                zipOutputStream.closeEntry()
+            }
+        }
+
+        @Override
+        String getName() {
+            return ""
+        }
+    })
     dependencies {
         exclude(dependency('org.springframework.boot::'))
         exclude(dependency('org.springframework::'))
