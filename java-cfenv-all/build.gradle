@@ -111,5 +111,6 @@ publishing {
 
 assemble.dependsOn shadowJar
 build.dependsOn shadowJar
+generateMetadataFileForShadowPublication.dependsOn jar
 publishShadowPublicationToMavenRepository.onlyIf { false }
 publishShadowPublicationToMaven2Repository.onlyIf { false }
