@@ -10,7 +10,7 @@ buildscript {
     }
     dependencies {
         // groupId changed from com.github.johnrengelman to com.gradleup.shadow
-        classpath 'com.gradleup.shadow:shadow-gradle-plugin:8.3.4'
+        classpath 'com.gradleup.shadow:shadow-gradle-plugin:8.3.5'
     }
 }
 
