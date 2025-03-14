@@ -16,13 +16,13 @@
 package io.pivotal.cfenv.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.cedarsoftware.io.JsonIo;
 import com.cedarsoftware.io.JsonObject;
+import com.cedarsoftware.io.ReadOptionsBuilder;
 
 
 public class JsonIoConverter {
@@ -35,9 +35,13 @@ public class JsonIoConverter {
 	 * @return a serialized version of the input in a Map
 	 */
 	public static Map jsonToJavaWithListsAndInts(String jsonInput) {
-		Map args = new HashMap();
-		args.put(JsonIo.USE_MAPS, true);
-		JsonObject rawServicesMap = JsonIo.toObjects(jsonInput, JsonIo.getReadOptionsBuilder(args).build(), JsonObject.class);
+		// Create read options that will return JsonObjects (Maps) instead of fully resolved Java objects
+		ReadOptionsBuilder readOptionsBuilder = new ReadOptionsBuilder()
+				.returnAsJsonObjects();
+
+		// Parse the JSON string into a JsonObject (Map)
+		JsonObject rawServicesMap = JsonIo.toJava(jsonInput, readOptionsBuilder.build()).asClass(JsonObject.class);
+
 		return convertArraysAndLongs(rawServicesMap);
 	}
 
@@ -85,5 +89,4 @@ public class JsonIoConverter {
 		}
 		return resultList;
 	}
-
 }
