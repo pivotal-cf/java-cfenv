@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Stuart Charlton
  * @author Ed King
+ * @author Gareth Evans
  */
 public class GenAIChatCfEnvProcessorTests extends AbstractCfEnvTests {
 
@@ -42,6 +43,23 @@ public class GenAIChatCfEnvProcessorTests extends AbstractCfEnvTests {
 		assertThat(getEnvironment().getProperty("spring.ai.openai.chat.base-url")).isEqualTo(EXPECTED_URI_FROM_JSON_FILE);
 		assertThat(getEnvironment().getProperty("spring.ai.openai.chat.api-key")).isEqualTo(EXPECTED_TOKEN_FROM_JSON_FILE);
 		assertThat(getEnvironment().getProperty("spring.ai.openai.chat.options.model")).isEqualTo(EXPECTED_MODEL_FROM_JSON_FILE);
+
+		assertThat(getEnvironment().getProperty("spring.ai.openai.embedding.options.model")).isNull();
+		assertThat(getEnvironment().getProperty("spring.ai.openai.image.options.model")).isNull();
+		assertThat(getEnvironment().getProperty("spring.ai.openai.audio.transcription.options.model")).isNull();
+		assertThat(getEnvironment().getProperty("spring.ai.openai.audio.speech.options.model")).isNull();
+	}
+
+	@Test
+	public void testGenAIBootPropertiesWithChatModelCapabilityEndpointFormat() {
+		String TEST_GENAI_JSON_FILE = "test-genai-endpoint-chat-model.json";
+
+		mockVcapServices(getServicesPayload(readTestDataFile(TEST_GENAI_JSON_FILE)));
+
+		assertThat(getEnvironment().getProperty("spring.ai.openai.api-key")).isNull();
+		assertThat(getEnvironment().getProperty("spring.ai.openai.chat.base-url")).isNull();
+		assertThat(getEnvironment().getProperty("spring.ai.openai.chat.api-key")).isNull();
+		assertThat(getEnvironment().getProperty("spring.ai.openai.chat.options.model")).isNull();
 
 		assertThat(getEnvironment().getProperty("spring.ai.openai.embedding.options.model")).isNull();
 		assertThat(getEnvironment().getProperty("spring.ai.openai.image.options.model")).isNull();

@@ -1,0 +1,20 @@
+{
+    "credentials": {
+      "endpoint": {
+        "api_base": "https://genai-proxy.tpcf.io/test",
+        "api_key": "sk-KW5kiNOKDd_1dFxsAjpVa",
+        "config_url": "https://genai-proxy.tpcf.io/test/config/v1/endpoint"
+      }
+    },
+    "instance_name": "genai",
+    "label": "genai",
+    "name": "genai",
+    "plan": "meta-llama/Meta-Llama-3-8B",
+    "provider": null,
+    "syslog_drain_url": null,
+    "tags": [
+       "genai",
+       "llm"
+    ],
+    "volume_mounts": []
+}
