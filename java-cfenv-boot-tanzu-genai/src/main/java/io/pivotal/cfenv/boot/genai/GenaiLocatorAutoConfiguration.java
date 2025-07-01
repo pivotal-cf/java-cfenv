@@ -33,9 +33,9 @@ public class GenaiLocatorAutoConfiguration {
   @Bean
   public GenaiLocator genaiLocator(
           RestClient.Builder builder,
-          @Value("genai.locator.config-url") String configUrl,
-          @Value("genai.locator.api-key") String apiKey,
-          @Value("genai.locator.api-base") String apiBase
+          @Value("${genai.locator.config-url}") String configUrl,
+          @Value("${genai.locator.api-key}") String apiKey,
+          @Value("${genai.locator.api-base}") String apiBase
   ) {
     return new DefaultGenaiLocator(builder, configUrl, apiKey, apiBase);
   }

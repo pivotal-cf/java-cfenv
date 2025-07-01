@@ -254,6 +254,7 @@ public class DefaultGenaiLocator implements GenaiLocator {
 
   private ConfigEndpoint getEndpointConfig() {
       RestClient client = builder.build();
+      LOGGER.info("Retrieving config from url {}", configUrl);
       return client
           .get()
           .uri(configUrl)
