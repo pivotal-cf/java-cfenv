@@ -2,6 +2,7 @@ buildscript {
     ext {
         jmockitVersion = "1.49"
         springBootVersion = "3.4.3"
+        springAiVersion = "1.0.0"
     }
 }
 
