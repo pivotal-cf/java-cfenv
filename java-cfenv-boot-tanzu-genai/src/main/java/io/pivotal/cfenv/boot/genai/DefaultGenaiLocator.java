@@ -1,9 +1,29 @@
+/*
+ * Copyright 2025 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.pivotal.cfenv.boot.genai;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.document.MetadataMode;
 import org.springframework.ai.embedding.EmbeddingModel;
@@ -14,20 +34,22 @@ import org.springframework.ai.openai.OpenAiEmbeddingOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.web.client.RestClient;
 
-import java.util.AbstractMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
+/**
+ * Locates available models and mcp servers from ai-servers config endpoint
+ *
+ * @author Gareth Evans
+ **/
+public class DefaultGenaiLocator implements GenaiLocator {
 
-public class DefaultGenAILocator implements GenAILocator {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGenAILocator.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGenaiLocator.class);
 
   private final String configUrl;
   private final String apiKey;
   private final String apiBase;
+  private final RestClient.Builder builder;
 
-  public DefaultGenAILocator(String configUrl, String apiKey, String apiBase) {
+  public DefaultGenaiLocator(RestClient.Builder builder, String configUrl, String apiKey, String apiBase) {
+    this.builder = builder;
     this.configUrl = configUrl;
     this.apiKey = apiKey;
     this.apiBase = apiBase;
@@ -67,7 +89,7 @@ public class DefaultGenAILocator implements GenAILocator {
     return models.stream()
         .filter(filterModelConnectivityOnCapability("CHAT"))
         .filter(c -> c.name().equals(name))
-        .map(DefaultGenAILocator::createChatModel)
+        .map(DefaultGenaiLocator::createChatModel)
         .findFirst()
         .orElseThrow(
             () -> new RuntimeException("Unable to find chat model with name '" + name + "'"));
@@ -80,7 +102,7 @@ public class DefaultGenAILocator implements GenAILocator {
     return models.stream()
         .filter(filterModelConnectivityOnCapability("CHAT"))
         .filter(filterModelConnectivityOnLabels(labels))
-        .map(DefaultGenAILocator::createChatModel)
+        .map(DefaultGenaiLocator::createChatModel)
         .toList();
   }
 
@@ -90,7 +112,7 @@ public class DefaultGenAILocator implements GenAILocator {
 
     return models.stream()
         .filter(filterModelConnectivityOnCapability("CHAT"))
-        .map(DefaultGenAILocator::createChatModel)
+        .map(DefaultGenaiLocator::createChatModel)
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Unable to find first chat model"));
   }
@@ -102,7 +124,7 @@ public class DefaultGenAILocator implements GenAILocator {
     return models.stream()
         .filter(filterModelConnectivityOnCapability("CHAT"))
         .filter(filterModelConnectivityOnLabels(labels))
-        .map(DefaultGenAILocator::createChatModel)
+        .map(DefaultGenaiLocator::createChatModel)
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Unable to find first chat model"));
   }
@@ -114,7 +136,7 @@ public class DefaultGenAILocator implements GenAILocator {
     return models.stream()
         .filter(filterModelConnectivityOnCapability("TOOLS"))
         .filter(filterModelConnectivityOnLabels(labels))
-        .map(DefaultGenAILocator::createChatModel)
+        .map(DefaultGenaiLocator::createChatModel)
         .toList();
   }
 
@@ -124,7 +146,7 @@ public class DefaultGenAILocator implements GenAILocator {
 
     return models.stream()
         .filter(filterModelConnectivityOnCapability("TOOLS"))
-        .map(DefaultGenAILocator::createChatModel)
+        .map(DefaultGenaiLocator::createChatModel)
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Unable to find first tool model"));
   }
@@ -136,7 +158,7 @@ public class DefaultGenAILocator implements GenAILocator {
     return models.stream()
         .filter(filterModelConnectivityOnCapability("TOOLS"))
         .filter(filterModelConnectivityOnLabels(labels))
-        .map(DefaultGenAILocator::createChatModel)
+        .map(DefaultGenaiLocator::createChatModel)
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Unable to find first tool model"));
   }
@@ -156,7 +178,7 @@ public class DefaultGenAILocator implements GenAILocator {
     return models.stream()
         .filter(filterModelConnectivityOnCapability("EMBEDDING"))
         .filter(c -> c.name().equals(name))
-        .map(DefaultGenAILocator::createEmbeddingModel)
+        .map(DefaultGenaiLocator::createEmbeddingModel)
         .findFirst()
         .orElseThrow(
             () -> new RuntimeException("Unable to find embedding model with name '" + name + "'"));
@@ -169,7 +191,7 @@ public class DefaultGenAILocator implements GenAILocator {
     return models.stream()
         .filter(filterModelConnectivityOnCapability("EMBEDDING"))
         .filter(filterModelConnectivityOnLabels(labels))
-        .map(DefaultGenAILocator::createEmbeddingModel)
+        .map(DefaultGenaiLocator::createEmbeddingModel)
         .toList();
   }
 
@@ -179,7 +201,7 @@ public class DefaultGenAILocator implements GenAILocator {
 
     return models.stream()
         .filter(filterModelConnectivityOnCapability("EMBEDDING"))
-        .map(DefaultGenAILocator::createEmbeddingModel)
+        .map(DefaultGenaiLocator::createEmbeddingModel)
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Unable to find first embedding model"));
   }
@@ -191,7 +213,7 @@ public class DefaultGenAILocator implements GenAILocator {
     return models.stream()
         .filter(filterModelConnectivityOnCapability("EMBEDDING"))
         .filter(filterModelConnectivityOnLabels(labels))
-        .map(DefaultGenAILocator::createEmbeddingModel)
+        .map(DefaultGenaiLocator::createEmbeddingModel)
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Unable to find first embedding model"));
   }
@@ -231,7 +253,7 @@ public class DefaultGenAILocator implements GenAILocator {
   }
 
   private ConfigEndpoint getEndpointConfig() {
-      RestClient client = RestClient.builder().build();
+      RestClient client = builder.build();
       return client
           .get()
           .uri(configUrl)
