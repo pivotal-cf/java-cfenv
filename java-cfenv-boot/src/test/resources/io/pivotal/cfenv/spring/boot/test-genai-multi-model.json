@@ -1,0 +1,21 @@
+{
+  "credentials": {
+    "endpoint": {
+      "api_base": "https://genai-proxy.tpcf.io/multi-model-rag-ultra-2f99c5a",
+      "api_key": "sk-KW5kiNOKDd_1dFxsAjpVa",
+      "config_url": "https://genai-proxy.tpcf.io/multi-model-rag-ultra-2f99c5a/config/v1/endpoint",
+      "name": "multi-model-rag-ultra-2f99c5a"
+    }
+  },
+  "instance_name": "multi-llm",
+  "label": "genai",
+  "name": "multi-llm",
+  "plan": "multi-model-rag-ultra",
+  "provider": null,
+  "syslog_drain_url": null,
+  "tags": [
+    "genai",
+    "llm"
+  ],
+  "volume_mounts": []
+}
