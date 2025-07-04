@@ -15,12 +15,12 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Represents the response from the GenAI config URL endpoint.

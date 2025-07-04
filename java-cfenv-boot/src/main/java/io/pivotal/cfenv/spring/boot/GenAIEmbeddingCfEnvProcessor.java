@@ -15,12 +15,12 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import io.pivotal.cfenv.core.CfCredentials;
-import io.pivotal.cfenv.core.CfService;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import io.pivotal.cfenv.core.CfCredentials;
+import io.pivotal.cfenv.core.CfService;
 
 /**
  * Retrieve GenAI on Tanzu Platform properties from {@link CfCredentials} and
