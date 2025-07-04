@@ -31,8 +31,8 @@ public class GenAIModelSelectorTest {
     }
 
     @Test
-    void testSelectModel_WithMultipleMatchingModels_FirstStrategy() {
-        GenAIModelSelector selector = new GenAIModelSelector(GenAIModelSelector.SelectionStrategy.FIRST);
+    void testSelectModel_WithMultipleMatchingModels_SelectsFirst() {
+        GenAIModelSelector selector = new GenAIModelSelector();
         List<GenAIModelInfo> models = Arrays.asList(
                 new GenAIModelInfo("gpt-3.5-turbo", List.of(GenAIModelInfo.Capability.CHAT)),
                 new GenAIModelInfo("gpt-4", List.of(GenAIModelInfo.Capability.CHAT)),
@@ -43,21 +43,6 @@ public class GenAIModelSelectorTest {
 
         assertThat(selected).isPresent();
         assertThat(selected.get().getName()).isEqualTo("gpt-3.5-turbo");
-    }
-
-    @Test
-    void testSelectModel_WithMultipleMatchingModels_LastStrategy() {
-        GenAIModelSelector selector = new GenAIModelSelector(GenAIModelSelector.SelectionStrategy.LAST);
-        List<GenAIModelInfo> models = Arrays.asList(
-                new GenAIModelInfo("gpt-3.5-turbo", List.of(GenAIModelInfo.Capability.CHAT)),
-                new GenAIModelInfo("gpt-4", List.of(GenAIModelInfo.Capability.CHAT)),
-                new GenAIModelInfo("claude-3", List.of(GenAIModelInfo.Capability.CHAT))
-        );
-
-        Optional<GenAIModelInfo> selected = selector.selectModel(models, GenAIModelInfo.Capability.CHAT);
-
-        assertThat(selected).isPresent();
-        assertThat(selected.get().getName()).isEqualTo("claude-3");
     }
 
     @Test
@@ -83,27 +68,11 @@ public class GenAIModelSelectorTest {
     }
 
     @Test
-    void testSelectModelWithAllCapabilities() {
+    void testSelectModel_NullModelList() {
         GenAIModelSelector selector = new GenAIModelSelector();
-        List<GenAIModelInfo> models = Arrays.asList(
-                new GenAIModelInfo("basic-model", List.of(GenAIModelInfo.Capability.CHAT)),
-                new GenAIModelInfo("advanced-model", Arrays.asList(
-                        GenAIModelInfo.Capability.CHAT,
-                        GenAIModelInfo.Capability.TOOLS
-                )),
-                new GenAIModelInfo("vision-model", Arrays.asList(
-                        GenAIModelInfo.Capability.CHAT,
-                        GenAIModelInfo.Capability.VISION
-                ))
-        );
 
-        Optional<GenAIModelInfo> selected = selector.selectModelWithAllCapabilities(
-                models,
-                GenAIModelInfo.Capability.CHAT,
-                GenAIModelInfo.Capability.TOOLS
-        );
+        Optional<GenAIModelInfo> selected = selector.selectModel(null, GenAIModelInfo.Capability.CHAT);
 
-        assertThat(selected).isPresent();
-        assertThat(selected.get().getName()).isEqualTo("advanced-model");
+        assertThat(selected).isEmpty();
     }
 }

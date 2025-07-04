@@ -1,28 +1,32 @@
+/*
+ * Copyright 2025 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.pivotal.cfenv.spring.boot;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
 
 /**
- * Selects appropriate GenAI models based on required capabilities.
+ * Selects appropriate GenAI models based on required capability.
+ * Always selects the first matching model from the provided list.
  *
  * @author Corby Page
  */
 public class GenAIModelSelector {
 
-    public enum SelectionStrategy {
-        FIRST,          // Select the first matching model
-        LAST            // Select the last matching model
-    }
-
-    private final SelectionStrategy strategy;
-
     public GenAIModelSelector() {
-        this(SelectionStrategy.FIRST);
-    }
-
-    public GenAIModelSelector(SelectionStrategy strategy) {
-        this.strategy = strategy;
     }
 
     public Optional<GenAIModelInfo> selectModel(List<GenAIModelInfo> models,
@@ -31,47 +35,8 @@ public class GenAIModelSelector {
             return Optional.empty();
         }
 
-        List<GenAIModelInfo> matchingModels = models.stream()
+        return models.stream()
                 .filter(model -> model.hasCapability(requiredCapability))
-                .collect(Collectors.toList());
-
-        if (matchingModels.isEmpty()) {
-            return Optional.empty();
-        }
-
-        GenAIModelInfo selected = applySelectionStrategy(matchingModels);
-
-        return Optional.of(selected);
-    }
-
-    public Optional<GenAIModelInfo> selectModelWithAllCapabilities(List<GenAIModelInfo> models,
-                                                                   GenAIModelInfo.Capability... requiredCapabilities) {
-        if (models == null || models.isEmpty() || requiredCapabilities.length == 0) {
-            return Optional.empty();
-        }
-
-        List<GenAIModelInfo.Capability> capabilityList = Arrays.asList(requiredCapabilities);
-
-        List<GenAIModelInfo> matchingModels = models.stream()
-                .filter(model -> capabilityList.stream().allMatch(model::hasCapability))
-                .collect(Collectors.toList());
-
-        if (matchingModels.isEmpty()) {
-            return Optional.empty();
-        }
-
-        GenAIModelInfo selected = applySelectionStrategy(matchingModels);
-
-        return Optional.of(selected);
-    }
-
-    private GenAIModelInfo applySelectionStrategy(List<GenAIModelInfo> matchingModels) {
-        switch (strategy) {
-            case LAST:
-                return matchingModels.get(matchingModels.size() - 1);
-            case FIRST:
-            default:
-                return matchingModels.get(0);
-        }
+                .findFirst();
     }
 }

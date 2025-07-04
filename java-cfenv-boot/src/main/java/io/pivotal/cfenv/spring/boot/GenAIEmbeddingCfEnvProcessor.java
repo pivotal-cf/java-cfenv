@@ -36,16 +36,15 @@ public class GenAIEmbeddingCfEnvProcessor implements CfEnvProcessor {
     private static final String OPENAI_PATH_SUFFIX = "/openai";
 
     private final GenAIModelDiscoveryService discoveryService;
-    private final GenAIModelSelector modelSelector;
+    private final GenAIModelSelector modelSelector = new GenAIModelSelector();
 
     public GenAIEmbeddingCfEnvProcessor() {
-        this(new GenAIModelDiscoveryService(), new GenAIModelSelector());
+        this(new GenAIModelDiscoveryService());
     }
 
     // Constructor for testing
-    GenAIEmbeddingCfEnvProcessor(GenAIModelDiscoveryService discoveryService, GenAIModelSelector modelSelector) {
+    GenAIEmbeddingCfEnvProcessor(GenAIModelDiscoveryService discoveryService) {
         this.discoveryService = discoveryService;
-        this.modelSelector = modelSelector;
     }
 
     @Override
