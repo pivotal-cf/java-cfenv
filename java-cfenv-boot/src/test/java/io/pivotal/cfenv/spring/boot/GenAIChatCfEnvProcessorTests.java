@@ -15,14 +15,14 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import org.junit.Test;
-import mockit.Mock;
-import mockit.MockUp;
-
-import io.pivotal.cfenv.test.AbstractCfEnvTests;
-
 import java.util.Arrays;
 import java.util.List;
+
+import mockit.Mock;
+import mockit.MockUp;
+import org.junit.Test;
+
+import io.pivotal.cfenv.test.AbstractCfEnvTests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
