@@ -33,112 +33,77 @@ import java.util.Optional;
  **/
 public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
 
-	private static final String PROPERTY_PREFIX = "spring.ai.openai.chat";
-	private static final String OPENAI_PATH_SUFFIX = "/openai";
+    private static final String PROPERTY_PREFIX = "spring.ai.openai.chat";
+    private static final String OPENAI_PATH_SUFFIX = "/openai";
 
-	private final GenAIModelDiscoveryService discoveryService;
-	private final GenAIModelSelector modelSelector;
+    private final GenAIModelDiscoveryService discoveryService;
+    private final GenAIModelSelector modelSelector;
 
-	public GenAIChatCfEnvProcessor() {
-		this(new GenAIModelDiscoveryService(), GenAIModelSelector.forChat());
-	}
+    public GenAIChatCfEnvProcessor() {
+        this(new GenAIModelDiscoveryService(), GenAIModelSelector.forChat());
+    }
 
-	// Constructor for testing
-	GenAIChatCfEnvProcessor(GenAIModelDiscoveryService discoveryService, GenAIModelSelector modelSelector) {
-		this.discoveryService = discoveryService;
-		this.modelSelector = modelSelector;
-	}
+    // Constructor for testing
+    GenAIChatCfEnvProcessor(GenAIModelDiscoveryService discoveryService, GenAIModelSelector modelSelector) {
+        this.discoveryService = discoveryService;
+        this.modelSelector = modelSelector;
+    }
 
-	@Override
-	public boolean accept(CfService service) {
-		return service.existsByTagIgnoreCase("genai") || service.existsByLabelStartsWith("genai");
-	}
+    @Override
+    public boolean accept(CfService service) {
+        return service.existsByTagIgnoreCase("genai") || service.existsByLabelStartsWith("genai");
+    }
 
-	@Override
-	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-		try {
-			Map<String, Object> credentialsMap = cfCredentials.getMap();
+    @Override
+    public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
+        Map<String, Object> credentialsMap = cfCredentials.getMap();
 
-			if (GenAICredentialFormatDetector.isMultiModelFormat(credentialsMap)) {
-				processMultiModelFormat(credentialsMap, properties, "genai-chat");
-			} else {
-				processLegacyFormat(credentialsMap, properties);
-			}
+        if (GenAICredentialFormatDetector.isMultiModelFormat(credentialsMap)) {
+            processMultiModelFormat(credentialsMap, properties);
+        } else {
+            processLegacyFormat(credentialsMap, properties);
+        }
+    }
 
-		} catch (Exception e) {
-			// Don't add properties on error, but don't throw either
-		}
-	}
+    @Override
+    public CfEnvProcessorProperties getProperties() {
+        return CfEnvProcessorProperties.builder()
+                .propertyPrefixes("spring.ai.openai.chat")
+                .serviceName("GenAI")
+                .build();
+    }
 
-	@Override
-	public CfEnvProcessorProperties getProperties() {
-		return CfEnvProcessorProperties.builder()
-				.propertyPrefixes("spring.ai.openai.chat")
-				.serviceName("GenAI")
-				.build();
-	}
+    private void processMultiModelFormat(Map<String, Object> credentialsMap,
+                                         Map<String, Object> properties) {
+        String apiBase = GenAICredentialFormatDetector.extractApiBase(credentialsMap);
+        String apiKey = GenAICredentialFormatDetector.extractApiKey(credentialsMap);
+        String configUrl = GenAICredentialFormatDetector.extractConfigUrl(credentialsMap);
 
-	private void processMultiModelFormat(Map<String, Object> credentialsMap,
-										 Map<String, Object> properties,
-										 String serviceName) {
-		try {
-			// Extract endpoint information
-			String apiBase = GenAICredentialFormatDetector.extractApiBase(credentialsMap);
-			String apiKey = GenAICredentialFormatDetector.extractApiKey(credentialsMap);
-			String configUrl = GenAICredentialFormatDetector.extractConfigUrl(credentialsMap);
+        List<GenAIModelInfo> models = discoveryService.discoverModels(configUrl, apiKey);
+        if (models.isEmpty()) {
+            return;
+        }
 
-			// Discover available models
-			List<GenAIModelInfo> models = discoveryService.discoverModels(configUrl, apiKey);
+        Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, GenAIModelInfo.Capability.CHAT);
+        if (selectedModel.isPresent()) {
+            String modelName = selectedModel.get().getName();
 
-			if (models.isEmpty()) {
-				// Fall back to basic configuration without model selection
-				configureBasicProperties(properties, apiBase, apiKey);
-				return;
-			}
+            properties.put(PROPERTY_PREFIX + ".base-url", apiBase + OPENAI_PATH_SUFFIX);
+            properties.put(PROPERTY_PREFIX + ".api-key", apiKey);
+            properties.put(PROPERTY_PREFIX + ".options.model", modelName);
+        }
+    }
 
-			// Select appropriate chat model
-			Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, GenAIModelInfo.Capability.CHAT);
+    private void processLegacyFormat(Map<String, Object> credentialsMap, Map<String, Object> properties) {
+        // Legacy format processing - maintain backward compatibility
+        List<String> modelCapabilities = (List<String>) credentialsMap.get("model_capabilities");
+        if (modelCapabilities == null || !modelCapabilities.contains("chat")) {
+            return;
+        }
 
-			if (selectedModel.isPresent()) {
-				String modelName = selectedModel.get().getName();
+        properties.put("spring.ai.openai.chat.base-url", credentialsMap.get("api_base"));
+        properties.put("spring.ai.openai.chat.api-key", credentialsMap.get("api_key"));
+        properties.put("spring.ai.openai.chat.options.model", credentialsMap.get("model_name"));
 
-				// Configure Spring AI OpenAI properties
-				properties.put(PROPERTY_PREFIX + ".base-url", apiBase + OPENAI_PATH_SUFFIX);
-				properties.put(PROPERTY_PREFIX + ".api-key", apiKey);
-				properties.put(PROPERTY_PREFIX + ".options.model", modelName);
-
-			} else {
-				// Configure without model - let Spring AI use its default
-				configureBasicProperties(properties, apiBase, apiKey);
-			}
-
-		} catch (Exception e) {
-		}
-	}
-
-	private void processLegacyFormat(Map<String, Object> credentialsMap, Map<String, Object> properties) {
-		// Legacy format processing - maintain backward compatibility
-		// Expected structure varies, but typically includes api_key and api_base
-
-		String apiKey = (String) credentialsMap.get("api_key");
-		String apiBase = (String) credentialsMap.get("api_base");
-
-		// Check for model_name as per documentation
-		String model = (String) credentialsMap.get("model_name");
-
-		if (apiKey != null && apiBase != null) {
-			properties.put(PROPERTY_PREFIX + ".base-url", apiBase);
-			properties.put(PROPERTY_PREFIX + ".api-key", apiKey);
-
-			if (model != null) {
-				properties.put(PROPERTY_PREFIX + ".options.model", model);
-			}
-		}
-	}
-
-	private void configureBasicProperties(Map<String, Object> properties, String baseUrl, String apiKey) {
-		properties.put(PROPERTY_PREFIX + ".base-url", baseUrl);
-		properties.put(PROPERTY_PREFIX + ".api-key", apiKey);
-		// Let Spring AI use its default model
-	}
+    }
 }

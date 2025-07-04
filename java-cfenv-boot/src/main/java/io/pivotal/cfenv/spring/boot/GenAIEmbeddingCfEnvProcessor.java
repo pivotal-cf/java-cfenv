@@ -56,17 +56,12 @@ public class GenAIEmbeddingCfEnvProcessor implements CfEnvProcessor {
 
     @Override
     public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-        try {
-            Map<String, Object> credentialsMap = cfCredentials.getMap();
+        Map<String, Object> credentialsMap = cfCredentials.getMap();
 
-            if (GenAICredentialFormatDetector.isMultiModelFormat(credentialsMap)) {
-                processMultiModelFormat(credentialsMap, properties, "genai-embedding");
-            } else {
-                processLegacyFormat(credentialsMap, properties);
-            }
-
-        } catch (Exception e) {
-            // Don't add properties on error, but don't throw either
+        if (GenAICredentialFormatDetector.isMultiModelFormat(credentialsMap)) {
+            processMultiModelFormat(credentialsMap, properties);
+        } else {
+            processLegacyFormat(credentialsMap, properties);
         }
     }
 
@@ -79,39 +74,23 @@ public class GenAIEmbeddingCfEnvProcessor implements CfEnvProcessor {
     }
 
     private void processMultiModelFormat(Map<String, Object> credentialsMap,
-                                         Map<String, Object> properties,
-                                         String serviceName) {
-        try {
-            // Extract endpoint information
-            String apiBase = GenAICredentialFormatDetector.extractApiBase(credentialsMap);
-            String apiKey = GenAICredentialFormatDetector.extractApiKey(credentialsMap);
-            String configUrl = GenAICredentialFormatDetector.extractConfigUrl(credentialsMap);
+                                         Map<String, Object> properties) {
+        String apiBase = GenAICredentialFormatDetector.extractApiBase(credentialsMap);
+        String apiKey = GenAICredentialFormatDetector.extractApiKey(credentialsMap);
+        String configUrl = GenAICredentialFormatDetector.extractConfigUrl(credentialsMap);
 
-            // Discover available models
-            List<GenAIModelInfo> models = discoveryService.discoverModels(configUrl, apiKey);
+        List<GenAIModelInfo> models = discoveryService.discoverModels(configUrl, apiKey);
+        if (models.isEmpty()) {
+            return;
+        }
 
-            if (models.isEmpty()) {
-                // Fall back to basic configuration without model selection
-                configureBasicProperties(properties, apiBase, apiKey);
-                return;
-            }
+        Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, GenAIModelInfo.Capability.EMBEDDING);
+        if (selectedModel.isPresent()) {
+            String modelName = selectedModel.get().getName();
 
-            // Select appropriate embedding model
-            Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, GenAIModelInfo.Capability.EMBEDDING);
-
-            if (selectedModel.isPresent()) {
-                String modelName = selectedModel.get().getName();
-
-                // Configure Spring AI OpenAI embedding properties
-                properties.put(PROPERTY_PREFIX + ".base-url", apiBase + OPENAI_PATH_SUFFIX);
-                properties.put(PROPERTY_PREFIX + ".api-key", apiKey);
-                properties.put(PROPERTY_PREFIX + ".options.model", modelName);
-            } else {
-                // Configure without model - let Spring AI use its default
-                configureBasicProperties(properties, apiBase, apiKey);
-            }
-
-        } catch (Exception e) {
+            properties.put(PROPERTY_PREFIX + ".base-url", apiBase + OPENAI_PATH_SUFFIX);
+            properties.put(PROPERTY_PREFIX + ".api-key", apiKey);
+            properties.put(PROPERTY_PREFIX + ".options.model", modelName);
         }
     }
 
@@ -125,11 +104,5 @@ public class GenAIEmbeddingCfEnvProcessor implements CfEnvProcessor {
         properties.put("spring.ai.openai.embedding.base-url", credentialsMap.get("api_base"));
         properties.put("spring.ai.openai.embedding.api-key", credentialsMap.get("api_key"));
         properties.put("spring.ai.openai.embedding.options.model", credentialsMap.get("model_name"));
-    }
-
-    private void configureBasicProperties(Map<String, Object> properties, String baseUrl, String apiKey) {
-        properties.put(PROPERTY_PREFIX + ".base-url", baseUrl);
-        properties.put(PROPERTY_PREFIX + ".api-key", apiKey);
-        // Let Spring AI use its default embedding model
     }
 }
