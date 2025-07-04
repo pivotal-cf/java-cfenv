@@ -58,7 +58,7 @@ public class GenAIEmbeddingCfEnvProcessor implements CfEnvProcessor {
     public CfEnvProcessorProperties getProperties() {
         return CfEnvProcessorProperties.builder()
                 .propertyPrefixes("spring.ai.openai.embedding")
-                .serviceName("GenAI")
+                .serviceName("GenAI on Tanzu Platform (embedding)")
                 .build();
     }
 

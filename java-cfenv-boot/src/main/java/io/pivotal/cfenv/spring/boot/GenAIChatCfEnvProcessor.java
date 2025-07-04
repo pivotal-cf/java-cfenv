@@ -58,7 +58,7 @@ public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
     public CfEnvProcessorProperties getProperties() {
         return CfEnvProcessorProperties.builder()
                 .propertyPrefixes("spring.ai.openai.chat")
-                .serviceName("GenAI")
+                .serviceName("GenAI on Tanzu Platform (chat)")
                 .build();
     }
 
