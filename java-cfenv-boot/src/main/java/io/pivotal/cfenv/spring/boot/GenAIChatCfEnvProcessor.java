@@ -86,6 +86,7 @@ public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
         if (selectedModel.isPresent()) {
             String modelName = selectedModel.get().getName();
 
+            properties.put("spring.ai.openai.api-key", "redundant");
             properties.put("spring.ai.openai.chat.base-url", apiBase + OPENAI_PATH_SUFFIX);
             properties.put("spring.ai.openai.chat.api-key", apiKey);
             properties.put("spring.ai.openai.chat.options.model", modelName);
@@ -99,9 +100,9 @@ public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
             return;
         }
 
+        properties.put("spring.ai.openai.api-key", "redundant");
         properties.put("spring.ai.openai.chat.base-url", credentialsMap.get("api_base"));
         properties.put("spring.ai.openai.chat.api-key", credentialsMap.get("api_key"));
         properties.put("spring.ai.openai.chat.options.model", credentialsMap.get("model_name"));
-
     }
 }

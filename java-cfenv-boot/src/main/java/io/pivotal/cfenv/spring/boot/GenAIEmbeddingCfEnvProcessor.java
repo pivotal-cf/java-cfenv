@@ -86,6 +86,7 @@ public class GenAIEmbeddingCfEnvProcessor implements CfEnvProcessor {
         if (selectedModel.isPresent()) {
             String modelName = selectedModel.get().getName();
 
+            properties.put("spring.ai.openai.api-key", "redundant");
             properties.put("spring.ai.openai.embedding.base-url", apiBase + OPENAI_PATH_SUFFIX);
             properties.put("spring.ai.openai.embedding.api-key", apiKey);
             properties.put("spring.ai.openai.embedding.options.model", modelName);
@@ -99,6 +100,7 @@ public class GenAIEmbeddingCfEnvProcessor implements CfEnvProcessor {
             return;
         }
 
+        properties.put("spring.ai.openai.api-key", "redundant");
         properties.put("spring.ai.openai.embedding.base-url", credentialsMap.get("api_base"));
         properties.put("spring.ai.openai.embedding.api-key", credentialsMap.get("api_key"));
         properties.put("spring.ai.openai.embedding.options.model", credentialsMap.get("model_name"));
