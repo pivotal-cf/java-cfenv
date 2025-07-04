@@ -33,14 +33,13 @@ import java.util.Optional;
  **/
 public class GenAIEmbeddingCfEnvProcessor implements CfEnvProcessor {
 
-    private static final String PROPERTY_PREFIX = "spring.ai.openai.embedding";
     private static final String OPENAI_PATH_SUFFIX = "/openai";
 
     private final GenAIModelDiscoveryService discoveryService;
     private final GenAIModelSelector modelSelector;
 
     public GenAIEmbeddingCfEnvProcessor() {
-        this(new GenAIModelDiscoveryService(), GenAIModelSelector.forEmbedding());
+        this(new GenAIModelDiscoveryService(), new GenAIModelSelector());
     }
 
     // Constructor for testing
@@ -88,9 +87,9 @@ public class GenAIEmbeddingCfEnvProcessor implements CfEnvProcessor {
         if (selectedModel.isPresent()) {
             String modelName = selectedModel.get().getName();
 
-            properties.put(PROPERTY_PREFIX + ".base-url", apiBase + OPENAI_PATH_SUFFIX);
-            properties.put(PROPERTY_PREFIX + ".api-key", apiKey);
-            properties.put(PROPERTY_PREFIX + ".options.model", modelName);
+            properties.put("spring.ai.openai.embedding.base-url", apiBase + OPENAI_PATH_SUFFIX);
+            properties.put("spring.ai.openai.embedding.api-key", apiKey);
+            properties.put("spring.ai.openai.embedding.options.model", modelName);
         }
     }
 

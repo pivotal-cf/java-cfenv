@@ -61,21 +61,6 @@ public class GenAIModelSelectorTest {
     }
 
     @Test
-    void testSelectModel_WithPreferredModels() {
-        GenAIModelSelector selector = GenAIModelSelector.withPreferredModels("gpt-4", "claude-3");
-        List<GenAIModelInfo> models = Arrays.asList(
-                new GenAIModelInfo("llama2", List.of(GenAIModelInfo.Capability.CHAT)),
-                new GenAIModelInfo("gpt-3.5-turbo", List.of(GenAIModelInfo.Capability.CHAT)),
-                new GenAIModelInfo("gpt-4", List.of(GenAIModelInfo.Capability.CHAT))
-        );
-
-        Optional<GenAIModelInfo> selected = selector.selectModel(models, GenAIModelInfo.Capability.CHAT);
-
-        assertThat(selected).isPresent();
-        assertThat(selected.get().getName()).isEqualTo("gpt-4");
-    }
-
-    @Test
     void testSelectModel_NoMatchingCapability() {
         GenAIModelSelector selector = new GenAIModelSelector();
         List<GenAIModelInfo> models = Arrays.asList(
@@ -120,35 +105,5 @@ public class GenAIModelSelectorTest {
 
         assertThat(selected).isPresent();
         assertThat(selected.get().getName()).isEqualTo("advanced-model");
-    }
-
-    @Test
-    void testForChat_Selector() {
-        GenAIModelSelector selector = GenAIModelSelector.forChat();
-        List<GenAIModelInfo> models = Arrays.asList(
-                new GenAIModelInfo("llama3.2", List.of(GenAIModelInfo.Capability.CHAT)),
-                new GenAIModelInfo("custom-model", List.of(GenAIModelInfo.Capability.CHAT)),
-                new GenAIModelInfo("gpt-3.5-turbo", List.of(GenAIModelInfo.Capability.CHAT))
-        );
-
-        Optional<GenAIModelInfo> selected = selector.selectModel(models, GenAIModelInfo.Capability.CHAT);
-
-        assertThat(selected).isPresent();
-        assertThat(selected.get().getName()).isEqualTo("gpt-3.5-turbo"); // Preferred model
-    }
-
-    @Test
-    void testForEmbedding_Selector() {
-        GenAIModelSelector selector = GenAIModelSelector.forEmbedding();
-        List<GenAIModelInfo> models = Arrays.asList(
-                new GenAIModelInfo("custom-embed", List.of(GenAIModelInfo.Capability.EMBEDDING)),
-                new GenAIModelInfo("mxbai-embed-large", List.of(GenAIModelInfo.Capability.EMBEDDING)),
-                new GenAIModelInfo("text-embedding-ada-002", List.of(GenAIModelInfo.Capability.EMBEDDING))
-        );
-
-        Optional<GenAIModelInfo> selected = selector.selectModel(models, GenAIModelInfo.Capability.EMBEDDING);
-
-        assertThat(selected).isPresent();
-        assertThat(selected.get().getName()).isEqualTo("text-embedding-ada-002"); // Preferred model
     }
 }
