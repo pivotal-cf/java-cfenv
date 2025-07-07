@@ -40,7 +40,24 @@ public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
 
     @Override
     public boolean accept(CfService service) {
-        return service.existsByTagIgnoreCase("genai") || service.existsByLabelStartsWith("genai");
+        boolean isGenAIService = service.existsByTagIgnoreCase("genai") || service.existsByLabelStartsWith("genai");
+        return isGenAIService && hasChatModel(service.getCredentials());
+    }
+
+    private boolean hasChatModel(CfCredentials cfCredentials) {
+        Map<String, Object> credentialsMap = cfCredentials.getMap();
+
+        if (GenAICredentialFormatDetector.isMultiModelFormat(credentialsMap)) {
+            String apiKey = GenAICredentialFormatDetector.extractApiKey(credentialsMap);
+            String configUrl = GenAICredentialFormatDetector.extractConfigUrl(credentialsMap);
+
+            List<GenAIModelInfo> models = discoveryService.discoverModels(configUrl, apiKey);
+            Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, GenAIModelInfo.Capability.CHAT);
+            return selectedModel.isPresent();
+        } else {
+            List<String> modelCapabilities = (List<String>) credentialsMap.get("model_capabilities");
+            return (modelCapabilities != null && modelCapabilities.contains("chat"));
+        }
     }
 
     @Override
@@ -69,10 +86,6 @@ public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
         String configUrl = GenAICredentialFormatDetector.extractConfigUrl(credentialsMap);
 
         List<GenAIModelInfo> models = discoveryService.discoverModels(configUrl, apiKey);
-        if (models.isEmpty()) {
-            return;
-        }
-
         Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, GenAIModelInfo.Capability.CHAT);
         if (selectedModel.isPresent()) {
             String modelName = selectedModel.get().getName();
@@ -86,11 +99,6 @@ public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
 
     private void processLegacyFormat(Map<String, Object> credentialsMap, Map<String, Object> properties) {
         // Legacy format processing - maintain backward compatibility
-        List<String> modelCapabilities = (List<String>) credentialsMap.get("model_capabilities");
-        if (modelCapabilities == null || !modelCapabilities.contains("chat")) {
-            return;
-        }
-
         properties.put("spring.ai.openai.api-key", "redundant");
         properties.put("spring.ai.openai.chat.base-url", credentialsMap.get("api_base"));
         properties.put("spring.ai.openai.chat.api-key", credentialsMap.get("api_key"));
