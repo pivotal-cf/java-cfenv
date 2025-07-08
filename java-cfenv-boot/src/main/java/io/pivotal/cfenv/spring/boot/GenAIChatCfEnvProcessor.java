@@ -52,7 +52,7 @@ public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
             String configUrl = GenAICredentialFormatDetector.extractConfigUrl(credentialsMap);
 
             List<GenAIModelInfo> models = discoveryService.discoverModels(configUrl, apiKey);
-            Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, GenAIModelInfo.Capability.CHAT);
+            Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, Capability.CHAT);
             return selectedModel.isPresent();
         } else {
             List<String> modelCapabilities = (List<String>) credentialsMap.get("model_capabilities");
@@ -86,7 +86,7 @@ public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
         String configUrl = GenAICredentialFormatDetector.extractConfigUrl(credentialsMap);
 
         List<GenAIModelInfo> models = discoveryService.discoverModels(configUrl, apiKey);
-        Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, GenAIModelInfo.Capability.CHAT);
+        Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, Capability.CHAT);
         if (selectedModel.isPresent()) {
             String modelName = selectedModel.get().getName();
 

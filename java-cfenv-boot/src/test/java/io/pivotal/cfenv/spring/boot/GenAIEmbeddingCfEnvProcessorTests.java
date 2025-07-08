@@ -67,9 +67,9 @@ public class GenAIEmbeddingCfEnvProcessorTests extends AbstractCfEnvTests {
 			@Mock
 			public List<GenAIModelInfo> discoverModels(String configUrl, String apiKey) {
 				return Arrays.asList(
-						new GenAIModelInfo("gpt-4", Arrays.asList(GenAIModelInfo.Capability.CHAT, GenAIModelInfo.Capability.TOOLS)),
-						new GenAIModelInfo("text-embedding-ada-002", List.of(GenAIModelInfo.Capability.EMBEDDING)),
-						new GenAIModelInfo("claude-3", List.of(GenAIModelInfo.Capability.CHAT))
+						new GenAIModelInfo("gpt-4", Arrays.asList(Capability.CHAT, Capability.TOOLS)),
+						new GenAIModelInfo("text-embedding-ada-002", List.of(Capability.EMBEDDING)),
+						new GenAIModelInfo("claude-3", List.of(Capability.CHAT))
 				);
 			}
 		};

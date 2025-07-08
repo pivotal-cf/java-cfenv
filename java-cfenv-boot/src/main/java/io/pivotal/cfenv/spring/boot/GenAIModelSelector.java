@@ -30,7 +30,7 @@ public class GenAIModelSelector {
     }
 
     public Optional<GenAIModelInfo> selectModel(List<GenAIModelInfo> models,
-                                                GenAIModelInfo.Capability requiredCapability) {
+                                                Capability requiredCapability) {
         if (models == null || models.isEmpty()) {
             return Optional.empty();
         }

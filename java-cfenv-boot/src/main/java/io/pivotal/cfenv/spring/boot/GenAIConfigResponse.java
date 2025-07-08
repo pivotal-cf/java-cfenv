@@ -58,16 +58,9 @@ public class GenAIConfigResponse {
         }
 
         public GenAIModelInfo toModelInfo() {
-            List<GenAIModelInfo.Capability> modelCapabilities = getCapabilities().stream()
-                    .map(cap -> {
-                        try {
-                            return GenAIModelInfo.Capability.valueOf(cap.toUpperCase());
-                        } catch (IllegalArgumentException e) {
-                            // Log warning about unknown capability
-                            return null;
-                        }
-                    })
+            List<Capability> modelCapabilities = getCapabilities().stream()
                     .filter(Objects::nonNull)
+                    .map(Capability::fromString)
                     .collect(Collectors.toList());
 
             return new GenAIModelInfo(name, modelCapabilities);

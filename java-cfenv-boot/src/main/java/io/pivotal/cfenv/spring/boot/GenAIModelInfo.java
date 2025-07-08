@@ -25,14 +25,6 @@ import java.util.Objects;
  * @author Corby Page
  */
 public class GenAIModelInfo {
-
-    public enum Capability {
-        CHAT,
-        EMBEDDING,
-        TOOLS,
-        VISION
-    }
-
     private final String name;
     private final List<Capability> capabilities;
 
