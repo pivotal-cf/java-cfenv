@@ -15,8 +15,9 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
@@ -28,34 +29,79 @@ import io.pivotal.cfenv.core.CfService;
  *
  * @author Stuart Charlton
  * @author Ed King
+ * @author Corby Page
  **/
 public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
 
-	@Override
-	public boolean accept(CfService service) {
-		boolean isGenAIService = service.existsByTagIgnoreCase("genai") || service.existsByLabelStartsWith("genai");
-		if (isGenAIService) {
-			ArrayList<String> modelCapabilities = (ArrayList<String>) service.getCredentials().getMap().get("model_capabilities");
-			return modelCapabilities.contains("chat");
-		}
+    private static final String OPENAI_PATH_SUFFIX = "/openai";
 
-		return false;
-	}
+    private final GenAIModelDiscoveryService discoveryService= new GenAIModelDiscoveryService();
+    private final GenAIModelSelector modelSelector = new GenAIModelSelector();
 
-	@Override
-	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-		properties.put("spring.ai.openai.api-key", "redundant");
+    @Override
+    public boolean accept(CfService service) {
+        boolean isGenAIService = service.existsByTagIgnoreCase("genai") || service.existsByLabelStartsWith("genai");
+        return isGenAIService && hasChatModel(service.getCredentials());
+    }
 
-		properties.put("spring.ai.openai.chat.base-url", cfCredentials.getString("api_base"));
-		properties.put("spring.ai.openai.chat.api-key", cfCredentials.getString("api_key"));
-		properties.put("spring.ai.openai.chat.options.model", cfCredentials.getString("model_name"));
-	}
+    private boolean hasChatModel(CfCredentials cfCredentials) {
+        Map<String, Object> credentialsMap = cfCredentials.getMap();
 
-	@Override
-	public CfEnvProcessorProperties getProperties() {
-		return CfEnvProcessorProperties.builder()
-				.propertyPrefixes("spring.ai.openai.chat")
-				.serviceName("GenAI on Tanzu Platform (chat)")
-				.build();
-	}
+        if (GenAICredentialFormatDetector.isMultiModelFormat(credentialsMap)) {
+            String apiKey = GenAICredentialFormatDetector.extractApiKey(credentialsMap);
+            String configUrl = GenAICredentialFormatDetector.extractConfigUrl(credentialsMap);
+
+            List<GenAIModelInfo> models = discoveryService.discoverModels(configUrl, apiKey);
+            Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, Capability.CHAT);
+            return selectedModel.isPresent();
+        } else {
+            List<String> modelCapabilities = (List<String>) credentialsMap.get("model_capabilities");
+            return (modelCapabilities != null && modelCapabilities.contains("chat"));
+        }
+    }
+
+    @Override
+    public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
+        Map<String, Object> credentialsMap = cfCredentials.getMap();
+
+        if (GenAICredentialFormatDetector.isMultiModelFormat(credentialsMap)) {
+            processMultiModelFormat(credentialsMap, properties);
+        } else {
+            processLegacyFormat(credentialsMap, properties);
+        }
+    }
+
+    @Override
+    public CfEnvProcessorProperties getProperties() {
+        return CfEnvProcessorProperties.builder()
+                .propertyPrefixes("spring.ai.openai.chat")
+                .serviceName("GenAI on Tanzu Platform (chat)")
+                .build();
+    }
+
+    private void processMultiModelFormat(Map<String, Object> credentialsMap,
+                                         Map<String, Object> properties) {
+        String apiBase = GenAICredentialFormatDetector.extractApiBase(credentialsMap);
+        String apiKey = GenAICredentialFormatDetector.extractApiKey(credentialsMap);
+        String configUrl = GenAICredentialFormatDetector.extractConfigUrl(credentialsMap);
+
+        List<GenAIModelInfo> models = discoveryService.discoverModels(configUrl, apiKey);
+        Optional<GenAIModelInfo> selectedModel = modelSelector.selectModel(models, Capability.CHAT);
+        if (selectedModel.isPresent()) {
+            String modelName = selectedModel.get().getName();
+
+            properties.put("spring.ai.openai.api-key", "redundant");
+            properties.put("spring.ai.openai.chat.base-url", apiBase + OPENAI_PATH_SUFFIX);
+            properties.put("spring.ai.openai.chat.api-key", apiKey);
+            properties.put("spring.ai.openai.chat.options.model", modelName);
+        }
+    }
+
+    private void processLegacyFormat(Map<String, Object> credentialsMap, Map<String, Object> properties) {
+        // Legacy format processing - maintain backward compatibility
+        properties.put("spring.ai.openai.api-key", "redundant");
+        properties.put("spring.ai.openai.chat.base-url", credentialsMap.get("api_base"));
+        properties.put("spring.ai.openai.chat.api-key", credentialsMap.get("api_key"));
+        properties.put("spring.ai.openai.chat.options.model", credentialsMap.get("model_name"));
+    }
 }

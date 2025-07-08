@@ -10,6 +10,8 @@ dependencies {
     api project(':java-cfenv-jdbc')
     api 'org.springframework.boot:spring-boot'
 
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
     testImplementation testFixtures(project(':java-cfenv'))
     testImplementation project(':java-cfenv-test-support')
     testImplementation "org.jmockit:jmockit:${jmockitVersion}"
