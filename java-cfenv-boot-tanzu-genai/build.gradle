@@ -1,0 +1,25 @@
+plugins {
+    id 'io.pivotal.cfenv.java-conventions'
+}
+
+description = 'Java CF Env Tanzu GenAI'
+
+dependencies {
+    api project(':java-cfenv-boot')
+    api "org.springframework.ai:spring-ai-openai:${springAiVersion}"
+    implementation("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
+
+    testImplementation project(':java-cfenv-test-support')
+    testImplementation "junit:junit"
+    testImplementation "org.jmockit:jmockit:${jmockitVersion}"
+
+    testRuntimeOnly('org.junit.vintage:junit-vintage-engine') {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes 'Automatic-Module-Name': 'io.pivotal.cfenv.boot.genai'
+    }
+}
