@@ -28,6 +28,7 @@ import io.pivotal.cfenv.core.CfService;
  *
  * @author Stuart Charlton
  * @author Ed King
+ * @author Gareth Evans
  **/
 public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
 
@@ -36,7 +37,7 @@ public class GenAIChatCfEnvProcessor implements CfEnvProcessor {
 		boolean isGenAIService = service.existsByTagIgnoreCase("genai") || service.existsByLabelStartsWith("genai");
 		if (isGenAIService) {
 			ArrayList<String> modelCapabilities = (ArrayList<String>) service.getCredentials().getMap().get("model_capabilities");
-			return modelCapabilities.contains("chat");
+			return (modelCapabilities != null && modelCapabilities.contains("chat"));
 		}
 
 		return false;
