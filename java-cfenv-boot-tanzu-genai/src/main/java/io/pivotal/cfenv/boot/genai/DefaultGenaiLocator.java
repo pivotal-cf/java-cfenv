@@ -231,6 +231,9 @@ public class DefaultGenaiLocator implements GenaiLocator {
 
   private List<ModelConnectivity> getAllModelConnectivityDetails() {
     ConfigEndpoint e = getEndpointConfig();
+    if (e.advertisedModels == null) {
+      return List.of();
+    }
     return e.advertisedModels
             .stream()
             .map( a ->
@@ -239,14 +242,24 @@ public class DefaultGenaiLocator implements GenaiLocator {
                     a.capabilities(),
                     a.labels(),
                     apiKey,
-                    apiBase + e.wireFormat().toLowerCase())
+                    merge(apiBase, e.wireFormat().toLowerCase()))
             )
             .toList();
   }
 
+  private String merge(String apiBase, String wireFormat) {
+    if (apiBase.endsWith("/")) {
+      return apiBase + wireFormat;
+    }
+    return apiBase + "/" + wireFormat;
+  }
+
   private List<McpConnectivity> getAllMcpConnectivityDetails() {
-    return getEndpointConfig()
-            .advertisedMcpServers
+    ConfigEndpoint e = getEndpointConfig();
+    if (e.advertisedMcpServers == null) {
+      return List.of();
+    }
+    return e.advertisedMcpServers
             .stream()
             .map(m -> new McpConnectivity(m.url()))
             .toList();
