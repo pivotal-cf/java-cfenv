@@ -15,6 +15,9 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import org.springframework.core.env.Environment;
@@ -84,6 +87,56 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 	}
 
 	@Test
+	public void testRedisBootPropertiesSentinelSetup() {
+		String payload = new RedisFileSentinelPayloadBuilder("test-redis-info-sentinel.json")
+				.withServiceName("redis-ha-1")
+				.withName("redis-db")
+				.withPassword("password")
+				.withRedisPort(port)
+				.withSentinelMaster("my-master")
+				.withSentinelPassword("sentinel-password")
+				.withSentinel("sent1", 26379)
+				.withSentinel("sent2", 26380)
+				.payload();
+
+		mockVcapServices(getServicesPayload(payload));
+
+		Environment environment = getEnvironment();
+
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".password")).isEqualTo("password");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".sentinel.master")).isEqualTo("my-master");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".sentinel.nodes")).isEqualTo("sent1:26379,sent2:26380");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".sentinel.username")).isEqualTo("");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".sentinel.password")).isEqualTo("sentinel-password");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".ssl.enabled")).isEqualTo("false");
+	}
+
+	@Test
+	public void testRedisBootPropertiesSentinelTlsSetup() {
+		String payload = new RedisFileSentinelPayloadBuilder("test-redis-info-sentinel-tls.json")
+				.withServiceName("redis-ha-1")
+				.withName("redis-db")
+				.withPassword("password")
+				.withRedisPort(port)
+				.withSentinelMaster("my-master")
+				.withSentinelPassword("sentinel-password")
+				.withSentinelTls("sent1", 26379, 26380)
+				.withSentinelTls("sent2", 26380, 26381)
+				.payload();
+
+		mockVcapServices(getServicesPayload(payload));
+
+		Environment environment = getEnvironment();
+
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".password")).isEqualTo("password");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".sentinel.master")).isEqualTo("my-master");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".sentinel.nodes")).isEqualTo("sent1:26380,sent2:26381");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".sentinel.username")).isEqualTo("");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".sentinel.password")).isEqualTo("sentinel-password");
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".ssl.enabled")).isEqualTo("true");
+	}
+
+	@Test
 	public void testGetProperties() {
 		assertThat(new RedisCfEnvProcessor().getProperties().getPropertyPrefixes()).isEqualTo(SPRING_DATA_REDIS);
 		assertThat(new RedisCfEnvProcessor().getProperties().getServiceName()).isEqualTo("Redis");
@@ -149,6 +202,84 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 					.replace("$tls_port", String.valueOf(tlsPort))
 					.replace("$name", name);
 		}
-
 	}
+
+	private class RedisFileSentinelPayloadBuilder {
+
+		private String payload;
+		private String serviceName;
+		private String name;
+		private Integer redisPort;
+		private String password;
+		private String sentinelPassword;
+		private String sentinelMaster;
+		private List<SentinelDefinition> sentinels;
+
+		RedisFileSentinelPayloadBuilder(String filename) {
+			this.payload = readTestDataFile(filename);
+			this.sentinels = new ArrayList<>();
+		}
+
+		RedisFileSentinelPayloadBuilder withServiceName(String serviceName) {
+			this.serviceName = serviceName;
+			return this;
+		}
+
+		RedisFileSentinelPayloadBuilder withName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		RedisFileSentinelPayloadBuilder withRedisPort(int redisPort) {
+			this.redisPort = redisPort;
+			return this;
+		}
+
+		RedisFileSentinelPayloadBuilder withPassword(String password) {
+			this.password = password;
+			return this;
+		}
+
+		RedisFileSentinelPayloadBuilder withSentinelPassword(String sentinelPassword) {
+			this.sentinelPassword = sentinelPassword;
+			return this;
+		}
+
+		RedisFileSentinelPayloadBuilder withSentinel(String host, int port) {
+			return withSentinelTls(host, port, -1);
+		}
+
+		RedisFileSentinelPayloadBuilder withSentinelTls(String host, int port, int tlsPort) {
+			this.sentinels.add(new SentinelDefinition(host, port, tlsPort));
+			return this;
+		}
+
+		RedisFileSentinelPayloadBuilder withSentinelMaster(String sentinelMaster) {
+			this.sentinelMaster = sentinelMaster;
+			return this;
+		}
+
+		String payload() {
+			var result = payload.replace("$serviceName", serviceName)
+					.replace("$redisPort", String.valueOf(redisPort))
+					.replace("$redisPassword", password)
+					.replace("$sentinelPassword", sentinelPassword)
+					.replace("$sentinelMaster", sentinelMaster)
+					.replace("$name", name);
+			for (int i = 0; i < this.sentinels.size(); i++) {
+				var sentinelDefinition = this.sentinels.get(i);
+
+				var hostKey = "$sentinel" + (i+1) + "-hostname";
+				var portKey = "$sentinel" + (i+1) + "-port";
+				var tlsPortKey = "$sentinel" + (i+1) + "-tlsPort";
+				result = result.replace(hostKey, sentinelDefinition.host);
+				result = result.replace(portKey, Integer.toString(sentinelDefinition.port));
+				result = result.replace(tlsPortKey, Integer.toString(sentinelDefinition.tlsPort));
+			}
+
+			return result;
+		}
+	}
+
+	record SentinelDefinition(String host, int port, int tlsPort) { }
 }

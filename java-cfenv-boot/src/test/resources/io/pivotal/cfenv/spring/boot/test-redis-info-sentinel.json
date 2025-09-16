@@ -1,0 +1,22 @@
+{
+  "name": "$serviceName",
+  "label": "rediscloud",
+  "plan": "ha",
+  "tags": [ "redis", "key-value" ],
+  "credentials": {
+    "master_name": "$sentinelMaster",
+    "password": "$redisPassword",
+    "port": "$redisPort",
+    "sentinel_password": "$sentinelPassword",
+    "sentinels": [
+      {
+        "host": "$sentinel1-hostname",
+        "port": "$sentinel1-port"
+      },
+      {
+        "host": "$sentinel2-hostname",
+        "port": "$sentinel2-port"
+      }
+    ]
+  }
+}
