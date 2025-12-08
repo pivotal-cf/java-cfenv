@@ -15,6 +15,8 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,15 +54,27 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 		String uri = cfCredentials.getUri(redisSchemes);
 
 		if (uri == null) {
-			properties.put(PREFIX + ".host", cfCredentials.getHost());
-			properties.put(PREFIX + ".password", cfCredentials.getPassword());
+			if (configureSentinelSetup(cfCredentials.getMap())) {
+				properties.put(PREFIX + ".password", cfCredentials.getPassword());
 
-			Optional<String> tlsPort = Optional.ofNullable(cfCredentials.getString("tls_port"));
-			if (tlsPort.isPresent()) {
-				properties.put(PREFIX + ".port", tlsPort.get());
-				properties.put(PREFIX + ".ssl.enabled", Boolean.TRUE);
-			} else {
-				properties.put(PREFIX + ".port", cfCredentials.getPort());
+				// Sentinel configuration
+				properties.put(PREFIX + ".sentinel.master", cfCredentials.getString("master_name"));
+				properties.put(PREFIX + ".sentinel.nodes", extractSentinelNodes(cfCredentials.getMap()));
+				properties.put(PREFIX + ".sentinel.username", "");
+				properties.put(PREFIX + ".sentinel.password", cfCredentials.getString("sentinel_password"));
+				properties.put(PREFIX + ".ssl.enabled", useSentinelTls(cfCredentials.getMap()));
+			}
+			else {
+				properties.put(PREFIX + ".host", cfCredentials.getHost());
+				properties.put(PREFIX + ".password", cfCredentials.getPassword());
+
+				Optional<String> tlsPort = Optional.ofNullable(cfCredentials.getString("tls_port"));
+				if (tlsPort.isPresent()) {
+					properties.put(PREFIX + ".port", tlsPort.get());
+					properties.put(PREFIX + ".ssl.enabled", Boolean.TRUE);
+				} else {
+					properties.put(PREFIX + ".port", cfCredentials.getPort());
+				}
 			}
 		} else {
 			UriInfo uriInfo = new UriInfo(uri);
@@ -81,4 +95,40 @@ public class RedisCfEnvProcessor implements CfEnvProcessor {
 				.build();
 	}
 
+	boolean configureSentinelSetup(Map<String, Object> credentialValues) {
+		return credentialValues.containsKey("sentinels");
+	}
+
+	boolean useSentinelTls(Map<String, Object> credentialValues) {
+		if (credentialValues.get("sentinels") instanceof List<?> sentinels) {
+			for (Object o : sentinels) {
+				Map<String, Object> sentinel = (Map<String, Object>) o;
+				if (sentinel.containsKey("tls_port")) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private String extractSentinelNodes(Map<String, Object> credentialValues) {
+		List<String> nodes = new ArrayList<>();
+		if (credentialValues.containsKey("sentinels")) {
+			if (credentialValues.get("sentinels") instanceof List<?> sentinels) {
+				for (Object o : sentinels) {
+					Map<String, Object> sentinel = (Map<String, Object>) o;
+					String port;
+					if (sentinel.containsKey("tls_port")) {
+						port = sentinel.get("tls_port").toString();
+					}
+					else {
+						port = sentinel.get("port").toString();
+					}
+
+					nodes.add(sentinel.get("host") + ":" + port);
+				}
+			}
+		}
+		return String.join(",", nodes);
+	}
 }
