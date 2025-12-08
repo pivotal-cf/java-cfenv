@@ -1,6 +1,6 @@
 
 [versions]
-springBoot = "3.4.3"
+springBoot = "3.5.8"
 springAi = "1.0.0"
 jmockit = "1.49"
 shadow = "8.3.6"
@@ -30,8 +30,6 @@ spring-boot-autoconfigure = { group = "org.springframework.boot", name = "spring
 spring-ai-openai = { group = "org.springframework.ai", name = "spring-ai-openai", version.ref = "springAi" }
 spring-boot-dependencies = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot" }
 spring-asciidoctor-backends = { group = "io.spring.asciidoctor.backends", name = "spring-asciidoctor-backends", version.ref = "springAsciidoctorBackends" }
-
-junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine" }
 
 
 [plugins]

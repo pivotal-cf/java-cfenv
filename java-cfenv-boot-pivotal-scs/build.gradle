@@ -10,9 +10,7 @@ dependencies {
     testImplementation libs.spring.boot.starter.test
     testImplementation libs.junit
 
-    testRuntimeOnly(libs.junit.vintage.engine) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.named('jar') {

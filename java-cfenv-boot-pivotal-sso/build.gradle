@@ -11,9 +11,7 @@ dependencies {
     testImplementation libs.junit
     testImplementation libs.jmockit
 
-    testRuntimeOnly(libs.junit.vintage.engine) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.named('jar') {

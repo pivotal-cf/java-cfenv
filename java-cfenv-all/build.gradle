@@ -17,6 +17,8 @@ dependencies {
     api project(':java-cfenv-boot-pivotal-scs')
     api project(':java-cfenv-boot-pivotal-sso')
     testImplementation libs.spring.boot.starter.test
+
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 shadowJar {
