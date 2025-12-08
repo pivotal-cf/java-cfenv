@@ -15,9 +15,9 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -25,14 +25,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.pivotal.cfenv.core.test.CfEnvMock;
 import io.pivotal.cfenv.spring.boot.DisableServicesFromApplicationYamlTest.TestApplication;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("disable-services")
 public class DisableServicesFromApplicationYamlTest {
@@ -40,7 +40,7 @@ public class DisableServicesFromApplicationYamlTest {
 	@Autowired
 	private Environment environment;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
 		CfEnvMock.configure().vcapServicesResource("vcap-services.json").mock();
 	}

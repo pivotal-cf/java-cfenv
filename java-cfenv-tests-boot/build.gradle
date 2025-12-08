@@ -15,8 +15,6 @@ dependencies {
     testImplementation libs.spring.boot.starter.data.redis
     testImplementation libs.embedded.redis
 
-    testImplementation libs.junit
-
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

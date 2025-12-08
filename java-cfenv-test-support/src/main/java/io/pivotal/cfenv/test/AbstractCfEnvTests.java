@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
@@ -123,7 +123,7 @@ public abstract class AbstractCfEnvTests {
 		return CfEnvMock.configure().vcapServices(vcapServicesJson).mock();
 	}
 
-	@After
+	@AfterEach
 	public void after() throws Exception {
 		Field field = CfEnvSingleton.class.getDeclaredField("INSTANCE");
 		field.setAccessible(true);

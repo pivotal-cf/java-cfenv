@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.core.io.ClassPathResource;
 
@@ -47,7 +47,7 @@ public abstract class CfEnvTests {
 	public static final String DEFAULT_VCAP_APPLICATION = "test/vcap-application.json";
 	protected CfEnv cfEnv;
 
-	@Before
+	@BeforeEach
 	public void beforeEach() {
 		setupTest(DEFAULT_VCAP_SERVICES, DEFAULT_VCAP_APPLICATION);
 	}

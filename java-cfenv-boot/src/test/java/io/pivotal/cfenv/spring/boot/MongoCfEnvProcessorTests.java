@@ -17,7 +17,7 @@ package io.pivotal.cfenv.spring.boot;
 
 import mockit.Mock;
 import mockit.MockUp;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;

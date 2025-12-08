@@ -20,7 +20,6 @@ embedded-redis = { group = "com.github.kstyrc", name = "embedded-redis", version
 mariadb-java-client = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version.ref = "mariadb" }
 jackson-core = { group = "com.fasterxml.jackson.core", name = "jackson-core", version.ref = "jackson" }
 jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
 jmockit = { group = "org.jmockit", name = "jmockit", version.ref = "jmockit" }
 
 spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "springBoot" }

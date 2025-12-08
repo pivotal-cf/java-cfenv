@@ -18,12 +18,14 @@ package io.pivotal.cfenv.boot.scs.serviceregistry;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import io.pivotal.cfenv.boot.scs.CfEurekaClientProcessor;
 import io.pivotal.cfenv.core.CfCredentials;
@@ -35,7 +37,8 @@ import static org.mockito.Mockito.when;
 /**
  * @author Dylan Roberts
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class CfEurekaClientProcessorTest {
     private static final String URI = "uri";
     private static final String CLIENT_ID = "clientId";
@@ -52,7 +55,7 @@ public class CfEurekaClientProcessorTest {
     @InjectMocks
     private CfEurekaClientProcessor eurekaClientProcessor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(eurekaService.existsByTagIgnoreCase("eureka")).thenReturn(true);
 

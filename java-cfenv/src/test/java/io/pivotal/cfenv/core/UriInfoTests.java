@@ -15,9 +15,10 @@
  */
 package io.pivotal.cfenv.core;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 /**
@@ -54,10 +55,10 @@ public class UriInfoTests {
 		assertThat(uri).isEqualTo(uriInfo.getUriString());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void createWithUsernameNoPassword() {
 		String uri = "mysql://joe@localhost:1527/big_db";
-		new UriInfo(uri);
+		assertThatThrownBy(() -> new UriInfo(uri)).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test

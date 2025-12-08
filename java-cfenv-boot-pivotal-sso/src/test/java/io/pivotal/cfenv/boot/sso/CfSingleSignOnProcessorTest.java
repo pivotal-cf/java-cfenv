@@ -15,8 +15,8 @@
  */
 package io.pivotal.cfenv.boot.sso;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.core.env.Environment;
 
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class CfSingleSignOnProcessorTest extends CfSingleSignOnTestSupport {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mockSpringSecurityDetector(true, false);
     }

@@ -8,11 +8,12 @@ dependencies {
     api project(':java-cfenv-boot')
 
     testImplementation libs.spring.boot.starter.test
-    testImplementation libs.junit
+
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 test {
-    useJUnit()
+    useJUnitPlatform()
 }
 
 tasks.named('jar') {
