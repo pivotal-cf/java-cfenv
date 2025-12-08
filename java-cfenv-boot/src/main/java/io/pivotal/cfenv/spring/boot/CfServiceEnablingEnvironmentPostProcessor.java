@@ -15,7 +15,7 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.core.env.Environment;
 
 import io.pivotal.cfenv.core.CfService;

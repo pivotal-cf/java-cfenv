@@ -1,7 +1,7 @@
 
 [versions]
-springBoot = "3.5.8"
-springAi = "1.1.2"
+springBoot = "4.0.2"
+springAi = "2.0.0-M2"
 jmockit = "1.50"
 shadow = "8.3.9"
 asciidoctorJvm = "4.0.5"
@@ -22,6 +22,7 @@ jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-datab
 jmockit = { group = "org.jmockit", name = "jmockit", version.ref = "jmockit" }
 
 spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "springBoot" }
+spring-boot-starter-webmvc-test = { group = "org.springframework.boot", name = "spring-boot-starter-webmvc-test", version.ref = "springBoot" }
 spring-boot-starter-data-redis = { group = "org.springframework.boot", name = "spring-boot-starter-data-redis", version.ref = "springBoot" }
 spring-boot = { group = "org.springframework.boot", name = "spring-boot", version.ref = "springBoot" }
 spring-boot-autoconfigure = { group = "org.springframework.boot", name = "spring-boot-autoconfigure", version.ref = "springBoot" }
