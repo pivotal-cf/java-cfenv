@@ -15,7 +15,7 @@
  */
 package io.pivotal.cfenv.spring.boot;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.pivotal.cfenv.test.AbstractCfEnvTests;
 

@@ -15,17 +15,18 @@
  */
 package io.pivotal.cfenv.boot.sso;
 
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FromAuthDomainTests {
 
     private CfSingleSignOnProcessor cfSingleSignOnProcessor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         cfSingleSignOnProcessor = new CfSingleSignOnProcessor();
     }
@@ -79,19 +80,15 @@ public class FromAuthDomainTests {
     public void testMissingHostInUri() {
         String authUriMissingHost = "asdf";
 
-        try {
-            cfSingleSignOnProcessor.fromAuthDomain(authUriMissingHost);
-        } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage()).isEqualTo("Unable to parse URI host from VCAP_SERVICES with label: \"p-identity\" and auth_domain: \"" + authUriMissingHost + "\"");
-            return;
-        }
-        fail();
+		assertThatThrownBy(() -> cfSingleSignOnProcessor.fromAuthDomain(authUriMissingHost))
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessage("Unable to parse URI host from VCAP_SERVICES with label: \"p-identity\" and auth_domain: \"" + authUriMissingHost + "\"");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidAuthUri() {
         String invalidAuthUri = "asdf^";
 
-        cfSingleSignOnProcessor.fromAuthDomain(invalidAuthUri);
+        assertThatThrownBy(() -> cfSingleSignOnProcessor.fromAuthDomain(invalidAuthUri)).isInstanceOf(IllegalArgumentException.class);
     }
 }

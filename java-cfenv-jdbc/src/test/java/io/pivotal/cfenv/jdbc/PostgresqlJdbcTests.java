@@ -17,7 +17,7 @@ package io.pivotal.cfenv.jdbc;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.pivotal.cfenv.core.UriInfo;
 

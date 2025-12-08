@@ -9,7 +9,6 @@ dependencies {
     api libs.json.io
 
     testImplementation libs.spring.boot.starter.test
-    testImplementation libs.junit
     testImplementation libs.jmockit
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -17,6 +16,10 @@ dependencies {
     testFixturesApi platform(libs.spring.boot.dependencies)
     testFixturesImplementation libs.spring.boot.starter.test
     testFixturesImplementation libs.jmockit
+}
+
+test {
+    useJUnitPlatform()
 }
 
 testFixturesJar {

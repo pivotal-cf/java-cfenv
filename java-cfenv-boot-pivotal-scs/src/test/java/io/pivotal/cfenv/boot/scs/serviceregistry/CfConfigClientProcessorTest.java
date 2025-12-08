@@ -18,12 +18,14 @@ package io.pivotal.cfenv.boot.scs.serviceregistry;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import io.pivotal.cfenv.boot.scs.CfConfigClientProcessor;
 import io.pivotal.cfenv.core.CfCredentials;
@@ -32,7 +34,8 @@ import io.pivotal.cfenv.core.CfService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class CfConfigClientProcessorTest {
     private static final String URI = "uri";
     private static final String CLIENT_ID = "clientId";
@@ -49,7 +52,7 @@ public class CfConfigClientProcessorTest {
     @InjectMocks
     private CfConfigClientProcessor configClientProcessor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(configService.existsByTagIgnoreCase("configuration")).thenReturn(true);
 

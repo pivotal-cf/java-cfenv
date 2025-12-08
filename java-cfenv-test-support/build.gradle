@@ -9,7 +9,6 @@ dependencies {
     api project(':java-cfenv')
     api testFixtures(project(':java-cfenv'))
     api libs.spring.boot.starter.test
-    api libs.junit
     api libs.jackson.core
     api libs.jackson.databind
 }

@@ -18,7 +18,7 @@ package io.pivotal.cfenv.spring.boot;
 import java.io.File;
 import java.nio.file.Files;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

@@ -16,14 +16,14 @@
 package io.pivotal.cfenv.boot.sso;
 
 import mockit.MockUp;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.SpringFactoriesLoader;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.pivotal.cfenv.spring.boot.CfEnvProcessor;
 import io.pivotal.cfenv.spring.boot.ConnectorLibraryDetector;
@@ -31,7 +31,7 @@ import io.pivotal.cfenv.spring.boot.ConnectorLibraryDetector;
 /**
  * @author Mark Pollack
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BootIntegrationTest.TestConfig.class)
 public class BootIntegrationTest {
 
@@ -44,7 +44,7 @@ public class BootIntegrationTest {
 		};
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		mockConnectors(true);
 	}

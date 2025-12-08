@@ -19,7 +19,7 @@ package io.pivotal.cfenv.spring.boot;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.test.util.ReflectionTestUtils;
 

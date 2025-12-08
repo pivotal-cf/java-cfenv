@@ -10,10 +10,13 @@ dependencies {
     implementation libs.spring.boot.autoconfigure
 
     testImplementation project(':java-cfenv-test-support')
-    testImplementation libs.junit
     testImplementation libs.jmockit
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+test {
+    useJUnitPlatform()
 }
 
 tasks.named('jar') {
