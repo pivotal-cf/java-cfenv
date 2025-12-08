@@ -4,30 +4,19 @@ import org.apache.tools.zip.ZipEntry
 import org.apache.tools.zip.ZipOutputStream
 import org.codehaus.plexus.util.IOUtil
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
-    dependencies {
-        // groupId changed from com.github.johnrengelman to com.gradleup.shadow
-        classpath 'com.gradleup.shadow:shadow-gradle-plugin:8.3.6'
-    }
-}
-
 plugins {
     id 'io.pivotal.cfenv.java-conventions'
+    alias libs.plugins.shadow
+    id 'java-library'
 }
-
-apply plugin: 'com.gradleup.shadow'
-apply plugin: 'java-library'
 
 description = 'java-cfenv-all, contains all java-cfenv modules in a convenient uberjar - to be used with CF Java Buildpack'
 
 dependencies {
-    api 'org.springframework.boot:spring-boot'
+    api libs.spring.boot
     api project(':java-cfenv-boot-pivotal-scs')
     api project(':java-cfenv-boot-pivotal-sso')
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation libs.spring.boot.starter.test
 }
 
 shadowJar {

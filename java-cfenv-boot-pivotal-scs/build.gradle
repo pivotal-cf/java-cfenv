@@ -7,10 +7,10 @@ description = 'Java CF Env Pivotal Spring Cloud Services'
 dependencies {
     api project(':java-cfenv-boot')
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation "junit:junit"
+    testImplementation libs.spring.boot.starter.test
+    testImplementation libs.junit
 
-    testRuntimeOnly('org.junit.vintage:junit-vintage-engine') {
+    testRuntimeOnly(libs.junit.vintage.engine) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
 }

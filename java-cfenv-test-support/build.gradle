@@ -5,13 +5,13 @@ plugins {
 description = 'Java CF Env Test Support Library'
 
 dependencies {
-    api platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    api platform(libs.spring.boot.dependencies)
     api project(':java-cfenv')
     api testFixtures(project(':java-cfenv'))
-    api 'org.springframework.boot:spring-boot-starter-test'
-    api "junit:junit"
-    api 'com.fasterxml.jackson.core:jackson-core'
-    api 'com.fasterxml.jackson.core:jackson-databind'
+    api libs.spring.boot.starter.test
+    api libs.junit
+    api libs.jackson.core
+    api libs.jackson.databind
 }
 
 tasks.named('jar') {

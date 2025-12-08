@@ -5,16 +5,16 @@ plugins {
 description = 'Java CF Env Boot Support'
 
 dependencies {
-    api platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    api platform(libs.spring.boot.dependencies)
     api project(':java-cfenv')
     api project(':java-cfenv-jdbc')
-    api 'org.springframework.boot:spring-boot'
+    api libs.spring.boot
 
     testImplementation testFixtures(project(':java-cfenv'))
     testImplementation project(':java-cfenv-test-support')
-    testImplementation "org.jmockit:jmockit:${jmockitVersion}"
+    testImplementation libs.jmockit
 
-    testRuntimeOnly('org.junit.vintage:junit-vintage-engine') {
+    testRuntimeOnly(libs.junit.vintage.engine) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
 }

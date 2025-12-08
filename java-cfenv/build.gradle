@@ -6,19 +6,19 @@ plugins {
 description = 'Java CF Env Core Library'
 
 dependencies {
-    api 'com.cedarsoftware:json-io:4.51.0'
+    api libs.json.io
 
-    testImplementation "org.springframework.boot:spring-boot-starter-test"
-    testImplementation "junit:junit"
-    testImplementation "org.jmockit:jmockit:${jmockitVersion}"
+    testImplementation libs.spring.boot.starter.test
+    testImplementation libs.junit
+    testImplementation libs.jmockit
 
-    testRuntimeOnly('org.junit.vintage:junit-vintage-engine') {
+    testRuntimeOnly(libs.junit.vintage.engine) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
 
-    testFixturesApi platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-    testFixturesImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
-    testFixturesImplementation "org.jmockit:jmockit:${jmockitVersion}"
+    testFixturesApi platform(libs.spring.boot.dependencies)
+    testFixturesImplementation libs.spring.boot.starter.test
+    testFixturesImplementation libs.jmockit
 }
 
 testFixturesJar {

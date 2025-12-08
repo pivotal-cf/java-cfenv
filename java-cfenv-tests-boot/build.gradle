@@ -11,13 +11,13 @@ description = 'Java CF Env Spring Boot 3 specific tests'
 dependencies {
     testImplementation project(':java-cfenv-boot')
 
-    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
-    testImplementation "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}"
-    testImplementation 'com.github.kstyrc:embedded-redis:0.6'
+    testImplementation libs.spring.boot.starter.test
+    testImplementation libs.spring.boot.starter.data.redis
+    testImplementation libs.embedded.redis
 
-    testImplementation "junit:junit"
+    testImplementation libs.junit
 
-    testRuntimeOnly('org.junit.vintage:junit-vintage-engine') {
+    testRuntimeOnly(libs.junit.vintage.engine) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
 }
