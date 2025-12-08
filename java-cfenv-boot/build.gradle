@@ -17,10 +17,6 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-test {
-    useJUnitPlatform()
-}
-
 tasks.named('jar') {
     manifest {
         attributes 'Automatic-Module-Name': 'io.pivotal.cfenv.spring.boot'
