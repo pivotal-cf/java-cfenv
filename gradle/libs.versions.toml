@@ -1,0 +1,41 @@
+
+[versions]
+springBoot = "3.4.3"
+springAi = "1.0.0"
+jmockit = "1.49"
+shadow = "8.3.6"
+asciidoctorJvm = "4.0.3"
+jsonIo = "4.51.0"
+embeddedRedis = "0.6"
+jackson = "2.17.0"
+junit = "4.13.2"
+mariadb = "3.3.3"
+springAsciidoctorBackends = "0.0.7"
+nohttp = "0.0.11"
+
+
+[libraries]
+json-io = { group = "com.cedarsoftware", name = "json-io", version.ref = "jsonIo" }
+embedded-redis = { group = "com.github.kstyrc", name = "embedded-redis", version.ref = "embeddedRedis" }
+mariadb-java-client = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version.ref = "mariadb" }
+jackson-core = { group = "com.fasterxml.jackson.core", name = "jackson-core", version.ref = "jackson" }
+jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+jmockit = { group = "org.jmockit", name = "jmockit", version.ref = "jmockit" }
+
+spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "springBoot" }
+spring-boot-starter-data-redis = { group = "org.springframework.boot", name = "spring-boot-starter-data-redis", version.ref = "springBoot" }
+spring-boot = { group = "org.springframework.boot", name = "spring-boot", version.ref = "springBoot" }
+spring-boot-autoconfigure = { group = "org.springframework.boot", name = "spring-boot-autoconfigure", version.ref = "springBoot" }
+spring-ai-openai = { group = "org.springframework.ai", name = "spring-ai-openai", version.ref = "springAi" }
+spring-boot-dependencies = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot" }
+spring-asciidoctor-backends = { group = "io.spring.asciidoctor.backends", name = "spring-asciidoctor-backends", version.ref = "springAsciidoctorBackends" }
+
+junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine" }
+
+
+[plugins]
+asciidoctorJvm = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctorJvm" }
+asciidoctorJvmPdf = { id = "org.asciidoctor.jvm.pdf", version.ref = "asciidoctorJvm" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+nohttp = { id = "io.spring.nohttp", version.ref = "nohttp" }

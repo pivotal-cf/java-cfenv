@@ -1,6 +1,7 @@
 plugins {
-    id 'org.asciidoctor.jvm.pdf'
-    id 'org.asciidoctor.jvm.convert'
+    id 'io.pivotal.cfenv.java-conventions'
+    alias libs.plugins.asciidoctorJvmPdf
+    alias libs.plugins.asciidoctorJvm
 }
 
 description = 'Java CF Env Documentation'
@@ -10,7 +11,7 @@ configurations {
 }
 
 dependencies {
-    asciidoctorExtensions "io.spring.asciidoctor.backends:spring-asciidoctor-backends:0.0.7"
+    asciidoctorExtensions libs.spring.asciidoctor.backends
 }
 
 task prepareAsciidocBuild(type: Sync) {
