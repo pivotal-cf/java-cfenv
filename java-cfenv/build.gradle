@@ -12,9 +12,7 @@ dependencies {
     testImplementation libs.junit
     testImplementation libs.jmockit
 
-    testRuntimeOnly(libs.junit.vintage.engine) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     testFixturesApi platform(libs.spring.boot.dependencies)
     testFixturesImplementation libs.spring.boot.starter.test
