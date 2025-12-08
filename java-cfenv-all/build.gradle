@@ -7,7 +7,6 @@ import org.codehaus.plexus.util.IOUtil
 plugins {
     id 'io.pivotal.cfenv.java-conventions'
     alias libs.plugins.shadow
-    id 'java-library'
 }
 
 description = 'java-cfenv-all, contains all java-cfenv modules in a convenient uberjar - to be used with CF Java Buildpack'

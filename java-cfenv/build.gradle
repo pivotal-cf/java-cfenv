@@ -18,10 +18,6 @@ dependencies {
     testFixturesImplementation libs.jmockit
 }
 
-test {
-    useJUnitPlatform()
-}
-
 testFixturesJar {
     archiveClassifier.set "tests"
 }

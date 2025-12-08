@@ -7,11 +7,9 @@ plugins {
 }
 
 ext {
-    springFrameworkVersion = "6.0.11"
-    javaApi = "https://docs.oracle.com/javase/17/docs/api/"
     javadocLinks = [
-            javaApi,
-            "https://docs.spring.io/spring-framework/docs/${springFrameworkVersion}/javadoc-api/"
+            "https://docs.oracle.com/javase/17/docs/api/",
+            "https://docs.spring.io/spring-framework/docs/current/javadoc-api/"
     ] as String[]
 }
 
@@ -38,7 +36,7 @@ checkstyle {
 }
 
 test {
-    test.useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 afterEvaluate { Project project ->
