@@ -1,4 +1,4 @@
-= Java CFEnv image:https://build.spring.io/plugins/servlet/wittified/build-status/CFENV-BMASTER[Build Status, link=https://build.spring.io/browse/CFENV-BMASTER]
+= Java CFEnv image:https://github.com/pivotal-cf/java-cfenv/actions/workflows/build.yml/badge.svg[Build Status, link=https://github.com/pivotal-cf/java-cfenv/actions/workflows/build.yml] image:https://img.shields.io/maven-central/v/io.pivotal.cfenv/java-cfenv-boot.svg[Maven Central, link=https://search.maven.org/artifact/io.pivotal.cfenv/java-cfenv-boot]
 
 Java CFEnv is a library for easily accessing the environment variables set when deploying an application to Cloud Foundry.
 It is modeled after the design of the node library https://github.com/cloudfoundry-community/node-cfenv/[node-cfenv] and other `-cfenv` libraries in the Cloud Foundry ecosystem.
@@ -9,31 +9,36 @@ CFEnv's Boot support sets https://docs.spring.io/spring-boot/docs/current/refere
 
 The https://spring.io/blog/2019/02/15/introducing-java-cfenv-a-new-library-for-accessing-cloud-foundry-services[1.0 M1 blog] provides some additional background information.
 
-== Compatibility
-=== https://github.com/pivotal-cf/java-cfenv/tree/main[3.x]
+== Compatibility Matrix
 
-* https://projects.spring.io/spring-framework/[Spring Framework] 6.x
+[cols="1,1,1,1,1"]
+|===
+| Java CFEnv | Spring Boot | Spring Framework | JDK | Notes
 
-* https://projects.spring.io/spring-boot/[Spring Boot] 3.x
-
-
-=== https://github.com/pivotal-cf/java-cfenv/tree/2.5.x[2.x]
-
-* https://projects.spring.io/spring-framework/[Spring Framework] 5.3+
-
-* https://projects.spring.io/spring-boot/[Spring Boot] 2.5+
+| *3.x* | *3.x* | *6.x* | *17* |
+| 2.x | 2.5+ | 5.3+ | 8 | ⚠️ EOL
+|===
 
 == Dependency Info
 
 You can access the stable release from maven central using the coordinates
+
+=== Maven
 
 [source,xml]
 ----
 <dependency>
   <groupId>io.pivotal.cfenv</groupId>
   <artifactId>java-cfenv-boot</artifactId>
-  <version>3.1.3</version>
+  <version>${version}</version>
 </dependency>
+----
+
+=== Gradle
+
+[source,groovy]
+----
+implementation 'io.pivotal.cfenv:java-cfenv-boot:${version}'
 ----
 
 == SCS and SSO modules
