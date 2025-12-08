@@ -10,8 +10,10 @@ dependencies {
     testImplementation project(':java-cfenv-test-support')
     testImplementation libs.junit
     testImplementation libs.jmockit
+}
 
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+test {
+    useJUnit()
 }
 
 tasks.named('jar') {

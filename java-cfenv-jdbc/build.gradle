@@ -9,8 +9,11 @@ dependencies {
 
     testImplementation project(':java-cfenv-test-support')
 
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testRuntimeOnly libs.mariadb.java.client
+}
+
+test {
+    useJUnit()
 }
 
 tasks.named('jar') {
