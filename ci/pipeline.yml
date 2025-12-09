@@ -1,13 +1,4 @@
 ---
-aliases:
-  - &slack-failure-notification
-    put: alert
-    params:
-      icon_emoji: ":animal-1252:"
-      username: concourse
-      channel: ((scs-slack-failure-channel))
-      text: <!here> Build <${ATC_EXTERNAL_URL}/builds/$BUILD_ID|$BUILD_NAME> of job $BUILD_JOB_NAME in the $BUILD_PIPELINE_NAME pipeline has failed!
-
 jobs:
   - name: build-ci-images
     plan:
@@ -23,9 +14,12 @@ jobs:
     serial: true
     public: true
     plan:
-      - get: git-repo
-        trigger: true
+      - in_parallel:
+        - get: git-repo
+          trigger: true
+        - get: java-cfenv-ci-image
       - task: build-project
+        image: java-cfenv-ci-image
         file: git-repo/ci/tasks/build-project.yml
       - put: artifactory-repo
         params: &artifactory-params
@@ -36,15 +30,16 @@ jobs:
           build_uri: "${ATC_EXTERNAL_URL}/teams/${BUILD_TEAM_NAME}/pipelines/${BUILD_PIPELINE_NAME}/jobs/${BUILD_JOB_NAME}/builds/${BUILD_NAME}"
           build_number: "${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${BUILD_NAME}"
           disable_checksum_uploads: true
-    on_failure:
-      *slack-failure-notification
 
   - name: stage-milestone
     serial: true
     plan:
-      - get: git-repo
-        passed: [build]
+      - in_parallel:
+        - get: git-repo
+          passed: [build]
+        - get: java-cfenv-ci-image
       - task: stage
+        image: java-cfenv-ci-image
         file: git-repo/ci/tasks/stage.yml
         vars:
           release-type: M
@@ -59,9 +54,12 @@ jobs:
   - name: stage-rc
     serial: true
     plan:
-      - get: git-repo
-        passed: [build]
+      - in_parallel:
+        - get: git-repo
+          passed: [build]
+        - get: java-cfenv-ci-image
       - task: stage
+        image: java-cfenv-ci-image
         file: git-repo/ci/tasks/stage.yml
         vars:
           release-type: RC
@@ -76,9 +74,12 @@ jobs:
   - name: stage-release
     serial: true
     plan:
-      - get: git-repo
-        passed: [build]
+      - in_parallel:
+        - get: git-repo
+          passed: [build]
+        - get: java-cfenv-ci-image
       - task: stage
+        image: java-cfenv-ci-image
         file: git-repo/ci/tasks/stage.yml
         vars:
           release-type: RELEASE
@@ -93,12 +94,15 @@ jobs:
   - name: promote-milestone
     serial: true
     plan:
-      - get: git-repo
-      - get: artifactory-repo
-        passed: [stage-milestone]
-        params:
-          save_build_info: true
+      - in_parallel:
+        - get: git-repo
+        - get: artifactory-repo
+          passed: [stage-milestone]
+          params:
+            save_build_info: true
+        - get: concourse-release-scripts
       - task: promote
+        image: concourse-release-scripts
         file: git-repo/ci/tasks/promote.yml
         vars:
           release-type: M
@@ -112,7 +116,9 @@ jobs:
           passed: [stage-rc]
           params:
             save_build_info: true
+        - get: concourse-release-scripts
       - task: promote
+        image: concourse-release-scripts
         file: git-repo/ci/tasks/promote.yml
         vars:
           release-type: RC
@@ -126,7 +132,9 @@ jobs:
           passed: [stage-release]
           params:
             save_build_info: true
+        - get: concourse-release-scripts
       - task: promote
+        image: concourse-release-scripts
         file: git-repo/ci/tasks/promote.yml
         vars:
           release-type: RELEASE
@@ -140,21 +148,19 @@ jobs:
           passed: [promote-release]
           params:
             save_build_info: true
+        - get: concourse-release-scripts
       - task: sync-to-maven-central
+        image: concourse-release-scripts
         file: git-repo/ci/tasks/sync-to-maven-central.yml
 
 resource_types:
   - name: artifactory-resource
     type: registry-image
     source:
-      repository: ((dockerhub-mirror-registry))/springio/artifactory-resource
+      repository: ((corporate-harbor-registry))/((docker-hub-organization))/artifactory-resource
+      password: ((corporate-harbor-robot-account.password))
+      username: ((corporate-harbor-robot-account.username))
       tag: 0.0.14
-
-  - name: slack-notification
-    type: registry-image
-    source:
-      repository: ((dockerhub-mirror-registry))/cfcommunity/slack-notification-resource
-      tag: latest
 
 resources:
   - name: git-repo
@@ -185,6 +191,14 @@ resources:
       username: ((corporate-harbor-robot-account.username))
       password: ((corporate-harbor-robot-account.password))
 
+  - name: concourse-release-scripts
+    type: registry-image
+    source:
+      repository: ((corporate-harbor-registry))/((docker-hub-organization))/concourse-release-scripts
+      username: ((corporate-harbor-robot-account.username))
+      password: ((corporate-harbor-robot-account.password))
+      tag: 0.3.4
+
   - name: artifactory-repo
     type: artifactory-resource
     source:
@@ -192,11 +206,6 @@ resources:
       username: ((scs-artifactory-username))
       password: ((scs-artifactory-password))
       build_name: ((build-name))
-
-  - name: alert
-    type: slack-notification
-    source:
-      url: ((scs-slack-webhook))
 
 groups:
   - name: "build"
