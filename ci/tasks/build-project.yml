@@ -1,12 +1,6 @@
 ---
 platform: linux
-image_resource:
-  type: registry-image
-  source:
-    repository: ((corporate-harbor-registry))/((docker-hub-organization))/java-cfenv-ci
-    username: ((corporate-harbor-robot-account.username))
-    password: ((corporate-harbor-robot-account.password))
-    tag: latest
+
 inputs:
   - name: git-repo
 outputs:

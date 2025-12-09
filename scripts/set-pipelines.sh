@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-readonly FLY_TARGET="scs"
+: "${FLY_TARGET:?'must be set'}"
 
 main() {
   fly -t "$FLY_TARGET" sync
