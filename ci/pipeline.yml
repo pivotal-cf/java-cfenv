@@ -194,10 +194,10 @@ resources:
   - name: concourse-release-scripts
     type: registry-image
     source:
-      repository: ((corporate-harbor-registry))/((docker-hub-organization))/concourse-release-scripts
-      username: ((corporate-harbor-robot-account.username))
-      password: ((corporate-harbor-robot-account.password))
-      tag: 0.3.4
+      repository: spring-scs-docker-virtual.usw1.packages.broadcom.com/ci/concourse-release-scripts
+      username: ((broadcom-jfrog-artifactory/robot-account.username))
+      password: ((broadcom-jfrog-artifactory/robot-account.password))
+      tag: 0.4.2
 
   - name: artifactory-repo
     type: artifactory-resource
