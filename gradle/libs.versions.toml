@@ -1,6 +1,6 @@
 
 [versions]
-springBoot = "3.5.8"
+springBoot = "4.0.2"
 springAi = "1.1.2"
 jmockit = "1.50"
 shadow = "8.3.9"
