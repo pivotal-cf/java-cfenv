@@ -8,6 +8,7 @@ dependencies {
     api project(':java-cfenv-boot')
     api libs.spring.ai.openai
     implementation libs.spring.boot.autoconfigure
+    implementation 'org.springframework.boot:spring-boot-starter-restclient'
 
     testImplementation project(':java-cfenv-test-support')
     testImplementation libs.jmockit

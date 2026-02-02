@@ -1,5 +1,5 @@
 # Environment Post Processors
-org.springframework.boot.env.EnvironmentPostProcessor=\
+org.springframework.boot.EnvironmentPostProcessor=\
   io.pivotal.cfenv.spring.boot.CfDataSourceEnvironmentPostProcessor,\
   io.pivotal.cfenv.spring.boot.CfEnvironmentPostProcessor
 # Also register as a ApplicationListener to log what occurred in the post processing step

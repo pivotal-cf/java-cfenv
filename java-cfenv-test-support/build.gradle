@@ -8,7 +8,7 @@ dependencies {
     api platform(libs.spring.boot.dependencies)
     api project(':java-cfenv')
     api testFixtures(project(':java-cfenv'))
-    api libs.spring.boot.starter.test
+    api libs.spring.boot.starter.webmvc.test
     api libs.jackson.core
     api libs.jackson.databind
 }
