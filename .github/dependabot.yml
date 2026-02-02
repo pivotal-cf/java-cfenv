@@ -7,7 +7,11 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 10
     commit-message:
-      prefix: "fix(deps): bump"
+      prefix: "fix"
+      include: "scope"
+    ignore:
+      - dependency-name: "*"
+        versions: [ "*-SNAPSHOT" ]
 
   - target-branch: "3.x"
     package-ecosystem: "gradle"
@@ -16,8 +20,11 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 10
     commit-message:
-      prefix: "fix(deps): bump"
+      prefix: "fix"
+      include: "scope"
     ignore:
+      - dependency-name: "*"
+        versions: [ "*-SNAPSHOT" ]
       - dependency-name: "org.springframework.boot:*"
         update-types: ["version-update:semver-major"]
       - dependency-name: "org.springframework.ai:*"
