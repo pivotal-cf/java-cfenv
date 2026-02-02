@@ -1,7 +1,7 @@
 
 [versions]
 springBoot = "4.0.2"
-springAi = "2.0.0-M2"
+springAi = "2.0.0-SNAPSHOT"
 jmockit = "1.50"
 shadow = "8.3.9"
 asciidoctorJvm = "4.0.5"
