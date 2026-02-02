@@ -15,6 +15,7 @@ The https://spring.io/blog/2019/02/15/introducing-java-cfenv-a-new-library-for-a
 |===
 | Java CFEnv | Spring Boot | Spring Framework | JDK | Notes
 
+| *4.x* | *4.x* | *7.x* | *17* |
 | *3.x* | *3.x* | *6.x* | *17* |
 | 2.x | 2.5+ | 5.3+ | 8 | ⚠️ EOL
 |===
