@@ -9,8 +9,6 @@ dependencies {
     api project(':java-cfenv')
     api testFixtures(project(':java-cfenv'))
     api libs.spring.boot.starter.webmvc.test
-    api libs.jackson.core
-    api libs.jackson.databind
 }
 
 tasks.named('jar') {
