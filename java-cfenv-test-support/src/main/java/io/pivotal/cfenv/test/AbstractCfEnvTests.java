@@ -24,8 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
@@ -47,6 +48,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public abstract class AbstractCfEnvTests {
 
+	private static final JsonMapper JSON_MAPPER = new JsonMapper();
+
 	protected static final String hostname = "10.20.30.40";
 
 	protected static final int port = 1234;
@@ -55,31 +58,24 @@ public abstract class AbstractCfEnvTests {
 
 	protected static final String username = "myuser";
 
-	private static ObjectMapper objectMapper = new ObjectMapper();
-
-	@SuppressWarnings("unchecked")
 	private static String getServiceLabel(String servicePayload) {
 		try {
-			Map<String, Object> serviceMap = objectMapper.readValue(servicePayload,
-					Map.class);
-			return serviceMap.get("label").toString();
+			var serviceNode = JSON_MAPPER.readTree(servicePayload);
+			var labelNode = serviceNode.get("label");
+			return labelNode != null ? labelNode.asString() : null;
 		}
-		catch (Exception e) {
+		catch (JacksonException e) {
 			return null;
 		}
 	}
 
 	protected static String getServicesPayload(String... servicePayloads) {
-		Map<String, List<String>> labelPayloadMap = new HashMap<String, List<String>>();
+		Map<String, List<String>> labelPayloadMap = new HashMap<>();
 
 		for (String payload : servicePayloads) {
 			String label = getServiceLabel(payload);
 
-			List<String> payloadsForLabel = labelPayloadMap.get(label);
-			if (payloadsForLabel == null) {
-				payloadsForLabel = new ArrayList<String>();
-				labelPayloadMap.put(label, payloadsForLabel);
-			}
+			List<String> payloadsForLabel = labelPayloadMap.computeIfAbsent(label, k -> new ArrayList<>());
 			payloadsForLabel.add(payload);
 		}
 
@@ -126,8 +122,10 @@ public abstract class AbstractCfEnvTests {
 	@AfterEach
 	public void after() throws Exception {
 		Field field = CfEnvSingleton.class.getDeclaredField("INSTANCE");
-		field.setAccessible(true);
-		field.set(null,null);
+		if (!field.trySetAccessible()) {
+			throw new IllegalStateException("Unable to access INSTANCE field");
+		}
+		field.set(null, null);
 	}
 
 
