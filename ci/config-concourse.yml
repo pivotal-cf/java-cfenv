@@ -1,4 +1,3 @@
-artifactory-server: https://repo.spring.io
 build-name: java-cfenv
 github-repo: https://github.com/pivotal-cf/java-cfenv
 scs-slack-failure-channel: "#spring-cloud-services"

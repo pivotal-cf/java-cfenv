@@ -10,7 +10,7 @@ main() {
   pushd "$(dirname "$0")/../ci" > /dev/null
     echo "Setting java-cfenv pipeline..."
     fly --target "$FLY_TARGET" set-pipeline \
-      --pipeline java-cfenv \
+      --pipeline java-cfenv-4.x \
       --config pipeline.yml \
       --load-vars-from config-concourse.yml \
       --var branch=main

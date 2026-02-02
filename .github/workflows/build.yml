@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [main]
+    branches: [ main, 3.x ]
   pull_request:
-    branches: [main]
+    branches: [ main, 3.x ]
 
 permissions:
   contents: read
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: ["17", "21"]
+        java: [ "17", "21" ]
     name: jdk-${{ matrix.java }}
     steps:
       - name: Checkout code

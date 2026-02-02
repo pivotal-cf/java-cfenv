@@ -23,8 +23,8 @@ jobs:
         file: git-repo/ci/tasks/build-project.yml
       - put: artifactory-repo
         params: &artifactory-params
-          signing_key: ((signing-key))
-          signing_passphrase: ((signing-passphrase))
+          signing_key: ((java-cfenv/signing-key))
+          signing_passphrase: ((java-cfenv/signing-passphrase))
           repo: libs-snapshot-local
           folder: distribution-repository
           build_uri: "${ATC_EXTERNAL_URL}/teams/${BUILD_TEAM_NAME}/pipelines/${BUILD_PIPELINE_NAME}/jobs/${BUILD_JOB_NAME}/builds/${BUILD_NAME}"
@@ -157,16 +157,16 @@ resource_types:
   - name: artifactory-resource
     type: registry-image
     source:
-      repository: ((corporate-harbor-registry))/((docker-hub-organization))/artifactory-resource
-      password: ((corporate-harbor-robot-account.password))
-      username: ((corporate-harbor-robot-account.username))
+      repository: ((java-cfenv/corporate-harbor-registry))/((java-cfenv/docker-hub-organization))/artifactory-resource
+      password: ((java-cfenv/corporate-harbor-robot-account.password))
+      username: ((java-cfenv/corporate-harbor-robot-account.username))
       tag: 0.0.14
 
 resources:
   - name: git-repo
     type: git
     source:
-      uri: ((java-cfenv-github-uri))
+      uri: ((java-cfenv/java-cfenv-github-uri))
       branch: ((branch))
       ignore_paths: ["ci/images/*"]
       fetch_tags: true
@@ -174,8 +174,8 @@ resources:
   - name: git-repo-staging
     type: git
     source:
-      uri: ((java-cfenv-github-uri))
-      branch: ((github-username))/staging
+      uri: ((java-cfenv/java-cfenv-github-uri))
+      branch: ((java-cfenv/github-username))/((branch))/staging
 
   - name: ci-images-git-repo
     type: git
@@ -187,24 +187,24 @@ resources:
   - name: java-cfenv-ci-image
     type: docker-image
     source:
-      repository: ((corporate-harbor-registry))/((docker-hub-organization))/java-cfenv-ci
-      username: ((corporate-harbor-robot-account.username))
-      password: ((corporate-harbor-robot-account.password))
+      repository: ((java-cfenv/corporate-harbor-registry))/((java-cfenv/docker-hub-organization))/java-cfenv-ci
+      username: ((java-cfenv/corporate-harbor-robot-account.username))
+      password: ((java-cfenv/corporate-harbor-robot-account.password))
 
   - name: concourse-release-scripts
     type: registry-image
     source:
       repository: spring-scs-docker-virtual.usw1.packages.broadcom.com/ci/concourse-release-scripts
-      username: ((broadcom-jfrog-artifactory/robot-account.username))
-      password: ((broadcom-jfrog-artifactory/robot-account.password))
+      username: ((java-cfenv/broadcom-jfrog-artifactory/robot-account.username))
+      password: ((java-cfenv/broadcom-jfrog-artifactory/robot-account.password))
       tag: 0.4.2
 
   - name: artifactory-repo
     type: artifactory-resource
     source:
-      uri: ((artifactory-server))
-      username: ((scs-artifactory-username))
-      password: ((scs-artifactory-password))
+      uri: ((java-cfenv/artifactory-server))
+      username: ((java-cfenv/scs-artifactory-username))
+      password: ((java-cfenv/scs-artifactory-password))
       build_name: ((build-name))
 
 groups:

@@ -11,5 +11,5 @@ caches:
 run:
   path: git-repo/ci/scripts/build-project.sh
 params:
-  ARTIFACTORY_USERNAME: ((scs-artifactory-username))
-  ARTIFACTORY_PASSWORD: ((scs-artifactory-password))
+  ARTIFACTORY_USERNAME: ((java-cfenv/scs-artifactory-username))
+  ARTIFACTORY_PASSWORD: ((java-cfenv/scs-artifactory-password))

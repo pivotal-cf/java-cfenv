@@ -1,7 +1,20 @@
 version: 2
 updates:
-  - package-ecosystem: "gradle"
+  - target-branch: "main"
+    package-ecosystem: "gradle"
     directory: "/"
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
+
+  - target-branch: "3.x"
+    package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "org.springframework.boot:*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "org.springframework.ai:*"
+        update-types: ["version-update:semver-major"]
