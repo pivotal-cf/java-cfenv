@@ -8,8 +8,8 @@ outputs:
   - name: version
 params:
   RELEASE_TYPE: ((release-type))
-  ARTIFACTORY_SERVER: ((artifactory-server))
-  ARTIFACTORY_USERNAME: ((scs-artifactory-username))
-  ARTIFACTORY_PASSWORD: ((scs-artifactory-password))
+  ARTIFACTORY_SERVER: ((java-cfenv/artifactory-server))
+  ARTIFACTORY_USERNAME: ((java-cfenv/scs-artifactory-username))
+  ARTIFACTORY_PASSWORD: ((java-cfenv/scs-artifactory-password))
 run:
   path: git-repo/ci/scripts/promote.sh

@@ -8,8 +8,8 @@ outputs:
   - name: distribution-repository
 params:
   RELEASE_TYPE: ((release-type))
-  USER_NAME: ((git-username))
-  USER_EMAIL: ((git-email))
+  USER_NAME: ((java-cfenv/git-username))
+  USER_EMAIL: ((java-cfenv/git-email))
 caches:
   - path: maven
   - path: gradle
