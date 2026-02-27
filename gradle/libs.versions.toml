@@ -3,7 +3,7 @@
 springBoot = "4.0.2"
 springAi = "2.0.0-M2"
 jmockit = "1.50"
-shadow = "8.3.9"
+shadow = "9.3.2"
 asciidoctorJvm = "4.0.5"
 jsonIo = "4.93.0"
 embeddedRedis = "0.6"
