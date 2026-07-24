@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTransformer
 import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext
 import org.apache.tools.zip.ZipEntry
@@ -28,7 +29,7 @@ shadowJar {
         mergeStrategy = "append"
     }
     // Fix #275: json-io uses text config file with packages names; those names need to be updated, with values we gave to the relocator
-    transform(new com.github.jengelman.gradle.plugins.shadow.transformers.Transformer() {
+    transform(new com.github.jengelman.gradle.plugins.shadow.transformers.ResourceTransformer() {
 
         private Map<String, String> configTextFiles = new HashMap<>()
 
@@ -43,7 +44,7 @@ shadowJar {
             def originalPackageName = transformerContext.relocators.get(0).pattern
             def relocatedPackageName = transformerContext.relocators.get(0).shadedPattern
 
-            String originalFileContent = transformerContext.is.getText("UTF-8")
+            String originalFileContent = transformerContext.inputStream.getText("UTF-8")
             if (originalFileContent.contains(originalPackageName)) {
                 println "transforming " + transformerContext.path
                 def modifiedFileContent = originalFileContent.replaceAll(originalPackageName, relocatedPackageName)
@@ -64,7 +65,7 @@ shadowJar {
             def zipWriter = new OutputStreamWriter(zipOutputStream, 'UTF-8')
             configTextFiles.each { String path, String fileContent ->
                 ZipEntry entry = new ZipEntry(path)
-                entry.time = TransformerContext.getEntryTimestamp(preserveFileTimestamps, entry.time)
+                entry.time = preserveFileTimestamps ? entry.time : ShadowJar.CONSTANT_TIME_FOR_ZIP_ENTRIES
                 zipOutputStream.putNextEntry(entry)
                 IOUtil.copy(new ByteArrayInputStream(fileContent.getBytes('UTF-8')), zipWriter)
                 zipWriter.flush()
@@ -87,7 +88,7 @@ shadowJar {
 publishing {
     publications {
         shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
+            artifact tasks.shadowJar
         }
     }
 
