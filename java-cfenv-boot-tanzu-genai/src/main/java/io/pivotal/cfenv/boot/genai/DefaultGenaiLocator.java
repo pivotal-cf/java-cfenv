@@ -31,7 +31,6 @@ import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.OpenAiEmbeddingOptions;
-import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.web.client.RestClient;
 
 /**
@@ -164,10 +163,13 @@ public class DefaultGenaiLocator implements GenaiLocator {
   }
 
   private static ChatModel createChatModel(ModelConnectivity c) {
-    OpenAiApi api = OpenAiApi.builder().apiKey(c.apiKey()).baseUrl(c.apiBase()).build();
     return OpenAiChatModel.builder()
-        .defaultOptions(OpenAiChatOptions.builder().model(c.name()).build())
-        .openAiApi(api)
+        .options(
+            OpenAiChatOptions.builder()
+                .model(c.name())
+                .apiKey(c.apiKey())
+                .baseUrl(c.apiBase())
+                .build())
         .build();
   }
 
@@ -219,9 +221,15 @@ public class DefaultGenaiLocator implements GenaiLocator {
   }
 
   private static EmbeddingModel createEmbeddingModel(ModelConnectivity c) {
-    OpenAiApi api = OpenAiApi.builder().apiKey(c.apiKey()).baseUrl(c.apiBase()).build();
-    return new OpenAiEmbeddingModel(
-        api, MetadataMode.EMBED, OpenAiEmbeddingOptions.builder().model(c.name()).build());
+    return OpenAiEmbeddingModel.builder()
+        .metadataMode(MetadataMode.EMBED)
+        .options(
+            OpenAiEmbeddingOptions.builder()
+                .model(c.name())
+                .apiKey(c.apiKey())
+                .baseUrl(c.apiBase())
+                .build())
+        .build();
   }
 
   @Override
