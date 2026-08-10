@@ -202,7 +202,7 @@ resources:
   - name: artifactory-repo
     type: artifactory-resource
     source:
-      uri: ((java-cfenv/artifactory-server))
+      uri: ((java-cfenv/artifactory-server.spring))
       username: ((java-cfenv/scs-artifactory-username))
       password: ((java-cfenv/scs-artifactory-password))
       build_name: ((build-name))
