@@ -157,9 +157,9 @@ resource_types:
   - name: artifactory-resource
     type: registry-image
     source:
-      repository: ((java-cfenv/corporate-harbor-registry))/((java-cfenv/docker-hub-organization))/artifactory-resource
-      password: ((java-cfenv/corporate-harbor-robot-account.password))
-      username: ((java-cfenv/corporate-harbor-robot-account.username))
+      repository: ((java-cfenv/corporate-harbor-registry.prod-local))/((java-cfenv/docker-hub-organization))/artifactory-resource
+      username: ((java-cfenv/broadcom-jfrog-artifactory/robot-account.username))
+      password: ((java-cfenv/broadcom-jfrog-artifactory/robot-account.password))
       tag: 0.0.14
 
 resources:
@@ -187,7 +187,7 @@ resources:
   - name: java-cfenv-ci-image
     type: registry-image
     source:
-      repository: ((java-cfenv/corporate-harbor-registry))/((java-cfenv/docker-hub-organization))/java-cfenv-ci
+      repository: ((java-cfenv/corporate-harbor-registry.prod-local))/((java-cfenv/docker-hub-organization))/java-cfenv-ci
       username: ((java-cfenv/broadcom-jfrog-artifactory/robot-account.username))
       password: ((java-cfenv/broadcom-jfrog-artifactory/robot-account.password))
 
