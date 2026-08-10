@@ -13,3 +13,4 @@ run:
 params:
   ARTIFACTORY_USERNAME: ((java-cfenv/scs-artifactory-username))
   ARTIFACTORY_PASSWORD: ((java-cfenv/scs-artifactory-password))
+  ARTIFACTORY_VIRTUAL_REPO_URL: ((java-cfenv/artifactory-server.mirror))
