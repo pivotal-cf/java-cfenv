@@ -194,7 +194,7 @@ resources:
   - name: concourse-release-scripts
     type: registry-image
     source:
-      repository: spring-scs-docker-virtual.usw1.packages.broadcom.com/ci/concourse-release-scripts
+      repository: ((java-cfenv/corporate-harbor-registry.mirror))/ci/concourse-release-scripts
       username: ((java-cfenv/broadcom-jfrog-artifactory/robot-account.username))
       password: ((java-cfenv/broadcom-jfrog-artifactory/robot-account.password))
       tag: 0.4.2

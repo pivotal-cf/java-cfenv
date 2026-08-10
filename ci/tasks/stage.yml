@@ -10,6 +10,9 @@ params:
   RELEASE_TYPE: ((release-type))
   USER_NAME: ((java-cfenv/git-username))
   USER_EMAIL: ((java-cfenv/git-email))
+  ARTIFACTORY_USERNAME: ((java-cfenv/scs-artifactory-username))
+  ARTIFACTORY_PASSWORD: ((java-cfenv/scs-artifactory-password))
+  ARTIFACTORY_VIRTUAL_REPO_URL: ((java-cfenv/artifactory-server.mirror))
 caches:
   - path: maven
   - path: gradle
