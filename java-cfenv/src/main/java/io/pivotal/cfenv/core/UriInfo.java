@@ -79,7 +79,7 @@ public class UriInfo {
 		this.path = parsePath(uri);
 		this.query = uri.getQuery();
 
-		String authority = uri.getAuthority();
+		String authority = uri.getRawAuthority();
 		if (uri.getHost() != null) {
 			this.host = uri.getHost();
 			this.port = uri.getPort();
@@ -93,7 +93,10 @@ public class UriInfo {
 			// host1:port1,host2:port2 failover syntax) isn't valid
 			// server-based authority per RFC 3986, so java.net.URI parses
 			// it as a registry-based authority: getHost()/getPort() come
-			// back null/-1 even though getAuthority() has the full value.
+			// back null/-1 even though getRawAuthority() has the full value.
+			// Use the raw (not percent-decoded) form so a password
+			// containing an encoded ',' ':' or '@' isn't mistaken for a
+			// delimiter.
 			parseAuthority(authority);
 		}
 		else {

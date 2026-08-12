@@ -78,6 +78,16 @@ public class UriInfoTests {
 	}
 
 	@Test
+	public void createMultiHostUriWithEncodedDelimiterInPassword() {
+		String uri = "postgresql://joe:pa%3Ass@host1:5432,host2:5432/big_db";
+		UriInfo uriInfo = new UriInfo(uri);
+
+		assertThat(uriInfo.getUsername()).isEqualTo("joe");
+		assertThat(uriInfo.getPassword()).isEqualTo("pa:ss");
+		assertThat(uriInfo.getHostAndPort()).isEqualTo("host1:5432,host2:5432");
+	}
+
+	@Test
 	public void createMultiHostUriNoUserInfo() {
 		String uri = "postgresql://host1:5432,host2:5432/big_db";
 		UriInfo uriInfo = new UriInfo(uri);
