@@ -78,6 +78,34 @@ public class UriInfoTests {
 	}
 
 	@Test
+	public void createMultiHostUriNonPostgresScheme() {
+		// The multi-host authority format isn't postgresql-specific; mysql and
+		// mariadb use the same host1:port1,host2:port2 syntax for failover.
+		String uri = "mysql://joe:joes_password@host1:3306,host2:3306/big_db";
+		UriInfo uriInfo = new UriInfo(uri);
+
+		assertThat(uriInfo.getScheme()).isEqualTo("mysql");
+		assertThat(uriInfo.getHostAndPort()).isEqualTo("host1:3306,host2:3306");
+		assertThat(uriInfo.getHost()).isEqualTo("host1");
+		assertThat(uriInfo.getPort()).isEqualTo(3306);
+		assertThat(uriInfo.getUsername()).isEqualTo("joe");
+		assertThat(uriInfo.getPassword()).isEqualTo("joes_password");
+		assertThat(uriInfo.getPath()).isEqualTo("big_db");
+	}
+
+	@Test
+	public void createSingleHostUriIsUnaffectedByMultiHostParsing() {
+		// A standard single-host authority must keep using java.net.URI's
+		// server-based parsing, never the comma-detection fallback.
+		String uri = "mysql://joe:joes_password@localhost:1527/big_db";
+		UriInfo uriInfo = new UriInfo(uri);
+
+		assertUriInfoEquals(uriInfo, "localhost", 1527, "joe", "joes_password", "big_db",
+				null);
+		assertThat(uriInfo.getHostAndPort()).isEqualTo("localhost:1527");
+	}
+
+	@Test
 	public void createMultiHostUriWithEncodedDelimiterInPassword() {
 		String uri = "postgresql://joe:pa%3Ass@host1:5432,host2:5432/big_db";
 		UriInfo uriInfo = new UriInfo(uri);
