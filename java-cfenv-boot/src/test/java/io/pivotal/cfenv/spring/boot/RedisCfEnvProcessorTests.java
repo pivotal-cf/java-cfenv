@@ -34,6 +34,7 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 	public static void commonAssertions(Environment environment, String SPRING_DATA_REDIS) {
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".host")).isEqualTo(hostname);
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".port")).isEqualTo(String.valueOf(port));
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".username")).isEqualTo(username);
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".password")).isEqualTo(password);
 	}
 
@@ -56,6 +57,7 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".host")).isEqualTo(hostname);
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".port")).isEqualTo(String.valueOf(TLS_PORT));
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".username")).isEqualTo(username);
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".password")).isEqualTo(password);
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".ssl.enabled")).isEqualTo("true");
 	}
@@ -79,6 +81,7 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".host")).isNull();
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".port")).isNull();
+		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".username")).isNull();
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".password")).isNull();
 		assertThat(environment.getProperty(SPRING_DATA_REDIS + ".ssl")).isNull();
 	}
@@ -93,6 +96,7 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 		return new RedisFilePayloadBuilder(filename)
 				.withServiceName("redis-1")
 				.withHostname(hostname)
+				.withUsername(username)
 				.withPassword(password)
 				.withPort(port)
 				.withName("redis-db");
@@ -104,6 +108,7 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 		private String hostname;
 		private Integer port;
 		private Integer tlsPort;
+		private String username;
 		private String password;
 		private String name;
 
@@ -126,6 +131,11 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 			return this;
 		}
 
+		RedisFilePayloadBuilder withUsername(String username) {
+			this.username = username;
+			return this;
+		}
+
 		RedisFilePayloadBuilder withPassword(String password) {
 			this.password = password;
 			return this;
@@ -144,6 +154,7 @@ public class RedisCfEnvProcessorTests extends AbstractCfEnvTests {
 		String payload() {
 			return payload.replace("$serviceName", serviceName)
 					.replace("$hostname", hostname)
+					.replace("$username", username)
 					.replace("$port", String.valueOf(port))
 					.replace("$password", password)
 					.replace("$tls_port", String.valueOf(tlsPort))

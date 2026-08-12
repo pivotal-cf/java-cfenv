@@ -43,7 +43,7 @@ public class RedisTests extends AbstractCfEnvTests {
 		assertThat(cfServices).allMatch(cfService -> cfService.getLabel().equals("rediscloud"));
 		assertThat(cfServices).allMatch(
 				cfService -> cfService.getCredentials().getUriInfo("redis").getUriString()
-						.equals("redis://10.20.30.40:1234"));
+						.equals("redis://" + username + ":" + password + "@10.20.30.40:1234"));
 
 	}
 

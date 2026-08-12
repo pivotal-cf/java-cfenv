@@ -6,6 +6,7 @@
   "credentials": {
     "hostname": "$hostname",
     "port": "$port",
+    "username": "$username",
     "password": "$password"
   }
 }
