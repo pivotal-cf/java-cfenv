@@ -62,6 +62,35 @@ public class UriInfoTests {
 	}
 
 	@Test
+	public void createMultiHostUri() {
+		String uri = "postgresql://joe:joes_password@host1:5432,host2:5432/big_db?p1=v1";
+		UriInfo uriInfo = new UriInfo(uri);
+
+		assertThat(uriInfo.getScheme()).isEqualTo("postgresql");
+		assertThat(uriInfo.getHost()).isEqualTo("host1");
+		assertThat(uriInfo.getPort()).isEqualTo(5432);
+		assertThat(uriInfo.getUsername()).isEqualTo("joe");
+		assertThat(uriInfo.getPassword()).isEqualTo("joes_password");
+		assertThat(uriInfo.getPath()).isEqualTo("big_db");
+		assertThat(uriInfo.getQuery()).isEqualTo("p1=v1");
+		assertThat(uriInfo.getHostAndPort()).isEqualTo("host1:5432,host2:5432");
+		assertThat(uri).isEqualTo(uriInfo.getUriString());
+	}
+
+	@Test
+	public void createMultiHostUriNoUserInfo() {
+		String uri = "postgresql://host1:5432,host2:5432/big_db";
+		UriInfo uriInfo = new UriInfo(uri);
+
+		assertThat(uriInfo.getHostAndPort()).isEqualTo("host1:5432,host2:5432");
+		assertThat(uriInfo.getHost()).isEqualTo("host1");
+		assertThat(uriInfo.getPort()).isEqualTo(5432);
+		assertThat(uriInfo.getUsername()).isNull();
+		assertThat(uriInfo.getPassword()).isNull();
+		assertThat(uriInfo.getPath()).isEqualTo("big_db");
+	}
+
+	@Test
 	public void createWithExplicitParameters() {
 		String uri = "mysql://joe:joes_password@localhost:1527/big_db";
 		UriInfo uriInfo = new UriInfo("mysql", "localhost", 1527, "joe", "joes_password",

@@ -48,8 +48,8 @@ public class PostgresqlJdbcUrlCreator extends AbstractJdbcUrlCreator {
 	@Override
 	public String buildJdbcUrlFromUriField(CfCredentials cfCredentials) {
 		UriInfo uriInfo = cfCredentials.getUriInfo(POSTGRES_JDBC_SCHEME);
-		return String.format("%s%s://%s%s/%s%s%s", JDBC_PREFIX, POSTGRES_JDBC_SCHEME,
-				uriInfo.getHost(), uriInfo.formatPort(), uriInfo.getPath(),
+		return String.format("%s%s://%s/%s%s%s", JDBC_PREFIX, POSTGRES_JDBC_SCHEME,
+				uriInfo.getHostAndPort(), uriInfo.getPath(),
 				uriInfo.formatUserNameAndPasswordQuery(), uriInfo.formatQuery());
 	}
 
