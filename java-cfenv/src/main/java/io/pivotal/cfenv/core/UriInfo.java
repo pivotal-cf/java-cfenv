@@ -46,6 +46,8 @@ public class UriInfo {
 
 	private String uriString;
 
+	private String hosts;
+
 	public UriInfo(String scheme, String host, int port, String username,
 				   String password) {
 		this(scheme, host, port, username, password, null, null);
@@ -74,14 +76,67 @@ public class UriInfo {
 
 		URI uri = getUri();
 		this.scheme = uri.getScheme();
-		this.host = uri.getHost();
-		this.port = uri.getPort();
 		this.path = parsePath(uri);
 		this.query = uri.getQuery();
 
-		String[] userinfo = parseUserinfo(uri);
-		this.userName = urlDecode(userinfo[0]);
-		this.password = urlDecode(userinfo[1]);
+		String authority = uri.getRawAuthority();
+		if (uri.getHost() != null) {
+			this.host = uri.getHost();
+			this.port = uri.getPort();
+
+			String[] userinfo = parseUserinfo(uri);
+			this.userName = urlDecode(userinfo[0]);
+			this.password = urlDecode(userinfo[1]);
+		}
+		else if (authority != null && authority.substring(authority.lastIndexOf('@') + 1).contains(",")) {
+			// A multi-host authority (e.g. postgresql's
+			// host1:port1,host2:port2 failover syntax) isn't valid
+			// server-based authority per RFC 3986, so java.net.URI parses
+			// it as a registry-based authority: getHost()/getPort() come
+			// back null/-1 even though getRawAuthority() has the full value.
+			// Use the raw (not percent-decoded) form so a password
+			// containing an encoded ',' ':' or '@' isn't mistaken for a
+			// delimiter.
+			parseAuthority(authority);
+		}
+		else {
+			// Some non-standard, driver-specific formats (e.g. SQL Server's
+			// ;property=value suffix) also fail server-based parsing but
+			// aren't a list of hosts either; leave host/port unset as before
+			// and let the caller fall back to its own parsing of uriString.
+			this.host = uri.getHost();
+			this.port = uri.getPort();
+		}
+	}
+
+	private void parseAuthority(String authority) {
+		String hostsPart = authority;
+
+		int at = authority.lastIndexOf('@');
+		if (at != -1) {
+			String userInfo = authority.substring(0, at);
+			hostsPart = authority.substring(at + 1);
+
+			String[] userPass = userInfo.split(":");
+			if (userPass.length != 2) {
+				throw new IllegalArgumentException("Bad userinfo in URI: " + uriString);
+			}
+			this.userName = urlDecode(userPass[0]);
+			this.password = urlDecode(userPass[1]);
+		}
+
+		this.hosts = hostsPart;
+
+		String firstHost = hostsPart.split(",")[0];
+		int colon = firstHost.lastIndexOf(':');
+		if (colon != -1) {
+			this.host = firstHost.substring(0, colon);
+			this.port = Integer.parseInt(firstHost.substring(colon + 1));
+		}
+		else {
+			this.host = firstHost;
+			this.port = -1;
+		}
 	}
 
 	public static String urlDecode(String s) {
@@ -163,6 +218,21 @@ public class UriInfo {
 			return String.format(":%d", getPort());
 		}
 		return "";
+	}
+
+	/**
+	 * Returns the host(s) and port(s) as they should appear in the authority
+	 * section of a URI. For a single-host URI this is equivalent to
+	 * {@code getHost() + formatPort()}. For a multi-host URI (e.g.
+	 * PostgreSQL's {@code host1:port1,host2:port2} failover syntax), the
+	 * full, unmodified host list is returned since {@link #getHost()} and
+	 * {@link #getPort()} only expose the first host.
+	 */
+	public String getHostAndPort() {
+		if (hosts != null) {
+			return hosts;
+		}
+		return getHost() + formatPort();
 	}
 
 	public String formatQuery() {

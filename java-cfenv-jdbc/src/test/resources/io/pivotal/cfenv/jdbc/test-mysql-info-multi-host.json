@@ -1,0 +1,11 @@
+{
+  "name": "$serviceName",
+  "label": "cleardb",
+  "tags": [
+    "mysql"
+  ],
+  "plan": "free",
+  "credentials": {
+    "uri": "mysql://$user:$password@host1:3306,host2:3306/$name"
+  }
+}

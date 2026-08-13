@@ -57,6 +57,23 @@ public class MySqlJdbcTests extends AbstractJdbcTests {
 	}
 
 	@Test
+	public void mysqlServiceCreationMultiHost() {
+		String name = "database-1";
+
+		mockVcapServices(getServicesPayload(getMysqlServicePayloadMultiHost("mysql-1",
+				hostname, port, username, password, name)));
+
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName("mysql-1");
+
+		assertThat(cfJdbcService.getJdbcUrl()).isEqualTo(String.format(
+				"jdbc:mysql://host1:3306,host2:3306/%s?user=%s&password=%s", name,
+				UriInfo.urlEncode(username), UriInfo.urlEncode(password)));
+		assertThat(cfJdbcService.getUsername()).isEqualTo(username);
+		assertThat(cfJdbcService.getPassword()).isEqualTo(password);
+	}
+
+	@Test
 	public void mysqlServiceCreationWithLabelNoTags() {
 		String name1 = "database-1";
 		String name2 = "database-2";
@@ -341,6 +358,12 @@ public class MySqlJdbcTests extends AbstractJdbcTests {
 			String user, String password, String name) {
 		return getTemplatedPayload("test-mysql-info.json", serviceName, hostname, port,
 				user, password, name);
+	}
+
+	private String getMysqlServicePayloadMultiHost(String serviceName, String hostname,
+			int port, String user, String password, String name) {
+		return getTemplatedPayload("test-mysql-info-multi-host.json", serviceName, hostname,
+				port, user, password, name);
 	}
 
 	private String getMysqlServicePayloadWithLabelNoTags(String serviceName,
