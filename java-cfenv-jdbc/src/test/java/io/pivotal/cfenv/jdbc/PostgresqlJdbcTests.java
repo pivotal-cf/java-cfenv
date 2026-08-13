@@ -127,6 +127,24 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 	}
 
 	@Test
+	public void postgresqlServiceCreationMultiHost() {
+		String name1 = "database-1";
+
+		mockVcapServices(getServicesPayload(
+				getPostgresqlServicePayloadMultiHost("postgresql-1", hostname, port, username, password, name1)));
+
+		CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+		CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcServiceByName("postgresql-1");
+
+		assertThat(cfJdbcService.getJdbcUrl()).isEqualTo(String.format(
+				"jdbc:postgresql://host1:5432,host2:5432/%s?user=%s&password=%s", name1,
+				UriInfo.urlEncode(username), UriInfo.urlEncode(password)));
+		assertThat(cfJdbcService.getUsername()).isEqualTo(username);
+		assertThat(cfJdbcService.getPassword()).isEqualTo(password);
+		assertThat(cfJdbcService.getDriverClassName()).isEqualTo("org.postgresql.Driver");
+	}
+
+	@Test
 	public void postgresqlServiceCreationNoLabelNoTags() {
 		String name1 = "database-1";
 		String name2 = "database-2";
@@ -228,6 +246,13 @@ public class PostgresqlJdbcTests extends AbstractJdbcTests {
 			String hostname, int port,
 			String user, String password, String name) {
 		return getTemplatedPayload("test-postgresql-info-no-label-no-tags.json", serviceName,
+				hostname, port, user, password, name);
+	}
+
+	private String getPostgresqlServicePayloadMultiHost(String serviceName,
+			String hostname, int port,
+			String user, String password, String name) {
+		return getTemplatedPayload("test-postgresql-info-multi-host.json", serviceName,
 				hostname, port, user, password, name);
 	}
 
