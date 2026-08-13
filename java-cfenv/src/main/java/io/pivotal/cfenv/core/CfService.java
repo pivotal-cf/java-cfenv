@@ -76,7 +76,7 @@ public class CfService {
 		return this.cfCredentials;
 	}
 
-	List<CfVolume> getVolumes() {
+	public List<CfVolume> getVolumes() {
 		return cfVolumes;
 	}
 
