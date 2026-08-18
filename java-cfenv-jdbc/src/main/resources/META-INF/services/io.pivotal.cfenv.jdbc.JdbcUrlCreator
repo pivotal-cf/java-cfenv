@@ -3,3 +3,4 @@ io.pivotal.cfenv.jdbc.OracleJdbcUrlCreator
 io.pivotal.cfenv.jdbc.SqlServerJdbcUrlCreator
 io.pivotal.cfenv.jdbc.PostgresqlJdbcUrlCreator
 io.pivotal.cfenv.jdbc.DB2JdbcUrlCreator
+io.pivotal.cfenv.jdbc.HanaJdbcUrlCreator
