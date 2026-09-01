@@ -86,6 +86,114 @@ shadowJar {
     relocate 'com.cedarsoftware.io', 'io.pivotal.cfenv.shaded.com.cedarsoftware.io'
 }
 
+// Guards #470: the Shadow 9 upgrade silently produced an uber jar with an
+// unmerged spring.factories and bundled Spring classes. No unit test could
+// see it, so verify the packaged artifact itself.
+// shadowJar and jar share one archive name (archiveClassifier is ''), so pin
+// the order to guarantee the uber jar is what ends up on disk rather than
+// leaving it to task scheduling.
+tasks.shadowJar.mustRunAfter(tasks.jar)
+
+def uberJar = tasks.shadowJar.archiveFile
+
+def verifyUberJar = tasks.register('verifyUberJar') {
+    group = 'verification'
+    description = 'Checks the uber jar merges spring.factories and bundles no Spring classes'
+
+    dependsOn tasks.jar, tasks.shadowJar
+    inputs.file(uberJar).withPropertyName('uberJar')
+    def stamp = layout.buildDirectory.file('verifyUberJar/passed.txt')
+    outputs.file(stamp)
+
+    // Spring Boot 3 registers post-processors under
+    // org.springframework.boot.env; Spring Boot 4 moved the interface up to
+    // org.springframework.boot. Accept whichever this branch targets so the
+    // same check works on 3.x and main.
+    def eppKeys = ['org.springframework.boot.EnvironmentPostProcessor',
+                   'org.springframework.boot.env.EnvironmentPostProcessor']
+    def requiredEpps = ['io.pivotal.cfenv.spring.boot.CfDataSourceEnvironmentPostProcessor',
+                        'io.pivotal.cfenv.spring.boot.CfEnvironmentPostProcessor']
+
+    def required = [
+            'org.springframework.context.ApplicationListener': [
+                    'io.pivotal.cfenv.profile.CloudProfileApplicationListener'],
+            'io.pivotal.cfenv.spring.boot.CfEnvProcessor'    : [
+                    'io.pivotal.cfenv.spring.boot.RedisCfEnvProcessor',
+                    'io.pivotal.cfenv.boot.scs.CfConfigClientProcessor',
+                    'io.pivotal.cfenv.boot.sso.CfSingleSignOnProcessor'],
+    ]
+
+    doLast {
+        def jarFile = uberJar.get().asFile
+        def problems = []
+
+        new java.util.zip.ZipFile(jarFile).withCloseable { zip ->
+            def names = Collections.list(zip.entries())*.name
+
+            // Spring must stay out of the uber jar; bundling it causes a
+            // classloader identity conflict on Spring Boot 3+.
+            def bundledSpring = names.findAll { it.startsWith('org/springframework/') && it.endsWith('.class') }
+            if (!bundledSpring.isEmpty()) {
+                problems << "bundles ${bundledSpring.size()} Spring class(es), e.g. ${bundledSpring.take(3)}"
+            }
+
+            // Fix #275: json-io must be relocated, not shipped under its own
+            // package. Only com.cedarsoftware.io is relocated; java-util
+            // (com.cedarsoftware.util) is deliberately left alone.
+            def unrelocated = names.findAll { it.startsWith('com/cedarsoftware/io/') }
+            if (!unrelocated.isEmpty()) {
+                problems << "ships ${unrelocated.size()} unrelocated json-io class(es)"
+            }
+            if (!names.any { it.startsWith('io/pivotal/cfenv/shaded/com/cedarsoftware/io/') }) {
+                problems << 'is missing the relocated json-io classes'
+            }
+
+            // Every module's spring.factories must be merged in, not overwritten.
+            def entry = zip.getEntry('META-INF/spring.factories')
+            if (entry == null) {
+                problems << 'has no META-INF/spring.factories'
+            }
+            else {
+                def props = new Properties()
+                zip.getInputStream(entry).withCloseable { props.load(it) }
+                required.each { key, values ->
+                    def actual = (props.getProperty(key) ?: '').split(',')*.trim() as Set
+                    def missing = values.findAll { !actual.contains(it) }
+                    if (!missing.isEmpty()) {
+                        problems << "spring.factories '${key}' is missing ${missing}"
+                    }
+                }
+                def eppKey = eppKeys.find { props.getProperty(it) != null }
+                if (eppKey == null) {
+                    problems << "spring.factories registers no EnvironmentPostProcessor (looked for ${eppKeys})"
+                }
+                else {
+                    def registered = props.getProperty(eppKey).split(',')*.trim() as Set
+                    def missingEpps = requiredEpps.findAll { !registered.contains(it) }
+                    if (!missingEpps.isEmpty()) {
+                        problems << "spring.factories '${eppKey}' is missing ${missingEpps}"
+                    }
+                    // Merging must not pull in Spring Boot's own registrations.
+                    def leaked = registered.findAll { it.startsWith('org.springframework.') }
+                    if (!leaked.isEmpty()) {
+                        problems << "spring.factories re-registers Spring Boot's own post-processors ${leaked.sort()}"
+                    }
+                }
+            }
+        }
+
+        if (!problems.isEmpty()) {
+            throw new GradleException("${jarFile.name} is not a valid uber jar:\n  - " + problems.join('\n  - '))
+        }
+
+        def out = stamp.get().asFile
+        out.parentFile.mkdirs()
+        out.text = 'passed'
+    }
+}
+
+tasks.named('check') { dependsOn verifyUberJar }
+
 publishing {
     publications {
         shadow(MavenPublication) { publication ->
