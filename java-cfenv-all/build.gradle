@@ -23,6 +23,7 @@ dependencies {
 
 shadowJar {
     archiveClassifier.set('')
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     mergeServiceFiles()
     transform(PropertiesFileTransformer) {
         paths = ['META-INF/spring.factories']
@@ -79,8 +80,8 @@ shadowJar {
         }
     })
     dependencies {
-        exclude(dependency('org.springframework.boot::'))
-        exclude(dependency('org.springframework::'))
+        exclude(dependency('org.springframework.boot:.*:.*'))
+        exclude(dependency('org.springframework:.*:.*'))
     }
     relocate 'com.cedarsoftware.io', 'io.pivotal.cfenv.shaded.com.cedarsoftware.io'
 }
