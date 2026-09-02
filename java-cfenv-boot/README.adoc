@@ -25,6 +25,29 @@ Properties that could be populated:
 * `spring.rabbitmq.virtualHost`
 * `spring.rabbitmq.addresses`
 
+`AmqpCfEnvProcessor` matches the Pivotal/Tanzu RabbitMQ tile: tags `rabbitmq` or `amqp`, a label that starts with `rabbitmq` or `cloudamqp`, or a top-level `uri`/`url` with an `amqp`/`amqps` scheme.
+
+IBM Cloud Messages for RabbitMQ does not use that shape. The service label is `messages-for-rabbitmq` and the AMQPS URI sits under `credentials.connection.amqps` rather than a top-level `uri`. The built-in processor will not accept that binding.
+
+[source,json]
+----
+{
+  "label": "messages-for-rabbitmq",
+  "credentials": {
+    "connection": {
+      "amqps": {
+        "composed": ["amqps://user:pass@host:30301"],
+        "authentication": { "username": "user", "password": "pass" },
+        "hosts": [{ "hostname": "host", "port": 30301 }],
+        "certificate": { "certificate_base64": "..." }
+      }
+    }
+  }
+}
+----
+
+Write a `CfEnvProcessor` whose `accept` method matches `messages-for-rabbitmq` (see the root README section on supporting other services). Read `connection.amqps.composed[0]`, or `hosts` plus `authentication`, and copy those values into `spring.rabbitmq.*`. The CA in `certificate.certificate_base64` is not installed by this library; load it into a trust store and set `spring.rabbitmq.ssl.trust-store`.
+
 == Cassandra
 Properties that could be populated:
 
