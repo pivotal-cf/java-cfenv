@@ -1,0 +1,27 @@
+{
+  "label": "hana",
+  "provider": null,
+  "plan": "hdi-shared",
+  "name": "$serviceName",
+  "tags": [
+    "hana",
+    "database",
+    "relational"
+  ],
+  "instance_name": "$serviceName",
+  "credentials": {
+    "database_id": "REDACTED",
+    "host": "$hostname",
+    "port": "$port",
+    "driver": "com.sap.db.jdbc.Driver",
+    "url": "jdbc:sap://$hostname:$port?encrypt=true&validateCertificate=true&currentschema=$user",
+    "schema": "$user",
+    "certificate": "REDACTED",
+    "hdi_user": "REDACTED",
+    "hdi_password": "REDACTED",
+    "user": "$user",
+    "password": "$password"
+  },
+  "syslog_drain_url": null,
+  "volume_mounts": []
+}
