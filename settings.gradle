@@ -6,7 +6,6 @@ pluginManagement {
     }
     plugins {
         id 'io.spring.nohttp'
-        id 'org.asciidoctor.jvm.convert' apply false
         id 'com.gradleup.shadow' apply false
     }
 }
@@ -33,6 +32,5 @@ include "java-cfenv-boot-pivotal-scs"
 include "java-cfenv-boot-pivotal-sso"
 include "java-cfenv-boot-tanzu-genai"
 include "java-cfenv-all"
-//include "java-cfenv-docs"
 include "java-cfenv-jdbc"
 include "java-cfenv-test-support"

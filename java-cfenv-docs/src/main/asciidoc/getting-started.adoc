@@ -1,4 +1,0 @@
-[[getting-started]]
-= Getting Started
-
-Hello World!
