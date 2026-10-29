@@ -4,11 +4,9 @@ springBoot = "4.1.2"
 springAi = "2.0.2"
 jmockit = "1.50"
 shadow = "9.6.1"
-asciidoctorJvm = "4.0.5"
 jsonIo = "4.117.0"
 embeddedRedis = "0.6"
 mariadb = "4.0.0"
-springAsciidoctorBackends = "0.0.7"
 nohttp = "0.0.11"
 
 
@@ -25,11 +23,8 @@ spring-boot = { group = "org.springframework.boot", name = "spring-boot", versio
 spring-boot-autoconfigure = { group = "org.springframework.boot", name = "spring-boot-autoconfigure", version.ref = "springBoot" }
 spring-ai-openai = { group = "org.springframework.ai", name = "spring-ai-openai", version.ref = "springAi" }
 spring-boot-dependencies = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot" }
-spring-asciidoctor-backends = { group = "io.spring.asciidoctor.backends", name = "spring-asciidoctor-backends", version.ref = "springAsciidoctorBackends" }
 
 
 [plugins]
-asciidoctorJvm = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctorJvm" }
-asciidoctorJvmPdf = { id = "org.asciidoctor.jvm.pdf", version.ref = "asciidoctorJvm" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 nohttp = { id = "io.spring.nohttp", version.ref = "nohttp" }
