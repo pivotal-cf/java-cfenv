@@ -27,6 +27,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import org.springframework.boot.test.context.FilteredClassLoader;
+
 import io.pivotal.cfenv.boot.scs.CfConfigClientProcessor;
 import io.pivotal.cfenv.core.CfCredentials;
 import io.pivotal.cfenv.core.CfService;
@@ -97,5 +99,37 @@ public class CfConfigClientProcessorTest {
 
         assertThat(properties.get("spring.cloud.refresh.additional-property-sources-to-retain"))
                 .isEqualTo("CfConfigClientProcessor");
+    }
+
+    @Test
+    public void shouldSetTheConfigOAuth2PropertiesWhenSupported() {
+        Map<String, Object> properties = new HashMap<>();
+
+        new CfConfigClientProcessor(getClass().getClassLoader()).process(cfCredentials, properties);
+
+        assertThat(properties.get("spring.cloud.config.oauth2.enabled")).isEqualTo("true");
+        assertThat(properties.get("spring.cloud.config.oauth2.client-registration-id")).isEqualTo("config-server");
+        assertThat(properties.get("spring.security.oauth2.client.registration.config-server.client-id"))
+                .isEqualTo(CLIENT_ID);
+        assertThat(properties.get("spring.security.oauth2.client.registration.config-server.client-secret"))
+                .isEqualTo(CLIENT_SECRET);
+        assertThat(properties.get("spring.security.oauth2.client.registration.config-server.authorization-grant-type"))
+                .isEqualTo("client_credentials");
+        assertThat(properties.get("spring.security.oauth2.client.provider.config-server.token-uri"))
+                .isEqualTo(ACCESS_TOKEN_URI);
+        assertThat(properties.get("spring.cloud.config.client.oauth2.client-id")).isEqualTo(CLIENT_ID);
+    }
+
+    @Test
+    public void shouldNotSetTheConfigOAuth2PropertiesWithoutSupport() {
+        Map<String, Object> properties = new HashMap<>();
+        ClassLoader withoutConfigOAuth2 = new FilteredClassLoader("org.springframework.cloud.config.client");
+
+        new CfConfigClientProcessor(withoutConfigOAuth2).process(cfCredentials, properties);
+
+        assertThat(properties.keySet()).noneMatch(key -> key.startsWith("spring.cloud.config.oauth2.")
+                || key.startsWith("spring.security.oauth2.client."));
+        assertThat(properties.get("spring.cloud.config.client.oauth2.client-id")).isEqualTo(CLIENT_ID);
+        assertThat(properties.get("spring.cloud.config.uri")).isEqualTo(URI);
     }
 }
