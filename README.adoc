@@ -257,25 +257,11 @@ myapp.config.path=#{ cfEnv.findServiceByName("nfs1").getVolumes().get(0).getPath
 
 Please check the dedicated README for link:java-cfenv-boot/README.adoc[Spring Boot].
 
+Java CfEnv does not activate the `cloud` profile. If your application relies on it, activate it yourself, for example with `cf set-env <APP> SPRING_PROFILES_ACTIVE cloud`.
+
 === Connecting Multiple Instances of a Single Service Type
 
 If you need to configure connections to multiple instances of a given service type, or do anything more than setting application properties for spring-boot to pick up and use in auto-configuration, you will need to follow the approach layed out in the sections above (Basic Usage, JDBC Support, Use with Spring) to access the binding credentials. Then follow the same procedure that would be used to connect to your services in any other deployment environment.
-
-=== Pushing your application to Cloud Foundry
-
-You must disable the java buildpack's auto-reconfiguration so that you always delegate to Boot to create beans.
-
-[source]
-----
-cf set-env <APP> JBP_CONFIG_SPRING_AUTO_RECONFIGURATION '{enabled: false}'
-----
-
-Since the auto-reconfiguration also set the cloud profile, you will have to do that explicitly
-
-[source]
-----
-cf set-env <APP> SPRING_PROFILES_ACTIVE cloud
-----
 
 == Supporting other Services
 
