@@ -43,7 +43,7 @@ public class MongoCfEnvProcessorTests extends AbstractCfEnvTests {
 				getMongoServicePayload("mongo-1", hostname, port, username, password, "inventory-1", "db")
 		));
 		// Note, the exception is actually thrown from the CfDataSourceEnvironmentPostProcessor
-		assertThatIllegalStateException().isThrownBy( () ->  getEnvironment().getProperty("spring.data.mongodb.uri"))
+		assertThatIllegalStateException().isThrownBy( () ->  getEnvironment().getProperty("spring.mongodb.uri"))
 				.withMessage(ConnectorLibraryDetector.MESSAGE);
 	}
 
@@ -53,7 +53,7 @@ public class MongoCfEnvProcessorTests extends AbstractCfEnvTests {
 		mockVcapServices(getServicesPayload(
 				getMongoServicePayload("mongo-1", hostname, port, username, password, "inventory-1", "db")
 		));
-		assertThat(getEnvironment().getProperty("spring.data.mongodb.uri")).isEqualTo("mongodb://myuser:mypass@10.20.30.40:1234/inventory-1");
+		assertThat(getEnvironment().getProperty("spring.mongodb.uri")).isEqualTo("mongodb://myuser:mypass@10.20.30.40:1234/inventory-1");
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class MongoCfEnvProcessorTests extends AbstractCfEnvTests {
 		mockVcapServices(getServicesPayload(
 				getMongoServicePayloadNoLabelNoTags("mongo-1", hostname, port, username, password, "inventory-1", "db")
 		));
-		assertThat(getEnvironment().getProperty("spring.data.mongodb.uri")).isEqualTo("mongodb://myuser:mypass@10.20.30.40:1234/inventory-1");
+		assertThat(getEnvironment().getProperty("spring.mongodb.uri")).isEqualTo("mongodb://myuser:mypass@10.20.30.40:1234/inventory-1");
 	}
 
 	public Environment getEnvironment() {

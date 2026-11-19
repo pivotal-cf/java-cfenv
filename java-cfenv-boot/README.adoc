@@ -36,7 +36,7 @@ Properties that could be populated:
 == MongoDB
 Properties that could be populated:
 
-* `spring.data.mongodb.uri`
+* `spring.mongodb.uri`
 
 == Redis
 
