@@ -45,13 +45,13 @@ public class MongoCfEnvProcessor implements CfEnvProcessor {
 
 	@Override
 	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-		properties.put("spring.data.mongodb.uri", cfCredentials.getUri(mongoScheme));
+		properties.put("spring.mongodb.uri", cfCredentials.getUri(mongoScheme));
 	}
 
 	@Override
 	public CfEnvProcessorProperties getProperties() {
 		return CfEnvProcessorProperties.builder()
-				.propertyPrefixes("spring.data.mongodb")
+				.propertyPrefixes("spring.mongodb")
 				.serviceName("MongoDB")
 				.build();
 	}
