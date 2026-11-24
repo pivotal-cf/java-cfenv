@@ -78,7 +78,7 @@ public class MySqlJdbcUrlCreator extends AbstractJdbcUrlCreator {
 		if (jdbcUrl == null) {
 			jdbcUrl = buildJdbcUrlFromUriField(cfCredentials);
 		}
-		if (isMariaDbService(cfService) && getDriverClassName().equals(MARIADB_DRIVER_CLASS_NAME)) {
+		if (isMariaDbService(cfService) && MARIADB_DRIVER_CLASS_NAME.equals(getDriverClassName())) {
 			jdbcUrl = jdbcUrl.replaceFirst("^(jdbc:mysql)", "jdbc:mariadb");
 		}
 		return jdbcUrl;

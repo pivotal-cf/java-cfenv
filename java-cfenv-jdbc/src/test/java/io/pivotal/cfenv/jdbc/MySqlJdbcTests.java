@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import io.pivotal.cfenv.core.CfEnv;
+import io.pivotal.cfenv.core.CfService;
 import io.pivotal.cfenv.core.UriInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -216,6 +218,23 @@ public class MySqlJdbcTests extends AbstractJdbcTests {
 		assertThat(cfJdbcService.getDriverClassName())
 				.isEqualTo(MySqlJdbcUrlCreator.MARIADB_DRIVER_CLASS_NAME);
 	}
+
+	@Test
+	public void mariaDbJdbcUrlWithoutJdbcDriverOnClasspath() {
+		mockVcapServices(getServicesPayload(
+				getMariaDbServicePayload("mariadb-1", hostname, port, username, password,
+						"database-1")));
+		CfService cfService = new CfEnv().findServiceByName("mariadb-1");
+		MySqlJdbcUrlCreator creator = new MySqlJdbcUrlCreator() {
+			@Override
+			public String getDriverClassName() {
+				return null;
+			}
+		};
+
+		assertThat(creator.createJdbcUrl(cfService)).startsWith("jdbc:mysql://");
+	}
+
 	@Test
 	public void mariaDbServiceCreationWithJdbcUrl() {
 		String name1 = "database-1";
