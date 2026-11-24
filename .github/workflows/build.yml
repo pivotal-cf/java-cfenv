@@ -14,9 +14,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        java: [ "17", "21" ]
-    name: jdk-${{ matrix.java }}
+        include:
+          - { java: "17", boot: "" }
+          - { java: "21", boot: "" }
+          - { java: "17", boot: "4.0.+" }
+          - { java: "17", boot: "4.1.+" }
+          - { java: "17", boot: "4.2.+" }
+    name: jdk-${{ matrix.java }}${{ matrix.boot && format('-boot-{0}', matrix.boot) || '' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -37,13 +43,13 @@ jobs:
           cache-read-only: false
 
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon --stacktrace
+        run: ./gradlew build --no-daemon --stacktrace ${{ matrix.boot && format('-PspringBootVersion={0}', matrix.boot) || '' }}
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-java-${{ matrix.java }}
+          name: test-results-java-${{ matrix.java }}-boot-${{ matrix.boot || 'default' }}
           path: |
             **/build/test-results/**/*.xml
             **/build/reports/tests/**/*
@@ -53,7 +59,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: build-reports-java-${{ matrix.java }}
+          name: build-reports-java-${{ matrix.java }}-boot-${{ matrix.boot || 'default' }}
           path: |
             **/build/reports/**/*
           retention-days: 7

@@ -11,6 +11,14 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            def bootVersion = providers.gradleProperty('springBootVersion')
+            if (bootVersion.present) {
+                version('springBoot', bootVersion.get())
+            }
+        }
+    }
     repositories {
         mavenCentral()
         maven { url "https://repo.spring.io/release" }
